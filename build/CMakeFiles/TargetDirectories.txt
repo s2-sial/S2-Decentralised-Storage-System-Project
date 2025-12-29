@@ -1,0 +1,5 @@
+/home/saad/~projects/decent-store/build/CMakeFiles/tracker.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/peer.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/client.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/edit_cache.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/rebuild_cache.dir
