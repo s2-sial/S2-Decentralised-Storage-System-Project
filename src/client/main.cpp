@@ -41,15 +41,14 @@ static std::string recv_all_text(int fd) {
     return out;
 }
 
-static int connect_tcp(const std::string& ip, int port) {
+static int connect_tcp_fatal(const std::string& ip, int port) {
     int sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) die("socket");
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(static_cast<uint16_t>(port));
-    if (::inet_pton(AF_INET, ip.c_str(), &addr.sin_addr) <= 0)
-        die("inet_pton");
+    addr.sin_port = htons(port);
+    inet_pton(AF_INET, ip.c_str(), &addr.sin_addr);
 
     if (::connect(sock, (sockaddr*)&addr, sizeof(addr)) < 0)
         die("connect");
@@ -57,8 +56,26 @@ static int connect_tcp(const std::string& ip, int port) {
     return sock;
 }
 
+static int connect_tcp_try(const std::string& ip, int port) {
+    int sock = ::socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) return -1;
+
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    inet_pton(AF_INET, ip.c_str(), &addr.sin_addr);
+
+    if (::connect(sock, (sockaddr*)&addr, sizeof(addr)) < 0) {
+        close(sock);
+        return -1;
+    }
+
+    return sock;
+}
+
+
 static std::vector<std::pair<std::string,int>> get_peers(const std::string& tracker_ip, int tracker_port) {
-    int sock = connect_tcp(tracker_ip, tracker_port);
+    int sock = connect_tcp_fatal(tracker_ip, tracker_port);
     std::string msg = "GET_PEERS\n";
     send_all(sock, msg.c_str(), msg.size());
     std::string resp = recv_all_text(sock);
@@ -82,7 +99,7 @@ static std::vector<std::pair<std::string,int>> get_peers(const std::string& trac
 static void put_chunk_to_peer(const std::string& peer_ip, int peer_port,
                               const std::string& chunk_id,
                               const std::vector<char>& data) {
-    int sock = connect_tcp(peer_ip, peer_port);
+    int sock = connect_tcp_try(peer_ip, peer_port);
 
     std::string header = "PUT_CHUNK " + chunk_id + " " + std::to_string(data.size()) + "\n";
     send_all(sock, header.c_str(), header.size());
@@ -115,6 +132,52 @@ static std::string sha256(const std::vector<char>& data) {
     return oss.str();
 }
 
+static bool get_chunk_from_peer(const std::string& peer_ip, int peer_port,
+                                const std::string& chunk_id,
+                                std::vector<char>& out_data) {
+    int sock = connect_tcp_try(peer_ip, peer_port);
+    if (sock < 0) return false;
+
+
+    std::string req = "GET_CHUNK " + chunk_id + "\n";
+    send_all(sock, req.c_str(), req.size());
+
+    // Read header line
+    std::string header;
+    char ch;
+    while (true) {
+        ssize_t n = recv(sock, &ch, 1, 0);
+        if (n <= 0) { close(sock); return false; }
+        if (ch == '\n') break;
+        if (ch != '\r') header.push_back(ch);
+    }
+
+    std::istringstream iss(header);
+    std::string status;
+    iss >> status;
+
+    if (status != "OK") {
+        close(sock);
+        return false;
+    }
+
+    size_t size;
+    iss >> size;
+
+    out_data.resize(size);
+    size_t received = 0;
+
+    while (received < size) {
+        ssize_t n = recv(sock, out_data.data() + received,
+                         size - received, 0);
+        if (n <= 0) break;
+        received += n;
+    }
+
+    close(sock);
+    return received == size;
+}
+
 
 int main(int argc, char** argv) {
     // Usage:
@@ -126,10 +189,89 @@ int main(int argc, char** argv) {
     }
 
     std::string mode = argv[1];
-    if (mode != "put") {
-        std::cerr << "Only 'put' implemented right now.\n";
+    if (mode == "put") {
+    // existing put code (unchanged)
+}
+else if (mode == "get") {
+    // Usage:
+    // client get <tracker_ip> <tracker_port> <manifest> <output_file>
+
+    if (argc < 6) {
+        std::cerr << "Usage: client get <tracker_ip> <tracker_port> <manifest> <output_file>\n";
         return 1;
     }
+
+    std::string tracker_ip = argv[2];
+    int tracker_port = std::stoi(argv[3]);
+    std::string manifest_path = argv[4];
+    std::string out_path = argv[5];
+
+    auto peers = get_peers(tracker_ip, tracker_port);
+    if (peers.empty()) {
+        std::cerr << "No peers available\n";
+        return 1;
+    }
+
+    std::ifstream man(manifest_path);
+    if (!man) {
+        std::cerr << "Cannot open manifest\n";
+        return 1;
+    }
+
+    std::string filename, label;
+    size_t chunk_size, chunk_count;
+
+    man >> label >> filename;
+    man >> label >> chunk_size;
+    man >> label >> chunk_count;
+
+    std::vector<std::string> chunks(chunk_count);
+    for (size_t i = 0; i < chunk_count; i++)
+        man >> chunks[i];
+
+    man.close();
+
+    std::ofstream out(out_path, std::ios::binary);
+    if (!out) {
+        std::cerr << "Cannot open output file\n";
+        return 1;
+    }
+
+    for (const auto& cid : chunks) {
+        bool found = false;
+
+        for (const auto& peer : peers) {
+            std::vector<char> data;
+            if (!get_chunk_from_peer(peer.first, peer.second, cid, data))
+                continue;
+
+            // Verify integrity
+            std::string computed = sha256(data);
+            if (computed != cid) {
+                std::cerr << "Hash mismatch for chunk " << cid << "\n";
+                continue;
+            }
+
+            out.write(data.data(), data.size());
+            found = true;
+            break;
+        }
+
+        if (!found) {
+            std::cerr << "Failed to retrieve chunk " << cid << "\n";
+            return 1;
+        }
+    }
+
+    out.close();
+    std::cout << "Download complete: " << out_path << "\n";
+    return 0;
+}
+else {
+    std::cerr << "Unknown command\n";
+    return 1;
+}
+
 
     std::string tracker_ip = argv[2];
     int tracker_port = std::stoi(argv[3]);
