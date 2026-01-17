@@ -154,6 +154,10 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
   /usr/include/linux/stddef.h \
   /usr/include/locale.h \
   /usr/include/netinet/in.h \
+  /usr/include/openssl/e_os2.h \
+  /usr/include/openssl/macros.h \
+  /usr/include/openssl/opensslv.h \
+  /usr/include/openssl/sha.h \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -262,6 +266,8 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
   /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/openssl/configuration.h \
+  /usr/include/x86_64-linux-gnu/openssl/opensslconf.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
@@ -282,6 +288,10 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 
 /usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
+/usr/include/x86_64-linux-gnu/openssl/opensslconf.h:
+
+/usr/include/x86_64-linux-gnu/openssl/configuration.h:
+
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
@@ -289,6 +299,12 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h:
 
 /usr/include/c++/13/bits/uses_allocator.h:
 
@@ -380,8 +396,6 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
-/usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h:
-
 /usr/include/c++/13/bits/stl_bvector.h:
 
 /usr/include/c++/13/bits/allocator.h:
@@ -420,11 +434,11 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 
 /usr/include/c++/13/bits/exception.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
-
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
 /home/saad/~projects/decent-store/src/client/main.cpp:
+
+/usr/include/openssl/macros.h:
 
 /usr/include/c++/13/bits/fs_ops.h:
 
@@ -508,6 +522,10 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 
 /usr/include/asm-generic/posix_types.h:
 
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/openssl/opensslv.h:
+
 /usr/include/stdc-predef.h:
 
 /usr/include/c++/13/bits/stringfwd.h:
@@ -549,8 +567,6 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 /usr/include/c++/13/bits/basic_ios.tcc:
 
 /usr/include/linux/stddef.h:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h:
 
 /usr/include/c++/13/bits/ostream_insert.h:
 
@@ -640,6 +656,10 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
+/usr/include/openssl/e_os2.h:
+
+/usr/include/openssl/sha.h:
+
 /usr/include/pthread.h:
 
 /usr/include/wctype.h:
@@ -673,6 +693,12 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
 /usr/include/unistd.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
@@ -801,11 +827,3 @@ CMakeFiles/client.dir/src/client/main.cpp.o: /home/saad/~projects/decent-store/s
 /usr/include/c++/13/bits/char_traits.h:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h:
