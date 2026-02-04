@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
             //One peer per line, end with blank line (or just end)
             std::string out;
             for (const auto& p : peers) out += p + "\n";
-            if (out.empty()) out = '\n';
+            if (out.empty()) out = "\n";
             send_all(client_fd, out);
         } else {
             send_all(client_fd, "ERR unknown command\n");
