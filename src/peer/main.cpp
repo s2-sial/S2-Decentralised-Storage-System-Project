@@ -11,6 +11,8 @@
 #include <sstream>
 #include <string>
 #include <sys/time.h> // timeval
+#include <filesystem>
+
 
 static bool set_timeouts(int sock, int recv_ms, int send_ms) {
     timeval tv{};
@@ -73,15 +75,20 @@ static bool send_all(int fd, const char* buf, size_t len) {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 5) {
-        std::cerr << "Usage: peer <peer_port> <tracker_ip> <tracker_port> <storage_dir>\n";
+
+    if (argc != 6) {
+        std::cerr << "Usage: peer <advertise_ip> <peer_port> <tracker_ip> <tracker_port> <storage_dir>\n";
         return 1;
     } 
 
-    int peer_port = std::stoi(argv[1]);
-    std::string tracker_ip = argv[2];
-    int tracker_port = std::stoi(argv[3]);
-    std::string storage_dir = argv[4];
+    std::string advertise_ip = argv[1];
+    int peer_port = std::stoi(argv[2]);
+    std::string tracker_ip = argv[3];
+    int tracker_port = std::stoi(argv[4]);
+    std::string storage_dir = argv[5];
+
+    //prints the storage directory for testing purposes
+    std::cout << "Storage dir: " << std::filesystem::absolute(storage_dir) << "\n";
 
     ensure_dir(storage_dir);
 
@@ -101,7 +108,7 @@ int main(int argc, char** argv) {
         if (::connect(sock, (sockaddr*)&tracker, sizeof(tracker)) < 0)
         die("connect tracker");
 
-        std::string msg = "REGISTER 127.0.0.1 " + std::to_string(peer_port) + "\n";
+        std::string msg = "REGISTER " + advertise_ip + " " + std::to_string(peer_port) + "\n";
         send_all(sock, msg.c_str(), msg.size());
         close(sock);
     }
@@ -146,21 +153,38 @@ int main(int argc, char** argv) {
         if (cmd == "PUT_CHUNK") {
             iss >> hash >> size;
 
-            std::string path = storage_dir + "/" + hash;
-            std::ofstream out(path, std::ios::binary);
+            std::string path_tmp = storage_dir + "/" + hash + ".tmp";
+            std::string path_fin = storage_dir + "/" + hash;
+
+            std::ofstream out(path_tmp, std::ios::binary);
+            if (!out) {
+                send_all(client, "ERR\n", 4);
+                close(client);
+                continue;
+            }
 
             char buf[4096];
             size_t remaining = size;
 
             while (remaining > 0) {
-                ssize_t n = recv(client, buf, std::min(sizeof(buf), remaining), 0);
+                ssize_t n = ::recv(client, buf, std::min(sizeof(buf), remaining), 0);
                 if (n <= 0) break;
                 out.write(buf, n);
-                remaining -= n;
+                remaining -= static_cast<size_t>(n);
             }
-
+            
             out.close();
-            send_all(client, "OK\n", 3);
+
+            if (remaining == 0) {
+                //atomic replace
+                ::rename(path_tmp.c_str(), path_fin.c_str());
+                send_all(client, "OK\n", 3);
+            } else {
+                ::unlink(path_tmp.c_str());
+                send_all(client, "ERR\n", 4);
+                std::cerr << "PUT_CHUNK incomplete for " << hash
+                << " remaining=" << remaining << "\n";
+            }
         }
         else if (cmd == "GET_CHUNK") {
             iss >> hash;
