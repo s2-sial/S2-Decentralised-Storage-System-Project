@@ -14,11 +14,43 @@
 
 #include <openssl/sha.h>
 #include <iomanip>
+#include <sys/time.h> // timeval
+
+static bool set_timeouts(int sock, int recv_ms, int send_ms) {
+    timeval tv{};
+
+    tv.tv_sec = recv_ms / 1000;
+    tv.tv_usec = (recv_ms % 1000) * 1000;
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
+    return false;
+
+    tv.tv_sec = send_ms / 1000;
+    tv.tv_usec = (send_ms % 1000) * 1000;
+    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) < 0)
+    return false;
+
+    return true;
+}
+
+static bool is_timeout_errno() {
+    return errno == EAGAIN || errno == EWOULDBLOCK;
+}
 
 static void die(const std::string& msg) {
     std::cerr << msg << ": " << std::strerror(errno) << "\n";
     std::exit(1);
 }
+
+struct ClientConfig {
+    std::string tracker_ip = "127.0.0.1";
+    int tracker_port = 9000;
+    int replica_count = 2;
+    size_t chunk_size = 1024 * 1024; // 1mb
+};
+
+
+
+
 
 static void send_all(int fd, const char* buf, size_t len) {
     while (len > 0) {
@@ -35,7 +67,10 @@ static std::string recv_all_text(int fd) {
     while (true) {
         ssize_t n = ::recv(fd, buf, sizeof(buf), 0);
         if (n == 0) break;
-        if (n < 0) die("recv");
+        if (n < 0) {
+            if(is_timeout_errno()) break; // stop waiting forever
+            die("recv");
+        }
         out.append(buf, buf + n);
     }
     return out;
@@ -59,6 +94,8 @@ static int connect_tcp_fatal(const std::string& ip, int port) {
 static int connect_tcp_try(const std::string& ip, int port) {
     int sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) return -1;
+
+    set_timeouts(sock, 8000, 8000);
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
@@ -100,9 +137,11 @@ static void put_chunk_to_peer(const std::string& peer_ip, int peer_port,
                               const std::string& chunk_id,
                               const std::vector<char>& data) {
     int sock = connect_tcp_try(peer_ip, peer_port);
+    if (sock < 0) {
+        std::cerr << "Connect failed to " << peer_ip << ":" << peer_port << "\n";
+        return;
+    }
 
-    std::string header = "PUT_CHUNK " + chunk_id + " " + std::to_string(data.size()) + "\n";
-    send_all(sock, header.c_str(), header.size());
     if (!data.empty()) send_all(sock, data.data(), data.size());
 
     // Read small response (OK/ERR). Peer sends "OK\n" in your code.
@@ -178,35 +217,77 @@ static bool get_chunk_from_peer(const std::string& peer_ip, int peer_port,
     return received == size;
 }
 
-
-int main(int argc, char** argv) {
-    // Usage:
-    // client put <tracker_ip> <tracker_port> <file_path> [chunk_size] [replicas]
-    if (argc < 5) {
-        std::cerr << "Usage:\n"
-                  << "  client put <tracker_ip> <tracker_port> <file_path> [chunk_size_bytes] [replicas]\n";
-        return 1;
-    }
-
-    std::string mode = argv[1];
-    if (mode == "put") {
-    // existing put code (unchanged)
+static void usage(const char* prog) {
+    std::cerr
+    << "Usage:\n"
+    << " " << prog << "put <tracker_ip> <tracker_port> <file_path> [chunk_size_bytes] [replicas]\n"
+    << " " << prog << "get <tracker_ip <tracker_port> <manifest> <output_file>\n";
 }
-else if (mode == "get") {
-    // Usage:
-    // client get <tracker_ip> <tracker_port> <manifest> <output_file>
 
-    if (argc < 6) {
-        std::cerr << "Usage: client get <tracker_ip> <tracker_port> <manifest> <output_file>\n";
+
+int cmd_put(const ClientConfig& cfg, const std::string& file_path) {
+    auto peers = get_peers(cfg.tracker_ip, cfg.tracker_port);
+    if (peers.empty()) {
+        std::cerr << "No peers available from tracker.\n";
         return 1;
     }
 
-    std::string tracker_ip = argv[2];
-    int tracker_port = std::stoi(argv[3]);
-    std::string manifest_path = argv[4];
-    std::string out_path = argv[5];
+    int replicas = cfg.replica_count;
+    if (replicas > (int)peers.size()) replicas = (int)peers.size();
 
-    auto peers = get_peers(tracker_ip, tracker_port);
+    std::ifstream in(file_path, std::ios::binary);
+    if (!in) {
+        std::cerr << "Cannot open file: " << file_path << "\n";
+        return 1;
+    }
+
+    std::vector<std::string> chunk_ids;
+    uint64_t chunk_index = 0;
+
+    while (true) {
+        std::vector<char> buf(cfg.chunk_size);
+        in.read(buf.data(), buf.size());
+        std::streamsize got = in.gcount();
+        if (got <= 0) break;
+        buf.resize(static_cast<size_t>(got));
+
+        std::string cid = sha256(buf);
+
+        chunk_ids.push_back(cid);
+
+        // Deterministic peer selection (simple ring): start = chunk_index % peers.size()
+        size_t start = static_cast<size_t>(chunk_index % peers.size());
+
+        std::cout << "Uploading " << cid << " (" << buf.size() << " bytes) to " << replicas << " peers...\n";
+        for (int r = 0; r < replicas; r++) {
+            size_t idx = (start + (size_t)r) % peers.size();
+            put_chunk_to_peer(peers[idx].first, peers[idx].second, cid, buf);
+        }
+
+        chunk_index++;
+    }
+
+    // Write manifest next to the file
+    std::filesystem::path p(file_path);
+    std::string manifest_path = p.filename().string() + ".manifest.txt";
+
+    std::ofstream man(manifest_path);
+    if (!man) {
+        std::cerr << "Cannot write manifest:" << manifest_path << "\n";
+        return 1;
+    }
+
+    man << "filename " << p.filename().string() << "\n";
+    man << "chunk_size " << cfg.chunk_size << "\n";
+    man << "chunks " << chunk_ids.size() << "\n";
+    for (const auto& cid : chunk_ids) man << cid << "\n";
+
+    std::cout << "DONE. Manifest written to " << manifest_path << "\n";
+    return 0;
+}
+
+int cmd_get(const ClientConfig& cfg, const std::string& manifest_path, const std::string& out_path) {
+    auto peers = get_peers(cfg.tracker_ip, cfg.tracker_port);
     if (peers.empty()) {
         std::cerr << "No peers available\n";
         return 1;
@@ -229,7 +310,6 @@ else if (mode == "get") {
     for (size_t i = 0; i < chunk_count; i++)
         man >> chunks[i];
 
-    man.close();
 
     std::ofstream out(out_path, std::ios::binary);
     if (!out) {
@@ -263,75 +343,56 @@ else if (mode == "get") {
         }
     }
 
-    out.close();
     std::cout << "Download complete: " << out_path << "\n";
     return 0;
 }
+
+int main(int argc, char** argv) {
+    if (argc < 2) { usage(argv[0]); return 1; }
+    std::string mode = argv[1];
+    try {
+        if (mode == "put") {
+            if (argc < 5) { usage(argv[0]); return 1; }
+
+            ClientConfig cfg;
+            cfg.tracker_ip = argv[2];
+            cfg.tracker_port = std::stoi(argv[3]);
+            std::string file_path = argv[4];
+
+            if (argc>= 6) cfg.chunk_size = static_cast<size_t>(std::stoul(argv[5]));
+            if (argc >= 7) cfg.replica_count = std::stoi(argv[6]);
+            if (cfg.replica_count < 1) cfg.replica_count = 1;
+
+            return cmd_put(cfg, file_path);
+        }
+    
+        if (mode == "get") {
+            if (argc < 6) { usage(argv[0]); return 1; }
+
+            ClientConfig cfg;
+            cfg.tracker_ip = argv[2];
+            cfg.tracker_port = std::stoi(argv[3]);
+
+            std::string manifest_path = argv[4];
+            std::string out_path = argv[5];
+
+            return cmd_get(cfg, manifest_path, out_path);
+        }
+
+        //usage(argv[0]);
+        //return 1;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
+    
+    if (mode == "put") {
+    // existing put code (unchanged)
+}
+
 else {
     std::cerr << "Unknown command\n";
     return 1;
 }
 
-
-    std::string tracker_ip = argv[2];
-    int tracker_port = std::stoi(argv[3]);
-    std::string file_path = argv[4];
-
-    size_t chunk_size = (argc >= 6) ? static_cast<size_t>(std::stoul(argv[5])) : (1024 * 1024);
-    int replicas = (argc >= 7) ? std::stoi(argv[6]) : 2;
-
-    if (replicas < 1) replicas = 1;
-
-    auto peers = get_peers(tracker_ip, tracker_port);
-    if (peers.empty()) {
-        std::cerr << "No peers available from tracker.\n";
-        return 1;
-    }
-    if (replicas > (int)peers.size()) replicas = (int)peers.size();
-
-    std::ifstream in(file_path, std::ios::binary);
-    if (!in) {
-        std::cerr << "Cannot open file: " << file_path << "\n";
-        return 1;
-    }
-
-    std::vector<std::string> chunk_ids;
-    uint64_t chunk_index = 0;
-
-    while (true) {
-        std::vector<char> buf(chunk_size);
-        in.read(buf.data(), buf.size());
-        std::streamsize got = in.gcount();
-        if (got <= 0) break;
-        buf.resize(static_cast<size_t>(got));
-
-        std::string cid = sha256(buf);
-
-        chunk_ids.push_back(cid);
-
-        // Deterministic peer selection (simple ring): start = chunk_index % peers.size()
-        size_t start = static_cast<size_t>(chunk_index % peers.size());
-
-        std::cout << "Uploading " << cid << " (" << buf.size() << " bytes) to " << replicas << " peers...\n";
-        for (int r = 0; r < replicas; r++) {
-            size_t idx = (start + (size_t)r) % peers.size();
-            put_chunk_to_peer(peers[idx].first, peers[idx].second, cid, buf);
-        }
-
-        chunk_index++;
-    }
-
-    // Write manifest next to the file
-    std::filesystem::path p(file_path);
-    std::string manifest_path = p.filename().string() + ".manifest.txt";
-
-    std::ofstream man(manifest_path);
-    man << "filename " << p.filename().string() << "\n";
-    man << "chunk_size " << chunk_size << "\n";
-    man << "chunks " << chunk_ids.size() << "\n";
-    for (const auto& cid : chunk_ids) man << cid << "\n";
-    man.close();
-
-    std::cout << "DONE. Manifest written to " << manifest_path << "\n";
-    return 0;
 }

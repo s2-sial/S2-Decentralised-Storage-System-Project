@@ -10,6 +10,23 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <sys/time.h> // timeval
+
+static bool set_timeouts(int sock, int recv_ms, int send_ms) {
+    timeval tv{};
+
+    tv.tv_sec = recv_ms / 1000;
+    tv.tv_usec = (recv_ms % 1000) * 1000;
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
+    return false;
+
+    tv.tv_sec = send_ms / 1000;
+    tv.tv_usec = (send_ms % 1000) * 1000;
+    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) < 0)
+    return false;
+
+    return true;
+}
 
 static void die(const std::string& msg) {
     std::cerr << msg << ": " << std::strerror(errno) << "\n";
@@ -20,26 +37,39 @@ static void ensure_dir(const std::string& path) {
     mkdir(path.c_str(), 0755); //ok if already exists
 }
 
+static bool is_timeout_errno() {
+    return errno == EAGAIN || errno == EWOULDBLOCK;
+}
+
 static bool recv_line(int fd, std::string& out) {
     out.clear();
     char ch;
     while (true) {
         ssize_t n = recv(fd, &ch, 1, 0);
         if (n <= 0) return false;
+        if (n < 0) {
+            if (is_timeout_errno()) return false; //timed out
+            return false;
+        }
+
         if (ch == '\n') break;
         if (ch != '\r') out.push_back(ch);
+
+        //protection for long lines
+        if (out.size() > 8192) return false;
     }
 
     return true;
 }
 
-static void send_all(int fd, const char* buf, size_t len) {
+static bool send_all(int fd, const char* buf, size_t len) {
     while (len > 0) {
-        ssize_t n = send(fd, buf, len, 0);
-        if (n <= 0) return;
+        ssize_t n = ::send(fd, buf, len, 0);
+        if (n <= 0) return false;
         buf += n;
-        len -= n;
+        len -= static_cast<size_t>(n);
     }
+    return true;
 }
 
 int main(int argc, char** argv) {
@@ -58,6 +88,9 @@ int main(int argc, char** argv) {
     // Register with tracker
     {
         int sock = ::socket(AF_INET, SOCK_STREAM, 0);
+
+        set_timeouts(sock, 3000, 3000);
+
         if (sock < 0) die("socket");
 
         sockaddr_in tracker{};
@@ -93,6 +126,10 @@ int main(int argc, char** argv) {
     while (true) {
         int client = accept(listen_fd, nullptr, nullptr);
         if (client < 0) continue;
+
+        if (!set_timeouts(client, /*recv_ms*/ 10000, /*send_ms*/ 10000)) {
+            //not fatal; but log
+        }
 
         std::string line;
         if (!recv_line(client, line)) {
