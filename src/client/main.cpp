@@ -94,6 +94,7 @@ static int connect_tcp_fatal(const std::string& ip, int port) {
 static int connect_tcp_try(const std::string& ip, int port) {
     int sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) return -1;
+    
 
     set_timeouts(sock, 8000, 8000);
 
@@ -141,6 +142,9 @@ static void put_chunk_to_peer(const std::string& peer_ip, int peer_port,
         std::cerr << "Connect failed to " << peer_ip << ":" << peer_port << "\n";
         return;
     }
+
+    std::string header = "PUT_CHUNK " + chunk_id + " " + std::to_string(data.size()) + "\n";
+    send_all(sock, header.c_str(), header.size());
 
     if (!data.empty()) send_all(sock, data.data(), data.size());
 
@@ -227,6 +231,11 @@ static void usage(const char* prog) {
 
 int cmd_put(const ClientConfig& cfg, const std::string& file_path) {
     auto peers = get_peers(cfg.tracker_ip, cfg.tracker_port);
+    //printing the peers for testing
+    std::cout <<"Peers from tracker:\n";
+    for (auto& p : peers) 
+    std::cout << " " << p.first << ":" << p.second << "\n";
+
     if (peers.empty()) {
         std::cerr << "No peers available from tracker.\n";
         return 1;
@@ -386,13 +395,4 @@ int main(int argc, char** argv) {
         return 1;
     }
     
-    if (mode == "put") {
-    // existing put code (unchanged)
-}
-
-else {
-    std::cerr << "Unknown command\n";
-    return 1;
-}
-
 }
