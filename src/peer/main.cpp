@@ -12,8 +12,11 @@
 #include <string>
 #include <sys/time.h> // timeval
 #include <filesystem>
+#include <thread>
+#include <chrono>
+#include <atomic>
 
-
+//helpers 
 static bool set_timeouts(int sock, int recv_ms, int send_ms) {
     timeval tv{};
 
@@ -29,6 +32,7 @@ static bool set_timeouts(int sock, int recv_ms, int send_ms) {
 
     return true;
 }
+
 
 static void die(const std::string& msg) {
     std::cerr << msg << ": " << std::strerror(errno) << "\n";
@@ -74,6 +78,29 @@ static bool send_all(int fd, const char* buf, size_t len) {
     return true;
 }
 
+static void send_to_tracker(const std::string& tracker_ip, int tracker_port, const std::string& line) {
+    int sock = ::socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) return;
+
+    set_timeouts(sock, 3000, 3000);
+
+    sockaddr_in tracker{};
+    tracker.sin_family = AF_INET;
+    tracker.sin_port = htons(tracker_port);
+    inet_pton(AF_INET, tracker_ip.c_str(), &tracker.sin_addr);
+
+    if (::connect(sock, (sockaddr*)&tracker, sizeof(tracker)) < 0) {
+        close(sock);
+        return;
+    }
+
+    send_all(sock, line.c_str(), line.size());
+    close(sock);
+    return;
+}
+
+//end of helpers
+//main program
 int main(int argc, char** argv) {
 
     if (argc != 6) {
@@ -114,6 +141,18 @@ int main(int argc, char** argv) {
     }
 
     std::cout << "Peer listening on port " << peer_port << "\n";
+
+    //heartbeat thread
+    std::atomic<bool> running{true};
+
+    std::thread hb([&]{
+        while (running.load()) {
+            std::string msg = "HEARTBEAT " + advertise_ip + " " + std::to_string(peer_port) + "\n";
+            send_to_tracker(tracker_ip, tracker_port, msg);
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+        }
+    });
+    hb.detach(); //simplest (or join on shutdown)
 
     // Storage server
     int listen_fd = socket(AF_INET, SOCK_STREAM, 0);
