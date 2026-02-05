@@ -48,10 +48,6 @@ struct ClientConfig {
     size_t chunk_size = 1024 * 1024; // 1mb
 };
 
-
-
-
-
 static void send_all(int fd, const char* buf, size_t len) {
     while (len > 0) {
         ssize_t n = ::send(fd, buf, len, 0);

@@ -10,6 +10,8 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
+#include <unordered_map>
+#include <chrono>
 
 static void die(const std::string& msg) {
     std::cerr << msg << ":" << std::strerror(errno) << "\n";
@@ -75,8 +77,13 @@ int main(int argc, char** argv) {
 
     std::cout << "Tracker listening on port " << port << "\n";
 
-    // store peers as "ip:port" strings (simple MVP)
-    std::unordered_set<std::string> peers;
+    //peers now replaced by map storing timestamps
+    struct PeerInfo {
+        std::chrono::steady_clock::time_point last_seen;
+    };
+
+    static std::unordered_map<std::string, PeerInfo> peers;
+    //key format: "ip:port"
 
     while (true) {
         //4) accept a connection
@@ -109,24 +116,52 @@ int main(int argc, char** argv) {
             std::string ip;
             int p = 0;
             iss >> ip >> p;
+
             if (ip.empty() || p <= 0 || p > 65535) {
                 send_all(client_fd, "ERR invalid REGISTER. Use: REGISTER <ip> <port>\n");
             } else {
                 std::string entry = ip + ":" + std::to_string(p);
-                peers.insert(entry);
+                peers[entry].last_seen = std::chrono::steady_clock::now();
+
                 std::cout << "Registered peer " << entry << "\n";
                 send_all(client_fd, "OK\n");
             }
-        } else if (cmd == "GET_PEERS") {
-            //One peer per line, end with blank line (or just end)
+        }
+        else if (cmd == "HEARTBEAT") {
+            std::string ip;
+            int p = 0;
+            iss >> ip >> p;
+
+            if (ip.empty() || p <= 0 || p > 65535) {
+                send_all(client_fd, "ERR invalid HEARTBEAT. Use: HEARTBEAT <ip> <port>\n");
+            } else {
+                std::string entry = ip + ":" + std::to_string(p);
+                peers[entry].last_seen = std::chrono::steady_clock::now();
+                send_all(client_fd, "OK\n");
+            }
+        }
+
+        else if (cmd == "GET_PEERS") {
+            auto now = std::chrono::steady_clock::now();
+            const auto TTL = std::chrono::seconds(30);
+
+            //prune stale peers
+            for (auto it = peers.begin(); it != peers.end(); ) {
+                if (now - it->second.last_seen > TTL) it = peers.erase(it);
+                else ++it;
+            }
+
+            //output alive peers
             std::string out;
-            for (const auto& p : peers) out += p + "\n";
+            for (const auto& kv : peers) {
+                out += kv.first + "\n"; //kv.first is "ip:port"
+            }
             if (out.empty()) out = "\n";
             send_all(client_fd, out);
         } else {
             send_all(client_fd, "ERR unknown command\n");
         }
-
+        
         ::close(client_fd);
     }
 
