@@ -16,6 +16,7 @@
 #include <iomanip>
 #include <sys/time.h> // timeval
 
+
 static bool set_timeouts(int sock, int recv_ms, int send_ms) {
     timeval tv{};
 
@@ -87,6 +88,38 @@ static int connect_tcp_fatal(const std::string& ip, int port) {
     return sock;
 }
 
+static std::string tracker_request(const ClientConfig& cfg, const std::string& line) {
+    int sock = connect_tcp_fatal(cfg.tracker_ip, cfg.tracker_port);
+    send_all(sock, line.c_str(), line.size());
+    std::string resp = recv_all_text(sock);
+    close(sock);
+    return resp;
+}
+
+static void announce_chunk(const ClientConfig& cfg,
+const std::string& chunk_id,
+const std::string& peer_ip,
+int peer_port) {
+    std::string msg = "ANNOUNCE " + chunk_id + " " + peer_ip + " " + std::to_string(peer_port) + "\n";
+    tracker_request(cfg, msg); //OK/ERR not critical for MVP
+}
+
+static std::vector<std::pair<std::string,int>> where_chunk(const ClientConfig& cfg,
+const std::string& chunk_id) {
+    std::string resp = tracker_request(cfg, "WHERE " + chunk_id + "\n");
+
+    std::vector<std::pair<std::string,int>> out;
+    std::istringstream iss(resp);
+    std::string line;
+    while (std::getline(iss, line)) {
+        if (line.empty()) continue;
+        auto pos = line.find(':');
+        if (pos == std::string::npos) continue;
+        out.push_back({ line.substr(0, pos), std::stoi(line.substr(pos + 1)) });
+    }
+    return out;
+}
+
 static int connect_tcp_try(const std::string& ip, int port) {
     int sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) return -1;
@@ -130,14 +163,11 @@ static std::vector<std::pair<std::string,int>> get_peers(const std::string& trac
 }
 
 
-static void put_chunk_to_peer(const std::string& peer_ip, int peer_port,
+static bool put_chunk_to_peer(const std::string& peer_ip, int peer_port,
                               const std::string& chunk_id,
                               const std::vector<char>& data) {
     int sock = connect_tcp_try(peer_ip, peer_port);
-    if (sock < 0) {
-        std::cerr << "Connect failed to " << peer_ip << ":" << peer_port << "\n";
-        return;
-    }
+    if (sock < 0) return false;
 
     std::string header = "PUT_CHUNK " + chunk_id + " " + std::to_string(data.size()) + "\n";
     send_all(sock, header.c_str(), header.size());
@@ -149,10 +179,7 @@ static void put_chunk_to_peer(const std::string& peer_ip, int peer_port,
     ssize_t n = ::recv(sock, buf, sizeof(buf)-1, 0);
     ::close(sock);
 
-    if (n <= 0 || std::string(buf).rfind("OK", 0) != 0) {
-        std::cerr << "Upload failed to " << peer_ip << ":" << peer_port << " for " << chunk_id << "\n";
-        // MVP: just warn. Later: retry different peer.
-    }
+    return (n > 0 && std::string(buf).rfind("OK", 0) == 0);
 }
 
 static std::string sha256(const std::vector<char>& data) {
@@ -254,22 +281,22 @@ int cmd_put(const ClientConfig& cfg, const std::string& file_path) {
         in.read(buf.data(), buf.size());
         std::streamsize got = in.gcount();
         if (got <= 0) break;
-        buf.resize(static_cast<size_t>(got));
+        buf.resize((size_t)got);
 
         std::string cid = sha256(buf);
-
         chunk_ids.push_back(cid);
 
-        // Deterministic peer selection (simple ring): start = chunk_index % peers.size()
-        size_t start = static_cast<size_t>(chunk_index % peers.size());
-
-        std::cout << "Uploading " << cid << " (" << buf.size() << " bytes) to " << replicas << " peers...\n";
+        size_t start = (size_t)(chunk_index % peers.size());
         for (int r = 0; r < replicas; r++) {
             size_t idx = (start + (size_t)r) % peers.size();
-            put_chunk_to_peer(peers[idx].first, peers[idx].second, cid, buf);
+            const auto& pip = peers[idx].first;
+            int pport = peers[idx].second;
+            if (put_chunk_to_peer(pip, pport, cid, buf)) {
+                announce_chunk(cfg, cid, pip, pport);
+            } else {
+                std::cerr << "Upload failed to " << pip << ":" << pport << " for " << cid << "\n";
+            }
         }
-
-        chunk_index++;
     }
 
     // Write manifest next to the file
@@ -290,6 +317,7 @@ int cmd_put(const ClientConfig& cfg, const std::string& file_path) {
     std::cout << "DONE. Manifest written to " << manifest_path << "\n";
     return 0;
 }
+
 
 int cmd_get(const ClientConfig& cfg, const std::string& manifest_path, const std::string& out_path) {
     auto peers = get_peers(cfg.tracker_ip, cfg.tracker_port);
@@ -325,17 +353,15 @@ int cmd_get(const ClientConfig& cfg, const std::string& manifest_path, const std
     for (const auto& cid : chunks) {
         bool found = false;
 
-        for (const auto& peer : peers) {
+        auto candidates = where_chunk(cfg, cid);
+        if (candidates.empty()) candidates = peers;
+
+        for (const auto& peer : candidates) {
             std::vector<char> data;
             if (!get_chunk_from_peer(peer.first, peer.second, cid, data))
                 continue;
 
-            // Verify integrity
-            std::string computed = sha256(data);
-            if (computed != cid) {
-                std::cerr << "Hash mismatch for chunk " << cid << "\n";
-                continue;
-            }
+            if (sha256(data) != cid) continue;
 
             out.write(data.data(), data.size());
             found = true;
@@ -390,5 +416,6 @@ int main(int argc, char** argv) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
-    
+
 }
+
