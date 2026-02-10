@@ -45,6 +45,22 @@ static void send_all(int fd, const std::string& s) {
     }
 }
 
+//peers now replaced by map storing timestamps
+struct PeerInfo {
+    std::chrono::steady_clock::time_point last_seen;
+};
+
+static void prune_stale(
+    std::unordered_map<std::string, PeerInfo>& peers,
+    std::chrono::seconds ttl
+) {
+    auto now = std::chrono::steady_clock::now();
+    for (auto it = peers.begin(); it != peers.end(); ) {
+        if (now - it->second.last_seen > ttl) it = peers.erase(it);
+        else ++it;
+    }
+}
+
 int main(int argc, char** argv) {
     if (argc != 2) {
         std::cerr << "Usage: tracker <port>\n";
@@ -77,10 +93,9 @@ int main(int argc, char** argv) {
 
     std::cout << "Tracker listening on port " << port << "\n";
 
-    //peers now replaced by map storing timestamps
-    struct PeerInfo {
-        std::chrono::steady_clock::time_point last_seen;
-    };
+
+    static std::unordered_map<std::string, std::unordered_set<std::string>> chunk_index;
+    // chunk_id -> set of "ip:port"
 
     static std::unordered_map<std::string, PeerInfo> peers;
     //key format: "ip:port"
@@ -106,6 +121,8 @@ int main(int argc, char** argv) {
             ::close(client_fd);
             continue;
         }
+
+        std::cout << "[TRACKER] line='" << line << "'\n";
 
         //6) parse and respond
         std::istringstream iss(line);
@@ -138,6 +155,61 @@ int main(int argc, char** argv) {
                 std::string entry = ip + ":" + std::to_string(p);
                 peers[entry].last_seen = std::chrono::steady_clock::now();
                 send_all(client_fd, "OK\n");
+            }
+        }
+
+        else if (cmd == "ANNOUNCE") {
+            std::string chunk_id, ip;
+            int p = 0;
+            iss >> chunk_id >> ip >> p;
+            auto now = std::chrono::steady_clock::now();
+
+            std::string entry = ip + ":" + std::to_string(p);
+            std::cout << "[TRACKER] ANNOUNCE chunk=" << chunk_id << " peer=" << entry << "\n";
+
+            if (chunk_id.empty() || ip.empty() || p <= 0 || p > 65535) {
+                send_all(client_fd, "ERR invalid ANNOUNCE. Use: ANNOUNCE <chunk_id> <ip> <port>\n");
+            } else {
+                const auto TTL = std::chrono::seconds(30);
+                auto pit = peers.find(entry);
+                if (pit == peers.end() || (now - pit->second.last_seen > TTL)) {
+                    std::cerr << "[TRACKER] ANNOUNCE rejected(peer not alive)\n";
+                    chunk_index[chunk_id].insert(entry); //temporary accept announces
+                    send_all(client_fd, "OK\n");
+                } else {
+                    chunk_index[chunk_id].insert(entry);
+                    std::cout << "[TRACKER] ANNOUNCE accepted\n";
+                    send_all(client_fd, "OK\n");
+                }
+                
+            }
+        }
+        else if(cmd == "WHERE") {
+            std::string chunk_id;
+            iss >> chunk_id;
+            std::cout << "[TRACKER] WHERE chunk=" << chunk_id << "\n";
+
+            if (chunk_id.empty()) {
+                send_all(client_fd, "ERR invalid WHERE. Use: WHERE <chunk_id>\n");
+            } else {
+                const auto TTL = std::chrono::seconds(30);
+                auto now = std::chrono::steady_clock::now();
+
+                std::string out;
+
+                auto it = chunk_index.find(chunk_id);
+                if (it != chunk_index.end()) {
+                    //return only alive peers
+                    for (const auto& entry : it->second) {
+                        auto pit = peers.find(entry);
+                        if (pit != peers.end() && (now - pit->second.last_seen <= TTL)) {
+                            out += entry + "\n";
+                        }
+                    }
+                }
+
+                if (out.empty()) out = "\n";
+                send_all(client_fd, out);
             }
         }
 
