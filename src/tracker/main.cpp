@@ -45,6 +45,7 @@ static void send_all(int fd, const std::string& s) {
     }
 }
 
+
 //peers now replaced by map storing timestamps
 struct PeerInfo {
     std::chrono::steady_clock::time_point last_seen;
@@ -59,6 +60,40 @@ static void prune_stale(
         if (now - it->second.last_seen > ttl) it = peers.erase(it);
         else ++it;
     }
+}
+
+static void prune_stale_and_cleanup(
+    std::unordered_map<std::string, PeerInfo>& peers,
+    std::unordered_map<std::string, std::unordered_set<std::string>>& chunk_index,
+    std::chrono::seconds ttl
+) {
+    auto now = std::chrono::steady_clock::now();
+
+    //collect dead peers
+    std::vector<std::string> dead;
+    for (auto it = peers.begin(); it != peers.end(); ) {
+        if (now - it->second.last_seen > ttl) {
+            dead.push_back(it->first);          // "ip:port"
+            it = peers.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    if (dead.empty()) return;
+
+    // remove dead peers from chunk_index
+    for (auto& kv : chunk_index) {
+        auto& locs = kv.second;
+        for (const auto& d : dead) locs.erase(d);
+    }
+
+    // optionally remove chunks with no locations
+    for (auto it = chunk_index.begin(); it != chunk_index.end(); ) {
+        if (it->second.empty()) it = chunk_index.erase(it);
+        else ++it;
+    }
+
 }
 
 int main(int argc, char** argv) {
@@ -212,10 +247,42 @@ int main(int argc, char** argv) {
                 send_all(client_fd, out);
             }
         }
+        else if (cmd == "NEED_REPAIR") {
+        int desired = 0;
+        int limit = 0;
+        iss >> desired >> limit;
+        if (desired <= 0) desired = 2;
+        if (limit <= 0) limit = 50;
+
+        const auto TTL = std::chrono::seconds(30);
+        prune_stale_and_cleanup(peers, chunk_index, TTL);
+
+        std::string out;
+        int sent = 0;
+
+        for (const auto& kv : chunk_index) {
+            const std::string& chunk_id = kv.first;
+            int alive_count = 0;
+
+            // count alive locations (should already be alive-only after cleanup, but keep safe)
+            for (const auto& entry : kv.second) {
+                if (peers.find(entry) != peers.end()) alive_count++;
+            }
+
+            if (alive_count > 0 && alive_count < desired) {
+                out += chunk_id + " " + std::to_string(alive_count) + "\n";
+                if (++sent >= limit) break;
+        }
+    }
+
+    if (out.empty()) out = "\n";
+    send_all(client_fd, out);
+}
 
         else if (cmd == "GET_PEERS") {
             auto now = std::chrono::steady_clock::now();
             const auto TTL = std::chrono::seconds(30);
+            prune_stale_and_cleanup(peers, chunk_index, TTL);
 
             //prune stale peers
             for (auto it = peers.begin(); it != peers.end(); ) {
