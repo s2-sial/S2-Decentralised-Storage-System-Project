@@ -15,6 +15,7 @@
 #include <openssl/sha.h>
 #include <iomanip>
 #include <sys/time.h> // timeval
+#include <unordered_set>
 
 
 static bool set_timeouts(int sock, int recv_ms, int send_ms) {
@@ -87,6 +88,7 @@ static int connect_tcp_fatal(const std::string& ip, int port) {
 
     return sock;
 }
+
 
 static std::string tracker_request(const ClientConfig& cfg, const std::string& line) {
     int sock = connect_tcp_fatal(cfg.tracker_ip, cfg.tracker_port);
@@ -251,6 +253,73 @@ static void usage(const char* prog) {
     << " " << prog << "get <tracker_ip <tracker_port> <manifest> <output_file>\n";
 }
 
+static std::vector<std::string> need_repair(const ClientConfig& cfg, int desired, int limit) {
+    std::string resp = tracker_request(cfg,
+        "NEED_REPAIR " + std::to_string(desired) + " " + std::to_string(limit) + "\n");
+
+    std::vector<std::string> chunks;
+    std::istringstream iss(resp);
+    std::string cid;
+    int alive_count;
+    while (iss >> cid >> alive_count) {
+        chunks.push_back(cid);
+    }
+    return chunks;
+}
+
+static bool repair_one_chunk(const ClientConfig& cfg, const std::string& chunk_id, int desired) {
+    // 1) find current locations
+    auto sources = where_chunk(cfg, chunk_id);     // alive sources
+    if (sources.empty()) return false;
+
+    // 2) get full peer list to choose new destinations
+    auto all_peers = get_peers(cfg.tracker_ip, cfg.tracker_port);
+
+    // build a set of existing locations as "ip:port"
+    std::unordered_set<std::string> existing;
+    for (auto& s : sources) existing.insert(s.first + ":" + std::to_string(s.second));
+
+    int needed = desired - (int)sources.size();
+    if (needed <= 0) return true;
+
+    // 3) download chunk from first source
+    std::vector<char> data;
+    if (!get_chunk_from_peer(sources[0].first, sources[0].second, chunk_id, data)) return false;
+    if (sha256(data) != chunk_id) return false;
+
+    // 4) upload to new peers not already holding it
+    int repaired = 0;
+    for (auto& p : all_peers) {
+        std::string entry = p.first + ":" + std::to_string(p.second);
+        if (existing.count(entry)) continue;
+
+        if (put_chunk_to_peer(p.first, p.second, chunk_id, data)) {
+            announce_chunk(cfg, chunk_id, p.first, p.second);
+            existing.insert(entry);
+            if (++repaired >= needed) break;
+        }
+    }
+
+    return repaired > 0;
+}
+
+int cmd_repair(const ClientConfig& cfg, int desired, int batch) {
+    auto chunks = need_repair(cfg, desired, batch);
+    if (chunks.empty()) {
+        std::cout << "No under-replicated chunks.\n";
+        return 0;
+    }
+
+    int fixed = 0;
+    for (const auto& cid : chunks) {
+        std::cout << "Repairing " << cid << "...\n";
+        if (repair_one_chunk(cfg, cid, desired)) fixed++;
+    }
+
+    std::cout << "Repair done. Fixed " << fixed << " chunk(s).\n";
+    return 0;
+}
+
 
 int cmd_put(const ClientConfig& cfg, const std::string& file_path) {
     auto peers = get_peers(cfg.tracker_ip, cfg.tracker_port);
@@ -409,6 +478,16 @@ int main(int argc, char** argv) {
 
             return cmd_get(cfg, manifest_path, out_path);
         }
+
+        if (mode == "repair") {
+            ClientConfig cfg;
+            cfg.tracker_ip = argv[2];
+            cfg.tracker_port = std::stoi(argv[3]);
+            int desired = (argc >= 5) ? std::stoi(argv[4]) : 2;
+            int batch   = (argc >= 6) ? std::stoi(argv[5]) : 50;
+            return cmd_repair(cfg, desired, batch);
+        }
+
 
         //usage(argv[0]);
         //return 1;
