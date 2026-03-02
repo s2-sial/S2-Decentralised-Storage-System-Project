@@ -92,6 +92,7 @@ peer_EXTERNAL_OBJECTS =
 
 peer: CMakeFiles/peer.dir/src/peer/main.cpp.o
 peer: CMakeFiles/peer.dir/build.make
+peer: libdss_core.a
 peer: /usr/lib/x86_64-linux-gnu/libcrypto.so
 peer: CMakeFiles/peer.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable peer"

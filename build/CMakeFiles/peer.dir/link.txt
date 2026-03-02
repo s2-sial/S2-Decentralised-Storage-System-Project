@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/peer.dir/src/peer/main.cpp.o -o peer  /usr/lib/x86_64-linux-gnu/libcrypto.so 
+/usr/bin/c++ CMakeFiles/peer.dir/src/peer/main.cpp.o -o peer  libdss_core.a /usr/lib/x86_64-linux-gnu/libcrypto.so 

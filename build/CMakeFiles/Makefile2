@@ -63,9 +63,11 @@ CMAKE_BINARY_DIR = "/home/saad/~projects/decent-store/build"
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/dss_core.dir/all
 all: CMakeFiles/tracker.dir/all
 all: CMakeFiles/peer.dir/all
 all: CMakeFiles/client.dir/all
+all: CMakeFiles/client_gui.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,24 +75,54 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/dss_core.dir/clean
 clean: CMakeFiles/tracker.dir/clean
 clean: CMakeFiles/peer.dir/clean
 clean: CMakeFiles/client.dir/clean
+clean: CMakeFiles/client_gui.dir/clean
+clean: CMakeFiles/client_gui_autogen_timestamp_deps.dir/clean
+clean: CMakeFiles/client_gui_autogen.dir/clean
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/dss_core.dir
+
+# All Build rule for target.
+CMakeFiles/dss_core.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=9,10,11,12,13,14,15,16 "Built target dss_core"
+.PHONY : CMakeFiles/dss_core.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/dss_core.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 8
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/dss_core.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
+.PHONY : CMakeFiles/dss_core.dir/rule
+
+# Convenience name for target.
+dss_core: CMakeFiles/dss_core.dir/rule
+.PHONY : dss_core
+
+# clean rule for target.
+CMakeFiles/dss_core.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/clean
+.PHONY : CMakeFiles/dss_core.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/tracker.dir
 
 # All Build rule for target.
-CMakeFiles/tracker.dir/all:
+CMakeFiles/tracker.dir/all: CMakeFiles/dss_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tracker.dir/build.make CMakeFiles/tracker.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tracker.dir/build.make CMakeFiles/tracker.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=5,6 "Built target tracker"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=19,20 "Built target tracker"
 .PHONY : CMakeFiles/tracker.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/tracker.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 2
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/tracker.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
 .PHONY : CMakeFiles/tracker.dir/rule
@@ -108,15 +140,15 @@ CMakeFiles/tracker.dir/clean:
 # Target rules for target CMakeFiles/peer.dir
 
 # All Build rule for target.
-CMakeFiles/peer.dir/all:
+CMakeFiles/peer.dir/all: CMakeFiles/dss_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/peer.dir/build.make CMakeFiles/peer.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/peer.dir/build.make CMakeFiles/peer.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=3,4 "Built target peer"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=17,18 "Built target peer"
 .PHONY : CMakeFiles/peer.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/peer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 2
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/peer.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
 .PHONY : CMakeFiles/peer.dir/rule
@@ -134,7 +166,7 @@ CMakeFiles/peer.dir/clean:
 # Target rules for target CMakeFiles/client.dir
 
 # All Build rule for target.
-CMakeFiles/client.dir/all:
+CMakeFiles/client.dir/all: CMakeFiles/dss_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=1,2 "Built target client"
@@ -142,7 +174,7 @@ CMakeFiles/client.dir/all:
 
 # Build rule for subdir invocation for target.
 CMakeFiles/client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 2
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/client.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
 .PHONY : CMakeFiles/client.dir/rule
@@ -155,6 +187,86 @@ client: CMakeFiles/client.dir/rule
 CMakeFiles/client.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/clean
 .PHONY : CMakeFiles/client.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/client_gui.dir
+
+# All Build rule for target.
+CMakeFiles/client_gui.dir/all: CMakeFiles/dss_core.dir/all
+CMakeFiles/client_gui.dir/all: CMakeFiles/client_gui_autogen_timestamp_deps.dir/all
+CMakeFiles/client_gui.dir/all: CMakeFiles/client_gui_autogen.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=3,4,5,6,7 "Built target client_gui"
+.PHONY : CMakeFiles/client_gui.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/client_gui.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 14
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/client_gui.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
+.PHONY : CMakeFiles/client_gui.dir/rule
+
+# Convenience name for target.
+client_gui: CMakeFiles/client_gui.dir/rule
+.PHONY : client_gui
+
+# clean rule for target.
+CMakeFiles/client_gui.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/clean
+.PHONY : CMakeFiles/client_gui.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/client_gui_autogen_timestamp_deps.dir
+
+# All Build rule for target.
+CMakeFiles/client_gui_autogen_timestamp_deps.dir/all: CMakeFiles/dss_core.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen_timestamp_deps.dir/build.make CMakeFiles/client_gui_autogen_timestamp_deps.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen_timestamp_deps.dir/build.make CMakeFiles/client_gui_autogen_timestamp_deps.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num= "Built target client_gui_autogen_timestamp_deps"
+.PHONY : CMakeFiles/client_gui_autogen_timestamp_deps.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/client_gui_autogen_timestamp_deps.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 8
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/client_gui_autogen_timestamp_deps.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
+.PHONY : CMakeFiles/client_gui_autogen_timestamp_deps.dir/rule
+
+# Convenience name for target.
+client_gui_autogen_timestamp_deps: CMakeFiles/client_gui_autogen_timestamp_deps.dir/rule
+.PHONY : client_gui_autogen_timestamp_deps
+
+# clean rule for target.
+CMakeFiles/client_gui_autogen_timestamp_deps.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen_timestamp_deps.dir/build.make CMakeFiles/client_gui_autogen_timestamp_deps.dir/clean
+.PHONY : CMakeFiles/client_gui_autogen_timestamp_deps.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/client_gui_autogen.dir
+
+# All Build rule for target.
+CMakeFiles/client_gui_autogen.dir/all: CMakeFiles/client_gui_autogen_timestamp_deps.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen.dir/build.make CMakeFiles/client_gui_autogen.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen.dir/build.make CMakeFiles/client_gui_autogen.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=8 "Built target client_gui_autogen"
+.PHONY : CMakeFiles/client_gui_autogen.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/client_gui_autogen.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 9
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/client_gui_autogen.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" 0
+.PHONY : CMakeFiles/client_gui_autogen.dir/rule
+
+# Convenience name for target.
+client_gui_autogen: CMakeFiles/client_gui_autogen.dir/rule
+.PHONY : client_gui_autogen
+
+# clean rule for target.
+CMakeFiles/client_gui_autogen.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen.dir/build.make CMakeFiles/client_gui_autogen.dir/clean
+.PHONY : CMakeFiles/client_gui_autogen.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

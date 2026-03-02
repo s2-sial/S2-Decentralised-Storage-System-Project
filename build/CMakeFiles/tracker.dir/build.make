@@ -92,6 +92,8 @@ tracker_EXTERNAL_OBJECTS =
 
 tracker: CMakeFiles/tracker.dir/src/tracker/main.cpp.o
 tracker: CMakeFiles/tracker.dir/build.make
+tracker: libdss_core.a
+tracker: /usr/lib/x86_64-linux-gnu/libcrypto.so
 tracker: CMakeFiles/tracker.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable tracker"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tracker.dir/link.txt --verbose=$(VERBOSE)

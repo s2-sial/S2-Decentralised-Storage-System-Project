@@ -117,6 +117,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named dss_core
+
+# Build rule for target.
+dss_core: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dss_core
+.PHONY : dss_core
+
+# fast build rule for target.
+dss_core/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/build
+.PHONY : dss_core/fast
+
+#=============================================================================
 # Target rules for targets named tracker
 
 # Build rule for target.
@@ -155,6 +168,93 @@ client/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+#=============================================================================
+# Target rules for targets named client_gui
+
+# Build rule for target.
+client_gui: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_gui
+.PHONY : client_gui
+
+# fast build rule for target.
+client_gui/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/build
+.PHONY : client_gui/fast
+
+#=============================================================================
+# Target rules for targets named client_gui_autogen_timestamp_deps
+
+# Build rule for target.
+client_gui_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_gui_autogen_timestamp_deps
+.PHONY : client_gui_autogen_timestamp_deps
+
+# fast build rule for target.
+client_gui_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen_timestamp_deps.dir/build.make CMakeFiles/client_gui_autogen_timestamp_deps.dir/build
+.PHONY : client_gui_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named client_gui_autogen
+
+# Build rule for target.
+client_gui_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_gui_autogen
+.PHONY : client_gui_autogen
+
+# fast build rule for target.
+client_gui_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen.dir/build.make CMakeFiles/client_gui_autogen.dir/build
+.PHONY : client_gui_autogen/fast
+
+client_gui_autogen/mocs_compilation.o: client_gui_autogen/mocs_compilation.cpp.o
+.PHONY : client_gui_autogen/mocs_compilation.o
+
+# target to build an object file
+client_gui_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o
+.PHONY : client_gui_autogen/mocs_compilation.cpp.o
+
+client_gui_autogen/mocs_compilation.i: client_gui_autogen/mocs_compilation.cpp.i
+.PHONY : client_gui_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+client_gui_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.i
+.PHONY : client_gui_autogen/mocs_compilation.cpp.i
+
+client_gui_autogen/mocs_compilation.s: client_gui_autogen/mocs_compilation.cpp.s
+.PHONY : client_gui_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+client_gui_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.s
+.PHONY : client_gui_autogen/mocs_compilation.cpp.s
+
+src/client/dss_worker.o: src/client/dss_worker.cpp.o
+.PHONY : src/client/dss_worker.o
+
+# target to build an object file
+src/client/dss_worker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.o
+.PHONY : src/client/dss_worker.cpp.o
+
+src/client/dss_worker.i: src/client/dss_worker.cpp.i
+.PHONY : src/client/dss_worker.i
+
+# target to preprocess a source file
+src/client/dss_worker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.i
+.PHONY : src/client/dss_worker.cpp.i
+
+src/client/dss_worker.s: src/client/dss_worker.cpp.s
+.PHONY : src/client/dss_worker.s
+
+# target to generate assembly for a file
+src/client/dss_worker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.s
+.PHONY : src/client/dss_worker.cpp.s
+
 src/client/main.o: src/client/main.cpp.o
 .PHONY : src/client/main.o
 
@@ -178,6 +278,222 @@ src/client/main.s: src/client/main.cpp.s
 src/client/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client/main.cpp.s
 .PHONY : src/client/main.cpp.s
+
+src/client/main_gui.o: src/client/main_gui.cpp.o
+.PHONY : src/client/main_gui.o
+
+# target to build an object file
+src/client/main_gui.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_gui.cpp.o
+.PHONY : src/client/main_gui.cpp.o
+
+src/client/main_gui.i: src/client/main_gui.cpp.i
+.PHONY : src/client/main_gui.i
+
+# target to preprocess a source file
+src/client/main_gui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_gui.cpp.i
+.PHONY : src/client/main_gui.cpp.i
+
+src/client/main_gui.s: src/client/main_gui.cpp.s
+.PHONY : src/client/main_gui.s
+
+# target to generate assembly for a file
+src/client/main_gui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_gui.cpp.s
+.PHONY : src/client/main_gui.cpp.s
+
+src/client/main_window.o: src/client/main_window.cpp.o
+.PHONY : src/client/main_window.o
+
+# target to build an object file
+src/client/main_window.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
+.PHONY : src/client/main_window.cpp.o
+
+src/client/main_window.i: src/client/main_window.cpp.i
+.PHONY : src/client/main_window.i
+
+# target to preprocess a source file
+src/client/main_window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_window.cpp.i
+.PHONY : src/client/main_window.cpp.i
+
+src/client/main_window.s: src/client/main_window.cpp.s
+.PHONY : src/client/main_window.s
+
+# target to generate assembly for a file
+src/client/main_window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_window.cpp.s
+.PHONY : src/client/main_window.cpp.s
+
+src/core/chunk/chunker.o: src/core/chunk/chunker.cpp.o
+.PHONY : src/core/chunk/chunker.o
+
+# target to build an object file
+src/core/chunk/chunker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.o
+.PHONY : src/core/chunk/chunker.cpp.o
+
+src/core/chunk/chunker.i: src/core/chunk/chunker.cpp.i
+.PHONY : src/core/chunk/chunker.i
+
+# target to preprocess a source file
+src/core/chunk/chunker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.i
+.PHONY : src/core/chunk/chunker.cpp.i
+
+src/core/chunk/chunker.s: src/core/chunk/chunker.cpp.s
+.PHONY : src/core/chunk/chunker.s
+
+# target to generate assembly for a file
+src/core/chunk/chunker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.s
+.PHONY : src/core/chunk/chunker.cpp.s
+
+src/core/crypto/shq256.o: src/core/crypto/shq256.cpp.o
+.PHONY : src/core/crypto/shq256.o
+
+# target to build an object file
+src/core/crypto/shq256.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.o
+.PHONY : src/core/crypto/shq256.cpp.o
+
+src/core/crypto/shq256.i: src/core/crypto/shq256.cpp.i
+.PHONY : src/core/crypto/shq256.i
+
+# target to preprocess a source file
+src/core/crypto/shq256.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.i
+.PHONY : src/core/crypto/shq256.cpp.i
+
+src/core/crypto/shq256.s: src/core/crypto/shq256.cpp.s
+.PHONY : src/core/crypto/shq256.s
+
+# target to generate assembly for a file
+src/core/crypto/shq256.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.s
+.PHONY : src/core/crypto/shq256.cpp.s
+
+src/core/dss/dss_client.o: src/core/dss/dss_client.cpp.o
+.PHONY : src/core/dss/dss_client.o
+
+# target to build an object file
+src/core/dss/dss_client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o
+.PHONY : src/core/dss/dss_client.cpp.o
+
+src/core/dss/dss_client.i: src/core/dss/dss_client.cpp.i
+.PHONY : src/core/dss/dss_client.i
+
+# target to preprocess a source file
+src/core/dss/dss_client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.i
+.PHONY : src/core/dss/dss_client.cpp.i
+
+src/core/dss/dss_client.s: src/core/dss/dss_client.cpp.s
+.PHONY : src/core/dss/dss_client.s
+
+# target to generate assembly for a file
+src/core/dss/dss_client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.s
+.PHONY : src/core/dss/dss_client.cpp.s
+
+src/core/manifest/manifest.o: src/core/manifest/manifest.cpp.o
+.PHONY : src/core/manifest/manifest.o
+
+# target to build an object file
+src/core/manifest/manifest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o
+.PHONY : src/core/manifest/manifest.cpp.o
+
+src/core/manifest/manifest.i: src/core/manifest/manifest.cpp.i
+.PHONY : src/core/manifest/manifest.i
+
+# target to preprocess a source file
+src/core/manifest/manifest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.i
+.PHONY : src/core/manifest/manifest.cpp.i
+
+src/core/manifest/manifest.s: src/core/manifest/manifest.cpp.s
+.PHONY : src/core/manifest/manifest.s
+
+# target to generate assembly for a file
+src/core/manifest/manifest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.s
+.PHONY : src/core/manifest/manifest.cpp.s
+
+src/core/net/tcp.o: src/core/net/tcp.cpp.o
+.PHONY : src/core/net/tcp.o
+
+# target to build an object file
+src/core/net/tcp.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o
+.PHONY : src/core/net/tcp.cpp.o
+
+src/core/net/tcp.i: src/core/net/tcp.cpp.i
+.PHONY : src/core/net/tcp.i
+
+# target to preprocess a source file
+src/core/net/tcp.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.i
+.PHONY : src/core/net/tcp.cpp.i
+
+src/core/net/tcp.s: src/core/net/tcp.cpp.s
+.PHONY : src/core/net/tcp.s
+
+# target to generate assembly for a file
+src/core/net/tcp.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.s
+.PHONY : src/core/net/tcp.cpp.s
+
+src/core/peer/peer_client.o: src/core/peer/peer_client.cpp.o
+.PHONY : src/core/peer/peer_client.o
+
+# target to build an object file
+src/core/peer/peer_client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o
+.PHONY : src/core/peer/peer_client.cpp.o
+
+src/core/peer/peer_client.i: src/core/peer/peer_client.cpp.i
+.PHONY : src/core/peer/peer_client.i
+
+# target to preprocess a source file
+src/core/peer/peer_client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.i
+.PHONY : src/core/peer/peer_client.cpp.i
+
+src/core/peer/peer_client.s: src/core/peer/peer_client.cpp.s
+.PHONY : src/core/peer/peer_client.s
+
+# target to generate assembly for a file
+src/core/peer/peer_client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s
+.PHONY : src/core/peer/peer_client.cpp.s
+
+src/core/tracker/tracker_client.o: src/core/tracker/tracker_client.cpp.o
+.PHONY : src/core/tracker/tracker_client.o
+
+# target to build an object file
+src/core/tracker/tracker_client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o
+.PHONY : src/core/tracker/tracker_client.cpp.o
+
+src/core/tracker/tracker_client.i: src/core/tracker/tracker_client.cpp.i
+.PHONY : src/core/tracker/tracker_client.i
+
+# target to preprocess a source file
+src/core/tracker/tracker_client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.i
+.PHONY : src/core/tracker/tracker_client.cpp.i
+
+src/core/tracker/tracker_client.s: src/core/tracker/tracker_client.cpp.s
+.PHONY : src/core/tracker/tracker_client.s
+
+# target to generate assembly for a file
+src/core/tracker/tracker_client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.s
+.PHONY : src/core/tracker/tracker_client.cpp.s
 
 src/peer/main.o: src/peer/main.cpp.o
 .PHONY : src/peer/main.o
@@ -235,12 +551,49 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... client_gui_autogen"
+	@echo "... client_gui_autogen_timestamp_deps"
 	@echo "... client"
+	@echo "... client_gui"
+	@echo "... dss_core"
 	@echo "... peer"
 	@echo "... tracker"
+	@echo "... client_gui_autogen/mocs_compilation.o"
+	@echo "... client_gui_autogen/mocs_compilation.i"
+	@echo "... client_gui_autogen/mocs_compilation.s"
+	@echo "... src/client/dss_worker.o"
+	@echo "... src/client/dss_worker.i"
+	@echo "... src/client/dss_worker.s"
 	@echo "... src/client/main.o"
 	@echo "... src/client/main.i"
 	@echo "... src/client/main.s"
+	@echo "... src/client/main_gui.o"
+	@echo "... src/client/main_gui.i"
+	@echo "... src/client/main_gui.s"
+	@echo "... src/client/main_window.o"
+	@echo "... src/client/main_window.i"
+	@echo "... src/client/main_window.s"
+	@echo "... src/core/chunk/chunker.o"
+	@echo "... src/core/chunk/chunker.i"
+	@echo "... src/core/chunk/chunker.s"
+	@echo "... src/core/crypto/shq256.o"
+	@echo "... src/core/crypto/shq256.i"
+	@echo "... src/core/crypto/shq256.s"
+	@echo "... src/core/dss/dss_client.o"
+	@echo "... src/core/dss/dss_client.i"
+	@echo "... src/core/dss/dss_client.s"
+	@echo "... src/core/manifest/manifest.o"
+	@echo "... src/core/manifest/manifest.i"
+	@echo "... src/core/manifest/manifest.s"
+	@echo "... src/core/net/tcp.o"
+	@echo "... src/core/net/tcp.i"
+	@echo "... src/core/net/tcp.s"
+	@echo "... src/core/peer/peer_client.o"
+	@echo "... src/core/peer/peer_client.i"
+	@echo "... src/core/peer/peer_client.s"
+	@echo "... src/core/tracker/tracker_client.o"
+	@echo "... src/core/tracker/tracker_client.i"
+	@echo "... src/core/tracker/tracker_client.s"
 	@echo "... src/peer/main.o"
 	@echo "... src/peer/main.i"
 	@echo "... src/peer/main.s"

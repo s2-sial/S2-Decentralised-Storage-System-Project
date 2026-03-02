@@ -12,39 +12,14 @@
 #include <vector>
 #include <unordered_map>
 #include <chrono>
+#include "core/net/tcp.h"
 
+using dss::net::recv_line;
+using dss::net::send_all_nothrow;
 static void die(const std::string& msg) {
     std::cerr << msg << ":" << std::strerror(errno) << "\n";
     std::exit(1);
 }
-
-//read until "\n" (very simple line based protocol)
-static bool recv_line(int fd, std::string& out_line) {
-    out_line.clear();
-    char ch;
-    while (true) {
-        ssize_t n = ::recv(fd, &ch, 1, 0);
-        if (n == 0) return false;               //connection closed
-        if (n < 0) return false;                //error (keep mvp simple)
-        if (ch== '\n') break;
-        if (ch == '\n') break;
-        if (ch != '\r') out_line.push_back(ch); //ignore /r for windows clients
-        if (out_line.size() > 4096) return false;   //basic safety capp
-    }
-    return true;
-}
-
-static void send_all(int fd, const std::string& s) {
-    const char* p = s.c_str();
-    size_t left = s.size();
-    while (left > 0) {
-        ssize_t n = ::send(fd, p, left, 0);
-        if (n <=0) return; //MVP: ignore detailed error handling
-        p += n;
-        left -= static_cast<size_t>(n);
-    }
-}
-
 
 //peers now replaced by map storing timestamps
 struct PeerInfo {
@@ -170,13 +145,13 @@ int main(int argc, char** argv) {
             iss >> ip >> p;
 
             if (ip.empty() || p <= 0 || p > 65535) {
-                send_all(client_fd, "ERR invalid REGISTER. Use: REGISTER <ip> <port>\n");
+                send_all_nothrow(client_fd, "ERR invalid REGISTER. Use: REGISTER <ip> <port>\n");
             } else {
                 std::string entry = ip + ":" + std::to_string(p);
                 peers[entry].last_seen = std::chrono::steady_clock::now();
 
                 std::cout << "Registered peer " << entry << "\n";
-                send_all(client_fd, "OK\n");
+                send_all_nothrow(client_fd, "OK\n");
             }
         }
         else if (cmd == "HEARTBEAT") {
@@ -185,11 +160,11 @@ int main(int argc, char** argv) {
             iss >> ip >> p;
 
             if (ip.empty() || p <= 0 || p > 65535) {
-                send_all(client_fd, "ERR invalid HEARTBEAT. Use: HEARTBEAT <ip> <port>\n");
+                send_all_nothrow(client_fd, "ERR invalid HEARTBEAT. Use: HEARTBEAT <ip> <port>\n");
             } else {
                 std::string entry = ip + ":" + std::to_string(p);
                 peers[entry].last_seen = std::chrono::steady_clock::now();
-                send_all(client_fd, "OK\n");
+                send_all_nothrow(client_fd, "OK\n");
             }
         }
 
@@ -203,18 +178,18 @@ int main(int argc, char** argv) {
             std::cout << "[TRACKER] ANNOUNCE chunk=" << chunk_id << " peer=" << entry << "\n";
 
             if (chunk_id.empty() || ip.empty() || p <= 0 || p > 65535) {
-                send_all(client_fd, "ERR invalid ANNOUNCE. Use: ANNOUNCE <chunk_id> <ip> <port>\n");
+                send_all_nothrow(client_fd, "ERR invalid ANNOUNCE. Use: ANNOUNCE <chunk_id> <ip> <port>\n");
             } else {
                 const auto TTL = std::chrono::seconds(30);
                 auto pit = peers.find(entry);
                 if (pit == peers.end() || (now - pit->second.last_seen > TTL)) {
                     std::cerr << "[TRACKER] ANNOUNCE rejected(peer not alive)\n";
                     chunk_index[chunk_id].insert(entry); //temporary accept announces
-                    send_all(client_fd, "OK\n");
+                    send_all_nothrow(client_fd, "OK\n");
                 } else {
                     chunk_index[chunk_id].insert(entry);
                     std::cout << "[TRACKER] ANNOUNCE accepted\n";
-                    send_all(client_fd, "OK\n");
+                    send_all_nothrow(client_fd, "OK\n");
                 }
                 
             }
@@ -225,7 +200,7 @@ int main(int argc, char** argv) {
             std::cout << "[TRACKER] WHERE chunk=" << chunk_id << "\n";
 
             if (chunk_id.empty()) {
-                send_all(client_fd, "ERR invalid WHERE. Use: WHERE <chunk_id>\n");
+                send_all_nothrow(client_fd, "ERR invalid WHERE. Use: WHERE <chunk_id>\n");
             } else {
                 const auto TTL = std::chrono::seconds(30);
                 auto now = std::chrono::steady_clock::now();
@@ -244,7 +219,7 @@ int main(int argc, char** argv) {
                 }
 
                 if (out.empty()) out = "\n";
-                send_all(client_fd, out);
+                send_all_nothrow(client_fd, out);
             }
         }
         else if (cmd == "NEED_REPAIR") {
@@ -276,7 +251,7 @@ int main(int argc, char** argv) {
     }
 
     if (out.empty()) out = "\n";
-    send_all(client_fd, out);
+    send_all_nothrow(client_fd, out);
 }
 
         else if (cmd == "GET_PEERS") {
@@ -296,9 +271,9 @@ int main(int argc, char** argv) {
                 out += kv.first + "\n"; //kv.first is "ip:port"
             }
             if (out.empty()) out = "\n";
-            send_all(client_fd, out);
+            send_all_nothrow(client_fd, out);
         } else {
-            send_all(client_fd, "ERR unknown command\n");
+            send_all_nothrow(client_fd, "ERR unknown command\n");
         }
         
         ::close(client_fd);

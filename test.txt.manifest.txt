@@ -1,4 +1,5 @@
 filename test.txt
+size 2082
 chunk_size 1024
 chunks 3
 94d5d2e4b09e467deff9c37324470006dafe2d0acfa2243d7d59197d2b6830b4

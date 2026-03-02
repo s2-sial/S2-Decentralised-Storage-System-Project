@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I"/home/saad/~projects/decent-store/include"
+CXX_INCLUDES = -I"/home/saad/~projects/decent-store/include" -I"/home/saad/~projects/decent-store/src"
 
 CXX_FLAGS = -std=gnu++20 -Wall -Wextra -Wpedantic
 
