@@ -1,12 +1,14 @@
 #pragma once
 #include <functional>
 #include <string>
+#include <vector>
+
+#include "core/common/peer_endpoint.h"
 
 namespace dss {
 
 struct ClientConfig {
-  std::string trackerIp;
-  int trackerPort{};
+  std::vector<PeerEndpoint> peers;  // list of known peers (DHT nodes)
   size_t chunkSize{};
   int desiredReplicas{};
 };

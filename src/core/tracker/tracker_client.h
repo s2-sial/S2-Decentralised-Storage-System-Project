@@ -4,12 +4,9 @@
 #include <vector>
 #include <utility>
 
-namespace dss {
+#include "core/common/peer_endpoint.h"
 
-struct PeerEndpoint {
-    std::string ip;
-    int port{};
-};
+namespace dss {
 
 class TrackerClient {
 public:

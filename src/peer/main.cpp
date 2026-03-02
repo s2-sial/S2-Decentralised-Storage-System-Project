@@ -56,56 +56,21 @@ static void send_to_tracker(const std::string& tracker_ip, int tracker_port, con
 //main program
 int main(int argc, char** argv) {
 
-    if (argc != 6) {
-        std::cerr << "Usage: peer <advertise_ip> <peer_port> <tracker_ip> <tracker_port> <storage_dir>\n";
+    if (argc != 4) {
+        std::cerr << "Usage: peer <advertise_ip> <peer_port> <storage_dir>\n";
         return 1;
     } 
 
     std::string advertise_ip = argv[1];
     int peer_port = std::stoi(argv[2]);
-    std::string tracker_ip = argv[3];
-    int tracker_port = std::stoi(argv[4]);
-    std::string storage_dir = argv[5];
+    std::string storage_dir = argv[3];
 
     //prints the storage directory for testing purposes
     std::cout << "Storage dir: " << std::filesystem::absolute(storage_dir) << "\n";
 
     ensure_dir(storage_dir);
 
-    // Register with tracker
-    {
-        int sock = ::socket(AF_INET, SOCK_STREAM, 0);
-
-        set_timeouts(sock, 3000, 3000);
-
-        if (sock < 0) die("socket");
-
-        sockaddr_in tracker{};
-        tracker.sin_family = AF_INET;
-        tracker.sin_port = htons(tracker_port);
-        inet_pton(AF_INET, tracker_ip.c_str(), &tracker.sin_addr);
-
-        if (::connect(sock, (sockaddr*)&tracker, sizeof(tracker)) < 0)
-        die("connect tracker");
-
-        std::string msg = "REGISTER " + advertise_ip + " " + std::to_string(peer_port) + "\n";
-        send_all_nothrow(sock, msg);
-        close(sock);
-    }
-
     std::cout << "Peer listening on port " << peer_port << "\n";
-
-    //heartbeat thread
-    std::atomic<bool> running{true};
-
-    std::thread hb([&]{
-        while (running.load()) {
-            std::string msg = "HEARTBEAT " + advertise_ip + " " + std::to_string(peer_port) + "\n";
-            send_to_tracker(tracker_ip, tracker_port, msg);
-            std::this_thread::sleep_for(std::chrono::seconds(10));
-        }
-    });
-    hb.detach(); //simplest (or join on shutdown)
 
     // Storage server
     int listen_fd = socket(AF_INET, SOCK_STREAM, 0);
