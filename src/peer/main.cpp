@@ -15,25 +15,13 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include "core/net/tcp.h"
+
+using dss::net::set_timeouts;
+using dss::net::recv_line;
+using dss::net::send_all_nothrow;
 
 //helpers 
-static bool set_timeouts(int sock, int recv_ms, int send_ms) {
-    timeval tv{};
-
-    tv.tv_sec = recv_ms / 1000;
-    tv.tv_usec = (recv_ms % 1000) * 1000;
-    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
-    return false;
-
-    tv.tv_sec = send_ms / 1000;
-    tv.tv_usec = (send_ms % 1000) * 1000;
-    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) < 0)
-    return false;
-
-    return true;
-}
-
-
 static void die(const std::string& msg) {
     std::cerr << msg << ": " << std::strerror(errno) << "\n";
     std::exit(1);
@@ -41,41 +29,6 @@ static void die(const std::string& msg) {
 
 static void ensure_dir(const std::string& path) {
     mkdir(path.c_str(), 0755); //ok if already exists
-}
-
-static bool is_timeout_errno() {
-    return errno == EAGAIN || errno == EWOULDBLOCK;
-}
-
-static bool recv_line(int fd, std::string& out) {
-    out.clear();
-    char ch;
-    while (true) {
-        ssize_t n = recv(fd, &ch, 1, 0);
-        if (n <= 0) return false;
-        if (n < 0) {
-            if (is_timeout_errno()) return false; //timed out
-            return false;
-        }
-
-        if (ch == '\n') break;
-        if (ch != '\r') out.push_back(ch);
-
-        //protection for long lines
-        if (out.size() > 8192) return false;
-    }
-
-    return true;
-}
-
-static bool send_all(int fd, const char* buf, size_t len) {
-    while (len > 0) {
-        ssize_t n = ::send(fd, buf, len, 0);
-        if (n <= 0) return false;
-        buf += n;
-        len -= static_cast<size_t>(n);
-    }
-    return true;
 }
 
 static void send_to_tracker(const std::string& tracker_ip, int tracker_port, const std::string& line) {
@@ -94,7 +47,7 @@ static void send_to_tracker(const std::string& tracker_ip, int tracker_port, con
         return;
     }
 
-    send_all(sock, line.c_str(), line.size());
+    send_all_nothrow(sock, line);
     close(sock);
     return;
 }
@@ -136,7 +89,7 @@ int main(int argc, char** argv) {
         die("connect tracker");
 
         std::string msg = "REGISTER " + advertise_ip + " " + std::to_string(peer_port) + "\n";
-        send_all(sock, msg.c_str(), msg.size());
+        send_all_nothrow(sock, msg);
         close(sock);
     }
 
@@ -197,7 +150,7 @@ int main(int argc, char** argv) {
 
             std::ofstream out(path_tmp, std::ios::binary);
             if (!out) {
-                send_all(client, "ERR\n", 4);
+                send_all_nothrow(client, "ERR\n");
                 close(client);
                 continue;
             }
@@ -217,10 +170,10 @@ int main(int argc, char** argv) {
             if (remaining == 0) {
                 //atomic replace
                 ::rename(path_tmp.c_str(), path_fin.c_str());
-                send_all(client, "OK\n", 3);
+                send_all_nothrow(client, "OK\n");
             } else {
                 ::unlink(path_tmp.c_str());
-                send_all(client, "ERR\n", 4);
+                send_all_nothrow(client, "ERR\n");
                 std::cerr << "PUT_CHUNK incomplete for " << hash
                 << " remaining=" << remaining << "\n";
             }
@@ -231,19 +184,19 @@ int main(int argc, char** argv) {
 
             std::ifstream in(path, std::ios::binary);
             if (!in) {
-                send_all(client, "ERR\n", 4);
+                send_all_nothrow(client, "ERR\n");
             } else {
                 in.seekg(0, std::ios::end);
                 size_t size = in.tellg();
                 in.seekg(0);
 
                 std::string header = "OK " + std::to_string(size) + "\n";
-                send_all(client, header.c_str(), header.size());
+                send_all_nothrow(client, header);
 
                 char buf[4096];
                 while (in.read(buf, sizeof(buf)))
-                    send_all(client, buf, sizeof(buf));
-                send_all(client, buf, in.gcount());
+                    send_all_nothrow(client, std::string(buf, sizeof(buf)));
+                send_all_nothrow(client, std::string(buf, in.gcount()));
             }
         }
 
