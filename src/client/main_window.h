@@ -41,7 +41,7 @@ private:
   QPlainTextEdit* logEdit_{};
 
   QLineEdit* trackerIpEdit_{};
-  QSpinBox* trackerPortSpin_{};
+  QSpinBox* trackerPortSpin_{};  // unused in DHT mode (kept for compatibility)
 
   QLineEdit* putFileEdit_{};
   QLineEdit* putChunkEdit_{};

@@ -4,7 +4,6 @@
 #include "core/crypto/sha256.h"
 #include "core/manifest/manifest.h"
 #include "core/peer/peer_client.h"
-#include "core/tracker/tracker_client.h"
 
 #include <filesystem>
 #include <fstream>
@@ -17,16 +16,14 @@ DssClient::DssClient(ClientConfig cfg) : cfg_(std::move(cfg)) {}
 
 std::string DssClient::putFile(const std::string& filePath,
                                std::function<void(Progress)> onProgress) {
-  TrackerClient tracker(cfg_.trackerIp, cfg_.trackerPort);
-  auto peers = tracker.getPeers();
-  if (peers.empty()) {
-    throw std::runtime_error("No peers available from tracker");
+  if (cfg_.peers.empty()) {
+    throw std::runtime_error("No peers configured for DHT");
   }
 
   int replicas = cfg_.desiredReplicas;
   if (replicas <= 0) replicas = 1;
-  if (replicas > static_cast<int>(peers.size())) {
-    replicas = static_cast<int>(peers.size());
+  if (replicas > static_cast<int>(cfg_.peers.size())) {
+    replicas = static_cast<int>(cfg_.peers.size());
   }
 
   auto fsPath = std::filesystem::path(filePath);
@@ -46,13 +43,34 @@ std::string DssClient::putFile(const std::string& filePath,
     c.id = cid;
     manifest.chunks.push_back(ManifestEntry{cid});
 
-    size_t start = static_cast<size_t>(done % peers.size());
+    // simple DHT-style placement: hash(chunk_id + replica_index) -> peer index
+    std::unordered_set<size_t> used;
     for (int r = 0; r < replicas; ++r) {
-      size_t idx = (start + static_cast<size_t>(r)) % peers.size();
-      const auto& peer = peers[idx];
+      const std::string salt = cid + "#" + std::to_string(r);
+      const std::string h = dss::crypto::sha256_hex(
+          std::vector<char>(salt.begin(), salt.end()));
+
+      std::uint64_t value = 0;
+      const size_t hexLen = std::min<std::size_t>(16, h.size());
+      for (size_t i = 0; i < hexLen; ++i) {
+        char ch = h[i];
+        std::uint64_t v = 0;
+        if (ch >= '0' && ch <= '9') v = static_cast<std::uint64_t>(ch - '0');
+        else if (ch >= 'a' && ch <= 'f') v = static_cast<std::uint64_t>(10 + ch - 'a');
+        else if (ch >= 'A' && ch <= 'F') v = static_cast<std::uint64_t>(10 + ch - 'A');
+        value = (value << 4) | v;
+      }
+
+      size_t idx = static_cast<size_t>(value % cfg_.peers.size());
+      size_t guard = 0;
+      while (used.count(idx) && guard < cfg_.peers.size()) {
+        idx = (idx + 1) % cfg_.peers.size();
+        ++guard;
+      }
+      used.insert(idx);
+      const auto& peer = cfg_.peers[idx];
 
       PeerClient::putChunk(peer, cid, c.bytes);
-      tracker.announceChunk(cid, peer.ip, peer.port);
     }
 
     ++done;
@@ -69,10 +87,8 @@ std::string DssClient::putFile(const std::string& filePath,
 void DssClient::getFile(const std::string& manifestPath,
                         const std::string& outPath,
                         std::function<void(Progress)> onProgress) {
-  TrackerClient tracker(cfg_.trackerIp, cfg_.trackerPort);
-  auto peers = tracker.getPeers();
-  if (peers.empty()) {
-    throw std::runtime_error("No peers available from tracker");
+  if (cfg_.peers.empty()) {
+    throw std::runtime_error("No peers configured for DHT");
   }
 
   Manifest manifest = readManifest(manifestPath);
@@ -86,13 +102,49 @@ void DssClient::getFile(const std::string& manifestPath,
   int done = 0;
 
   for (const auto& entry : manifest.chunks) {
-    auto locations = tracker.whereChunk(entry.chunkId);
-    if (locations.empty()) {
-      locations = peers;
+    // try ideal DHT locations first (same mapping as in putFile)
+    std::vector<PeerEndpoint> candidates;
+    std::unordered_set<size_t> used;
+    int replicas = cfg_.desiredReplicas <= 0 ? 1 : cfg_.desiredReplicas;
+    if (replicas > static_cast<int>(cfg_.peers.size())) {
+      replicas = static_cast<int>(cfg_.peers.size());
+    }
+    for (int r = 0; r < replicas; ++r) {
+      const std::string salt = entry.chunkId + "#" + std::to_string(r);
+      const std::string h = dss::crypto::sha256_hex(
+          std::vector<char>(salt.begin(), salt.end()));
+      std::uint64_t value = 0;
+      const size_t hexLen = std::min<std::size_t>(16, h.size());
+      for (size_t i = 0; i < hexLen; ++i) {
+        char ch = h[i];
+        std::uint64_t v = 0;
+        if (ch >= '0' && ch <= '9') v = static_cast<std::uint64_t>(ch - '0');
+        else if (ch >= 'a' && ch <= 'f') v = static_cast<std::uint64_t>(10 + ch - 'a');
+        else if (ch >= 'A' && ch <= 'F') v = static_cast<std::uint64_t>(10 + ch - 'A');
+        value = (value << 4) | v;
+      }
+      size_t idx = static_cast<size_t>(value % cfg_.peers.size());
+      size_t guard = 0;
+      while (used.count(idx) && guard < cfg_.peers.size()) {
+        idx = (idx + 1) % cfg_.peers.size();
+        ++guard;
+      }
+      used.insert(idx);
+      candidates.push_back(cfg_.peers[idx]);
+    }
+    for (const auto& p : cfg_.peers) {
+      bool already = false;
+      for (const auto& c : candidates) {
+        if (c.ip == p.ip && c.port == p.port) {
+          already = true;
+          break;
+        }
+      }
+      if (!already) candidates.push_back(p);
     }
 
     bool found = false;
-    for (const auto& peer : locations) {
+    for (const auto& peer : candidates) {
       try {
         auto data = PeerClient::getChunk(peer, entry.chunkId);
         if (dss::crypto::sha256_hex(data) != entry.chunkId) {
@@ -117,62 +169,9 @@ void DssClient::getFile(const std::string& manifestPath,
 }
 
 void DssClient::repair(int batch, std::function<void(Progress)> onProgress) {
-  TrackerClient tracker(cfg_.trackerIp, cfg_.trackerPort);
-  auto peers = tracker.getPeers();
-  if (peers.empty()) {
-    throw std::runtime_error("No peers available from tracker");
-  }
-
-  int desired = cfg_.desiredReplicas;
-  if (desired <= 0) desired = 2;
-
-  auto chunks = tracker.needRepair(desired, batch);
-  int total = static_cast<int>(chunks.size());
-  int done = 0;
-
-  for (const auto& cid : chunks) {
-    auto locations = tracker.whereChunk(cid);
-    if (locations.empty()) continue;
-
-    // download from first source
-    std::vector<char> data;
-    bool got = false;
-    for (const auto& peer : locations) {
-      try {
-        data = PeerClient::getChunk(peer, cid);
-        if (dss::crypto::sha256_hex(data) != cid) continue;
-        got = true;
-        break;
-      } catch (...) {
-      }
-    }
-    if (!got) continue;
-
-    // upload to new peers
-    std::unordered_set<std::string> existing;
-    for (const auto& p : locations) {
-      existing.insert(p.ip + ":" + std::to_string(p.port));
-    }
-
-    int repaired = 0;
-    for (const auto& p : peers) {
-      std::string key = p.ip + ":" + std::to_string(p.port);
-      if (existing.count(key)) continue;
-
-      try {
-        PeerClient::putChunk(p, cid, data);
-        tracker.announceChunk(cid, p.ip, p.port);
-        existing.insert(key);
-        if (++repaired >= desired - static_cast<int>(locations.size())) break;
-      } catch (...) {
-      }
-    }
-
-    ++done;
-    if (onProgress) {
-      onProgress(Progress{done, total, "Repairing chunks"});
-    }
-  }
+  (void)batch;
+  (void)onProgress;
+  throw std::runtime_error("Repair is not supported without a tracker/DHT index yet");
 }
 
 } // namespace dss

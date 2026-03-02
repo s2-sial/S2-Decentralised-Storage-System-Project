@@ -1,5 +1,6 @@
 /home/saad/~projects/decent-store/build/client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp: /home/saad/~projects/decent-store/src/client/dss_worker.h \
   /home/saad/~projects/decent-store/build/client_gui_autogen/moc_predefs.h \
+  /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
   /home/saad/~projects/decent-store/src/core/dss/dss_client.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \

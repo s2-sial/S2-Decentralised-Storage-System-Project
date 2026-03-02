@@ -6,6 +6,7 @@ CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o: client_gui_
   /home/saad/~projects/decent-store/src/client/main_window.h \
   client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp \
   client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp \
+  /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
   /home/saad/~projects/decent-store/src/core/dss/dss_client.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -477,6 +478,7 @@ CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o: client_gui_
 
 CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.o: /home/saad/~projects/decent-store/src/client/dss_worker.cpp \
   /home/saad/~projects/decent-store/src/client/dss_worker.h \
+  /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
   /home/saad/~projects/decent-store/src/core/dss/dss_client.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -1361,6 +1363,7 @@ CMakeFiles/client_gui.dir/src/client/main_gui.cpp.o: /home/saad/~projects/decent
 CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/decent-store/src/client/main_window.cpp \
   /home/saad/~projects/decent-store/src/client/dss_worker.h \
   /home/saad/~projects/decent-store/src/client/main_window.h \
+  /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
   /home/saad/~projects/decent-store/src/core/dss/dss_client.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -1400,6 +1403,10 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
+  /usr/include/c++/13/bits/fs_dir.h \
+  /usr/include/c++/13/bits/fs_fwd.h \
+  /usr/include/c++/13/bits/fs_ops.h \
+  /usr/include/c++/13/bits/fs_path.h \
   /usr/include/c++/13/bits/functexcept.h \
   /usr/include/c++/13/bits/functional_hash.h \
   /usr/include/c++/13/bits/hash_bytes.h \
@@ -1492,6 +1499,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/c++/13/climits \
   /usr/include/c++/13/clocale \
   /usr/include/c++/13/cmath \
+  /usr/include/c++/13/codecvt \
   /usr/include/c++/13/compare \
   /usr/include/c++/13/concepts \
   /usr/include/c++/13/condition_variable \
@@ -1513,6 +1521,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/c++/13/ext/numeric_traits.h \
   /usr/include/c++/13/ext/string_conversions.h \
   /usr/include/c++/13/ext/type_traits.h \
+  /usr/include/c++/13/filesystem \
   /usr/include/c++/13/format \
   /usr/include/c++/13/functional \
   /usr/include/c++/13/future \
@@ -1716,6 +1725,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearrayalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearraylist.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearrayview.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare_impl.h \
@@ -1729,10 +1739,15 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication_platform.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatastream.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qdebug.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdir.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfiledevice.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfileinfo.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qflags.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qgenericatomic.h \
@@ -1846,8 +1861,10 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFileDialog \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGroupBox \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLineEdit \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \
@@ -1865,6 +1882,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qfiledialog.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
@@ -1903,6 +1921,26 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qspinbox.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qplaintextedit.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgroupbox.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qfiledialog.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h:
+
 /usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
@@ -1926,6 +1964,8 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
 /usr/include/x86_64-linux-gnu/asm/unistd.h:
 
 /usr/include/c++/13/tr1/riemann_zeta.tcc:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h:
 
 /usr/include/string.h:
 
@@ -1953,8 +1993,6 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
 
 /usr/include/c++/13/ratio:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h:
-
 /usr/include/linux/close_range.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication_platform.h:
@@ -1967,8 +2005,6 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: /home/saad/~projects/dec
 
 /usr/include/c++/13/vector:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h:
-
 /usr/include/c++/13/unordered_map:
 
 /usr/include/c++/13/bits/allocator.h:
@@ -1979,6 +2015,10 @@ client_gui_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/13/bits/ranges_base.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
+
 /usr/include/c++/13/bits/range_access.h:
 
 /usr/include/c++/13/tr1/ell_integral.tcc:
@@ -1987,7 +2027,9 @@ client_gui_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/13/map:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h:
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h:
+
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
 /usr/include/features.h:
 
@@ -2035,6 +2077,10 @@ client_gui_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/13/tr1/bessel_function.tcc:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h:
+
+/usr/include/c++/13/bits/std_thread.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h:
 
 /usr/include/c++/13/functional:
@@ -2070,6 +2116,8 @@ client_gui_autogen/mocs_compilation.cpp:
 /usr/include/c++/13/compare:
 
 /usr/include/c++/13/cmath:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfiledevice.h:
 
 /usr/include/c++/13/climits:
 
@@ -2127,8 +2175,6 @@ client_gui_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/13/bits/exception.h:
 
-/usr/include/time.h:
-
 /usr/include/c++/13/typeinfo:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
@@ -2163,7 +2209,35 @@ client_gui_autogen/mocs_compilation.cpp:
 
 /usr/include/alloca.h:
 
+/usr/include/c++/13/bits/cxxabi_forced.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qpoint.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h:
+
+/usr/include/c++/13/bits/invoke.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qtextcursor.h:
+
+/usr/include/c++/13/bits/ranges_algo.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qicon.h:
+
+/usr/include/c++/13/bits/chrono_io.h:
+
+client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
+
+/usr/include/c++/13/atomic:
+
+/usr/include/c++/13/bits/streambuf.tcc:
+
 /usr/include/c++/13/bits/codecvt.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget:
+
+/usr/include/c++/13/bits/stl_tree.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qiterable.h:
 
@@ -2203,6 +2277,16 @@ client_gui_autogen/mocs_compilation.cpp:
 
 /home/saad/~projects/decent-store/src/core/dss/dss_client.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFileDialog:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication:
+
+/home/saad/~projects/decent-store/src/core/common/peer_endpoint.h:
+
+/usr/include/c++/13/bits/atomic_futex.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qstringview.h:
+
 /usr/include/c++/13/ext/numeric_traits.h:
 
 /usr/include/c++/13/bits/stl_iterator.h:
@@ -2210,10 +2294,6 @@ client_gui_autogen/mocs_compilation.cpp:
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextdocument.h:
-
-client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
-
-/usr/include/c++/13/bits/chrono_io.h:
 
 /usr/include/c++/13/bits/stl_raw_storage_iter.h:
 
@@ -2277,21 +2357,11 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/x86_64-linux-gnu/sys/syscall.h:
 
-/usr/include/c++/13/bits/atomic_futex.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qstringview.h:
-
 /usr/include/c++/13/bits/locale_facets.h:
 
 /usr/include/c++/13/bit:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qpolygon.h:
-
-/usr/include/c++/13/atomic:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication:
-
-/usr/include/c++/13/bits/streambuf.tcc:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
@@ -2301,27 +2371,11 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
-/usr/include/c++/13/bits/cxxabi_forced.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qpoint.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h:
-
-/usr/include/c++/13/bits/invoke.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qtextcursor.h:
-
-/usr/include/c++/13/bits/ranges_algo.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qicon.h:
-
 /usr/include/c++/13/bits/exception_ptr.h:
 
-/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
-
 /usr/include/c++/13/bits/this_thread_sleep.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
 
 /usr/include/c++/13/utility:
 
@@ -2339,6 +2393,8 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobalstatic.h:
 
+/usr/include/time.h:
+
 /usr/include/c++/13/bits/memoryfwd.h:
 
 /usr/include/c++/13/bits/move.h:
@@ -2347,8 +2403,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h:
 
-/usr/include/c++/13/tr1/beta_function.tcc:
-
 /usr/include/c++/13/bits/utility.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
@@ -2356,6 +2410,18 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
 /usr/include/c++/13/bits/stl_function.h:
+
+/usr/include/c++/13/bits/uses_allocator_args.h:
+
+/usr/include/c++/13/variant:
+
+/usr/include/c++/13/bits/atomic_base.h:
+
+/usr/include/c++/13/bits/new_allocator.h:
+
+/usr/include/c++/13/bits/stl_uninitialized.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qurl.h:
 
@@ -2374,14 +2440,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar:
 
 /usr/include/c++/13/bits/quoted_string.h:
-
-/usr/include/c++/13/tr1/special_function_util.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h:
-
-/usr/include/c++/13/tr1/poly_laguerre.tcc:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qglyphrun.h:
 
 /usr/include/c++/13/system_error:
 
@@ -2443,8 +2501,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/c++/13/bits/functexcept.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h:
-
 /usr/include/c++/13/bits/atomic_lockfree_defines.h:
 
 /usr/include/c++/13/bits/stl_heap.h:
@@ -2460,12 +2516,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 /usr/include/unistd.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringconverter_base.h:
-
-/usr/include/c++/13/bits/stl_uninitialized.h:
-
-/usr/include/c++/13/bits/new_allocator.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h:
 
 /usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
 
@@ -2490,12 +2540,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 /usr/include/c++/13/bits/unique_ptr.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
-
-/usr/include/c++/13/variant:
-
-/usr/include/c++/13/bits/atomic_base.h:
-
-/usr/include/c++/13/bits/uses_allocator_args.h:
 
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
@@ -2524,8 +2568,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qplaintextedit.h:
 
 /usr/include/c++/13/span:
 
@@ -2581,8 +2623,6 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
 /usr/include/c++/13/bits/list.tcc:
@@ -2609,11 +2649,11 @@ client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
-/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h:
-
 /usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
@@ -2633,6 +2673,10 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlineedit.h:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
 /usr/include/c++/13/ext/aligned_buffer.h:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h:
@@ -2642,10 +2686,6 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h:
-
-/usr/include/c++/13/bits/stl_tree.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget:
 
 /usr/include/c++/13/bits/ostream.tcc:
 
@@ -2672,10 +2712,6 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qlogging.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qmap.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h:
 
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
@@ -2756,6 +2792,8 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qflags.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h:
+
+/usr/include/c++/13/bits/fs_ops.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:
 
@@ -2855,8 +2893,6 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qcolor.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qfont.h:
@@ -2896,6 +2932,16 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h:
+
+/usr/include/c++/13/tr1/special_function_util.h:
+
+/usr/include/c++/13/tr1/poly_laguerre.tcc:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qglyphrun.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdir.h:
 
 /usr/include/c++/13/bits/exception_defines.h:
 
@@ -2937,6 +2983,14 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 
 /home/saad/~projects/decent-store/src/client/main_window.cpp:
 
+/usr/include/c++/13/bits/fs_dir.h:
+
+/usr/include/c++/13/bits/fs_fwd.h:
+
+/usr/include/c++/13/codecvt:
+
+/usr/include/c++/13/filesystem:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QList:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QRect:
@@ -2946,6 +3000,12 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 /usr/include/c++/13/bits/basic_ios.tcc:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QSizeF:
+
+/usr/include/c++/13/tr1/beta_function.tcc:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfileinfo.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h:
 
@@ -2963,6 +3023,8 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h:
 
+/usr/include/c++/13/bits/fs_path.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qvector2d.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h:
@@ -2975,16 +3037,4 @@ client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGroupBox:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgroupbox.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h:
-
-/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlineedit.h:
-
-/usr/include/c++/13/bits/std_thread.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h:
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout:

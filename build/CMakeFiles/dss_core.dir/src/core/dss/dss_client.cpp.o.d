@@ -138,12 +138,11 @@ CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/13/bits/charconv.h \
  /usr/include/c++/13/bits/basic_string.tcc \
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
  /home/saad/~projects/decent-store/src/core/chunk/chunker.h \
  /home/saad/~projects/decent-store/src/core/crypto/sha256.h \
  /home/saad/~projects/decent-store/src/core/manifest/manifest.h \
  /home/saad/~projects/decent-store/src/core/peer/peer_client.h \
- /home/saad/~projects/decent-store/src/core/tracker/tracker_client.h \
- /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
  /usr/include/c++/13/filesystem /usr/include/c++/13/bits/fs_fwd.h \
  /usr/include/c++/13/system_error \
  /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h \

@@ -126,8 +126,7 @@ CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o: \
  /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
  /usr/include/c++/13/bits/vector.tcc \
- /home/saad/~projects/decent-store/src/core/tracker/tracker_client.h \
- /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
  /home/saad/~projects/decent-store/src/core/net/tcp.h \
  /usr/include/c++/13/stdexcept /usr/include/c++/13/exception \
  /usr/include/c++/13/bits/exception_ptr.h \

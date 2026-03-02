@@ -337,6 +337,7 @@ CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /home/saad/~projects/decent-store/src/core/dss/dss_client.h \
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
  /home/saad/~projects/decent-store/build/client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp \
  /home/saad/~projects/decent-store/build/client_gui_autogen/2MJGWJB4P3/../../../src/client/main_window.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \

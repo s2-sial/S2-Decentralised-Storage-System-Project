@@ -8,6 +8,7 @@ client_gui_autogen/timestamp: \
 	/home/saad/~projects/decent-store/src/client/main_gui.cpp \
 	/home/saad/~projects/decent-store/src/client/main_window.cpp \
 	/home/saad/~projects/decent-store/src/client/main_window.h \
+	/home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
 	/home/saad/~projects/decent-store/src/core/dss/dss_client.h \
 	/usr/include/alloca.h \
 	/usr/include/asm-generic/errno-base.h \

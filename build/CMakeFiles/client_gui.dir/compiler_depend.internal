@@ -7,6 +7,7 @@ CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o
  /home/saad/~projects/decent-store/src/client/main_window.h
  /home/saad/~projects/decent-store/build/client_gui_autogen/2MJGWJB4P3/moc_dss_worker.cpp
  /home/saad/~projects/decent-store/build/client_gui_autogen/2MJGWJB4P3/moc_main_window.cpp
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h
  /home/saad/~projects/decent-store/src/core/dss/dss_client.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
@@ -479,6 +480,7 @@ CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o
 CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.o
  /home/saad/~projects/decent-store/src/client/dss_worker.cpp
  /home/saad/~projects/decent-store/src/client/dss_worker.h
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h
  /home/saad/~projects/decent-store/src/core/dss/dss_client.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
@@ -1365,6 +1367,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /home/saad/~projects/decent-store/src/client/main_window.cpp
  /home/saad/~projects/decent-store/src/client/dss_worker.h
  /home/saad/~projects/decent-store/src/client/main_window.h
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h
  /home/saad/~projects/decent-store/src/core/dss/dss_client.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
@@ -1404,6 +1407,10 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/c++/13/bits/exception.h
  /usr/include/c++/13/bits/exception_defines.h
  /usr/include/c++/13/bits/exception_ptr.h
+ /usr/include/c++/13/bits/fs_dir.h
+ /usr/include/c++/13/bits/fs_fwd.h
+ /usr/include/c++/13/bits/fs_ops.h
+ /usr/include/c++/13/bits/fs_path.h
  /usr/include/c++/13/bits/functexcept.h
  /usr/include/c++/13/bits/functional_hash.h
  /usr/include/c++/13/bits/hash_bytes.h
@@ -1496,6 +1503,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/c++/13/climits
  /usr/include/c++/13/clocale
  /usr/include/c++/13/cmath
+ /usr/include/c++/13/codecvt
  /usr/include/c++/13/compare
  /usr/include/c++/13/concepts
  /usr/include/c++/13/condition_variable
@@ -1517,6 +1525,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/c++/13/ext/numeric_traits.h
  /usr/include/c++/13/ext/string_conversions.h
  /usr/include/c++/13/ext/type_traits.h
+ /usr/include/c++/13/filesystem
  /usr/include/c++/13/format
  /usr/include/c++/13/functional
  /usr/include/c++/13/future
@@ -1720,6 +1729,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearrayalgorithms.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearraylist.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearrayview.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare_impl.h
@@ -1733,10 +1743,15 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication_platform.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatastream.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdebug.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdir.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qfiledevice.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qfileinfo.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qflags.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qgenericatomic.h
@@ -1850,8 +1865,10 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFileDialog
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGroupBox
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLayout
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLineEdit
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow
@@ -1869,6 +1886,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qfiledialog.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h

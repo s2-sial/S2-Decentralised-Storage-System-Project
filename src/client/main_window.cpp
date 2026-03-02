@@ -42,16 +42,13 @@ void MainWindow::setupUi() {
   QWidget* central = new QWidget(this);
   QVBoxLayout* mainLayout = new QVBoxLayout(central);
 
-  QGroupBox* connGroup = new QGroupBox(tr("Tracker"));
+  QGroupBox* connGroup = new QGroupBox(tr("Peers"));
   QFormLayout* connLayout = new QFormLayout(connGroup);
   trackerIpEdit_ = new QLineEdit(this);
-  trackerIpEdit_->setPlaceholderText(tr("e.g. 127.0.0.1"));
-  trackerIpEdit_->setText(QStringLiteral("127.0.0.1"));
-  connLayout->addRow(tr("IP:"), trackerIpEdit_);
-  trackerPortSpin_ = new QSpinBox(this);
-  trackerPortSpin_->setRange(1, 65535);
-  trackerPortSpin_->setValue(5555);
-  connLayout->addRow(tr("Port:"), trackerPortSpin_);
+  trackerIpEdit_->setPlaceholderText(tr("ip:port,ip:port (comma separated)"));
+  trackerIpEdit_->setText(QStringLiteral("127.0.0.1:9101"));
+  connLayout->addRow(tr("Peer list:"), trackerIpEdit_);
+  trackerPortSpin_ = nullptr;
   mainLayout->addWidget(connGroup);
 
   QTabWidget* tabs = new QTabWidget(this);
@@ -171,7 +168,7 @@ QString MainWindow::trackerIp() const {
 }
 
 int MainWindow::trackerPort() const {
-  return trackerPortSpin_->value();
+  return 0;
 }
 
 void MainWindow::setBusy(bool busy) {
@@ -198,7 +195,7 @@ void MainWindow::onProgress(int done, int total, const QString& message) {
 
 void MainWindow::onPutClicked() {
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Put"), tr("Enter tracker IP."));
+    QMessageBox::warning(this, tr("Put"), tr("Enter peers (ip:port,ip:port)."));
     return;
   }
   QString path = putFileEdit_->text().trimmed();
@@ -217,7 +214,6 @@ void MainWindow::onPutClicked() {
   log(tr("[Put] Started: %1").arg(path));
   QMetaObject::invokeMethod(worker_, "putFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
-                            Q_ARG(int, trackerPort()),
                             Q_ARG(QString, path),
                             Q_ARG(quint64, chunkSize),
                             Q_ARG(int, putReplicasSpin_->value()));
@@ -231,7 +227,7 @@ void MainWindow::onPutFinished(const QString& manifestPath) {
 
 void MainWindow::onGetClicked() {
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Get"), tr("Enter tracker IP."));
+    QMessageBox::warning(this, tr("Get"), tr("Enter peers (ip:port,ip:port)."));
     return;
   }
   QString manifest = getManifestEdit_->text().trimmed();
@@ -244,7 +240,6 @@ void MainWindow::onGetClicked() {
   log(tr("[Get] Started: %1 → %2").arg(manifest, output));
   QMetaObject::invokeMethod(worker_, "getFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
-                            Q_ARG(int, trackerPort()),
                             Q_ARG(QString, manifest),
                             Q_ARG(QString, output));
 }
@@ -257,14 +252,13 @@ void MainWindow::onGetFinished(const QString& outputPath) {
 
 void MainWindow::onRepairClicked() {
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Repair"), tr("Enter tracker IP."));
+    QMessageBox::warning(this, tr("Repair"), tr("Enter peers (ip:port,ip:port)."));
     return;
   }
   setBusy(true);
   log(tr("[Repair] Started."));
   QMetaObject::invokeMethod(worker_, "repair", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
-                            Q_ARG(int, trackerPort()),
                             Q_ARG(int, repairReplicasSpin_->value()),
                             Q_ARG(int, repairBatchSpin_->value()));
 }

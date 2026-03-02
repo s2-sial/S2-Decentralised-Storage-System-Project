@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <sstream>
 
 #include "core/dss/dss_client.h"
 
@@ -8,11 +9,11 @@ static void usage(const char* prog) {
   std::cerr
       << "Usage:\n"
       << "  " << prog
-      << " put <tracker_ip> <tracker_port> <file_path> [chunk_size_bytes] [replicas]\n"
+      << " put <peers> <file_path> [chunk_size_bytes] [replicas]\n"
       << "  " << prog
-      << " get <tracker_ip> <tracker_port> <manifest_path> <output_file>\n"
+      << " get <peers> <manifest_path> <output_file>\n"
       << "  " << prog
-      << " repair <tracker_ip> <tracker_port> [desired_replicas] [batch]\n";
+      << " repair (not supported without tracker)\n";
 }
 
 int main(int argc, char** argv) {
@@ -25,14 +26,46 @@ int main(int argc, char** argv) {
 
   try {
     if (mode == "put") {
-      if (argc < 5) {
+      if (argc < 4) {
         usage(argv[0]);
         return 1;
       }
 
       dss::ClientConfig cfg;
-      cfg.trackerIp = argv[2];
-      cfg.trackerPort = std::stoi(argv[3]);
+      // peers passed as comma-separated list: ip:port,ip:port,...
+      std::string peersArg = argv[2];
+      std::stringstream ss(peersArg);
+      std::string item;
+      while (std::getline(ss, item, ',')) {
+        // trim whitespace around each entry
+        auto trim = [](std::string s) {
+          const char* ws = " \t\r\n";
+          auto b = s.find_first_not_of(ws);
+          if (b == std::string::npos) return std::string();
+          auto e = s.find_last_not_of(ws);
+          return s.substr(b, e - b + 1);
+        };
+        item = trim(item);
+        if (item.empty()) continue;
+        auto pos = item.find(':');
+        if (pos == std::string::npos) {
+          throw std::runtime_error("Invalid peer entry (expected ip:port): " + item);
+        }
+        dss::PeerEndpoint ep;
+        std::string ipPart = trim(item.substr(0, pos));
+        std::string portPart = trim(item.substr(pos + 1));
+        if (ipPart.empty() || portPart.empty()) {
+          throw std::runtime_error("Invalid peer entry (empty ip or port): " + item);
+        }
+        ep.ip = ipPart;
+        ep.port = std::stoi(portPart);
+        cfg.peers.push_back(ep);
+      }
+
+      if (cfg.peers.empty()) {
+        throw std::runtime_error("No valid peers provided");
+      }
+
       cfg.chunkSize = (argc >= 6)
                           ? static_cast<size_t>(std::stoul(argv[5]))
                           : 1024 * 1024;
@@ -49,46 +82,57 @@ int main(int argc, char** argv) {
     }
 
     if (mode == "get") {
-      if (argc < 6) {
+      if (argc < 5) {
         usage(argv[0]);
         return 1;
       }
 
       dss::ClientConfig cfg;
-      cfg.trackerIp = argv[2];
-      cfg.trackerPort = std::stoi(argv[3]);
+      std::string peersArg = argv[2];
+      std::stringstream ss(peersArg);
+      std::string item;
+      while (std::getline(ss, item, ',')) {
+        auto trim = [](std::string s) {
+          const char* ws = " \t\r\n";
+          auto b = s.find_first_not_of(ws);
+          if (b == std::string::npos) return std::string();
+          auto e = s.find_last_not_of(ws);
+          return s.substr(b, e - b + 1);
+        };
+        item = trim(item);
+        if (item.empty()) continue;
+        auto pos = item.find(':');
+        if (pos == std::string::npos) {
+          throw std::runtime_error("Invalid peer entry (expected ip:port): " + item);
+        }
+        dss::PeerEndpoint ep;
+        std::string ipPart = trim(item.substr(0, pos));
+        std::string portPart = trim(item.substr(pos + 1));
+        if (ipPart.empty() || portPart.empty()) {
+          throw std::runtime_error("Invalid peer entry (empty ip or port): " + item);
+        }
+        ep.ip = ipPart;
+        ep.port = std::stoi(portPart);
+        cfg.peers.push_back(ep);
+      }
+      if (cfg.peers.empty()) {
+        throw std::runtime_error("No valid peers provided");
+      }
+
       cfg.chunkSize = 1024 * 1024;
       cfg.desiredReplicas = 2;
 
       dss::DssClient client(cfg);
-      client.getFile(argv[4], argv[5], [](dss::Progress p) {
+      client.getFile(argv[3], argv[4], [](dss::Progress p) {
         std::cout << "[GET] " << p.done << "/" << p.total << " " << p.message
                   << "\n";
       });
-      std::cout << "Download complete: " << argv[5] << "\n";
+      std::cout << "Download complete: " << argv[4] << "\n";
       return 0;
     }
 
     if (mode == "repair") {
-      if (argc < 4) {
-        usage(argv[0]);
-        return 1;
-      }
-
-      dss::ClientConfig cfg;
-      cfg.trackerIp = argv[2];
-      cfg.trackerPort = std::stoi(argv[3]);
-      cfg.chunkSize = 1024 * 1024;
-      cfg.desiredReplicas = (argc >= 5) ? std::stoi(argv[4]) : 2;
-
-      int batch = (argc >= 6) ? std::stoi(argv[5]) : 50;
-
-      dss::DssClient client(cfg);
-      client.repair(batch, [](dss::Progress p) {
-        std::cout << "[REPAIR] " << p.done << "/" << p.total << " "
-                  << p.message << "\n";
-      });
-      std::cout << "Repair finished.\n";
+      std::cerr << "Repair is not supported in DHT mode (no tracker).\n";
       return 0;
     }
 

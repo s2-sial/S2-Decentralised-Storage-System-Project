@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "core/tracker/tracker_client.h"
+#include "core/common/peer_endpoint.h"
 
 namespace dss {
 

@@ -402,6 +402,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /home/saad/~projects/decent-store/src/core/dss/dss_client.h \
+ /home/saad/~projects/decent-store/src/core/common/peer_endpoint.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication.h \

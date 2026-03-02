@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_DssWorker_t {
-    uint offsetsAndSizes[44];
+    uint offsetsAndSizes[42];
     char stringdata0[10];
     char stringdata1[9];
     char stringdata2[1];
@@ -40,15 +40,14 @@ struct qt_meta_stringdata_DssWorker_t {
     char stringdata10[15];
     char stringdata11[6];
     char stringdata12[8];
-    char stringdata13[10];
-    char stringdata14[12];
-    char stringdata15[9];
-    char stringdata16[10];
-    char stringdata17[9];
-    char stringdata18[8];
-    char stringdata19[7];
-    char stringdata20[16];
-    char stringdata21[6];
+    char stringdata13[6];
+    char stringdata14[9];
+    char stringdata15[10];
+    char stringdata16[9];
+    char stringdata17[8];
+    char stringdata18[7];
+    char stringdata19[16];
+    char stringdata20[6];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_DssWorker_t::offsetsAndSizes) + ofs), len 
@@ -67,15 +66,14 @@ Q_CONSTINIT static const qt_meta_stringdata_DssWorker_t qt_meta_stringdata_DssWo
         QT_MOC_LITERAL(87, 14),  // "repairFinished"
         QT_MOC_LITERAL(102, 5),  // "error"
         QT_MOC_LITERAL(108, 7),  // "putFile"
-        QT_MOC_LITERAL(116, 9),  // "trackerIp"
-        QT_MOC_LITERAL(126, 11),  // "trackerPort"
-        QT_MOC_LITERAL(138, 8),  // "filePath"
-        QT_MOC_LITERAL(147, 9),  // "chunkSize"
-        QT_MOC_LITERAL(157, 8),  // "replicas"
-        QT_MOC_LITERAL(166, 7),  // "getFile"
-        QT_MOC_LITERAL(174, 6),  // "repair"
-        QT_MOC_LITERAL(181, 15),  // "desiredReplicas"
-        QT_MOC_LITERAL(197, 5)   // "batch"
+        QT_MOC_LITERAL(116, 5),  // "peers"
+        QT_MOC_LITERAL(122, 8),  // "filePath"
+        QT_MOC_LITERAL(131, 9),  // "chunkSize"
+        QT_MOC_LITERAL(141, 8),  // "replicas"
+        QT_MOC_LITERAL(150, 7),  // "getFile"
+        QT_MOC_LITERAL(158, 6),  // "repair"
+        QT_MOC_LITERAL(165, 15),  // "desiredReplicas"
+        QT_MOC_LITERAL(181, 5)   // "batch"
     },
     "DssWorker",
     "progress",
@@ -90,8 +88,7 @@ Q_CONSTINIT static const qt_meta_stringdata_DssWorker_t qt_meta_stringdata_DssWo
     "repairFinished",
     "error",
     "putFile",
-    "trackerIp",
-    "trackerPort",
+    "peers",
     "filePath",
     "chunkSize",
     "replicas",
@@ -124,9 +121,9 @@ Q_CONSTINIT static const uint qt_meta_data_DssWorker[] = {
       11,    1,   76,    2, 0x06,   10 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      12,    5,   79,    2, 0x0a,   12 /* Public */,
-      18,    4,   90,    2, 0x0a,   18 /* Public */,
-      19,    4,   99,    2, 0x0a,   23 /* Public */,
+      12,    4,   79,    2, 0x0a,   12 /* Public */,
+      17,    3,   88,    2, 0x0a,   17 /* Public */,
+      18,    3,   95,    2, 0x0a,   21 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    3,    4,    5,
@@ -136,9 +133,9 @@ Q_CONSTINIT static const uint qt_meta_data_DssWorker[] = {
     QMetaType::Void, QMetaType::QString,    5,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::QString, QMetaType::ULongLong, QMetaType::Int,   13,   14,   15,   16,   17,
-    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::QString, QMetaType::QString,   13,   14,    7,    9,
-    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int, QMetaType::Int,   13,   14,   20,   21,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::ULongLong, QMetaType::Int,   13,   14,   15,   16,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::QString,   13,    7,    9,
+    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int,   13,   19,   20,
 
        0        // eod
 };
@@ -171,20 +168,17 @@ Q_CONSTINIT const QMetaObject DssWorker::staticMetaObject = { {
         // method 'putFile'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<quint64, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'getFile'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'repair'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>
     >,
@@ -202,9 +196,9 @@ void DssWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 2: _t->getFinished((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->repairFinished(); break;
         case 4: _t->error((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 5: _t->putFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<quint64>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[5]))); break;
-        case 6: _t->getFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[4]))); break;
-        case 7: _t->repair((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4]))); break;
+        case 5: _t->putFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<quint64>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4]))); break;
+        case 6: _t->getFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
+        case 7: _t->repair((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
