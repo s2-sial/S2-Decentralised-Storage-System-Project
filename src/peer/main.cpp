@@ -16,6 +16,7 @@
 #include <chrono>
 #include <atomic>
 #include "core/net/tcp.h"
+#include "core/storage/storage_manager.h"
 
 using dss::net::set_timeouts;
 using dss::net::recv_line;
@@ -56,19 +57,26 @@ static void send_to_tracker(const std::string& tracker_ip, int tracker_port, con
 //main program
 int main(int argc, char** argv) {
 
-    if (argc != 4) {
-        std::cerr << "Usage: peer <advertise_ip> <peer_port> <storage_dir>\n";
+    if (argc < 4) {
+        std::cerr << "Usage: peer <advertise_ip> <peer_port> <storage_dir> [max_bytes]\n";
         return 1;
     } 
 
     std::string advertise_ip = argv[1];
     int peer_port = std::stoi(argv[2]);
     std::string storage_dir = argv[3];
+    std::uint64_t max_bytes = 10ull * 1024 * 1024 * 1024; // 10 GiB default
+    if (argc >= 5) {
+        max_bytes = std::stoull(argv[4]);
+    }
 
     //prints the storage directory for testing purposes
     std::cout << "Storage dir: " << std::filesystem::absolute(storage_dir) << "\n";
 
     ensure_dir(storage_dir);
+
+    dss::storage::StorageManager storage(storage_dir, max_bytes);
+    storage.init();
 
     std::cout << "Peer listening on port " << peer_port << "\n";
 
@@ -110,58 +118,48 @@ int main(int argc, char** argv) {
         if (cmd == "PUT_CHUNK") {
             iss >> hash >> size;
 
-            std::string path_tmp = storage_dir + "/" + hash + ".tmp";
-            std::string path_fin = storage_dir + "/" + hash;
+            std::vector<char> data;
+            data.resize(size);
 
-            std::ofstream out(path_tmp, std::ios::binary);
-            if (!out) {
-                send_all_nothrow(client, "ERR\n");
-                close(client);
-                continue;
-            }
-
-            char buf[4096];
             size_t remaining = size;
-
+            size_t offset = 0;
             while (remaining > 0) {
-                ssize_t n = ::recv(client, buf, std::min(sizeof(buf), remaining), 0);
+                const size_t chunk = std::min<std::size_t>(remaining, 4096);
+                ssize_t n = ::recv(client, data.data() + offset, chunk, 0);
                 if (n <= 0) break;
-                out.write(buf, n);
-                remaining -= static_cast<size_t>(n);
+                offset += static_cast<std::size_t>(n);
+                remaining -= static_cast<std::size_t>(n);
             }
-            
-            out.close();
 
             if (remaining == 0) {
-                //atomic replace
-                ::rename(path_tmp.c_str(), path_fin.c_str());
-                send_all_nothrow(client, "OK\n");
+                try {
+                    storage.storeChunk(hash, data);
+                    send_all_nothrow(client, "OK\n");
+                } catch (const std::exception& e) {
+                    std::cerr << "PUT_CHUNK failed for " << hash << ": " << e.what() << "\n";
+                    send_all_nothrow(client, "ERR\n");
+                }
             } else {
-                ::unlink(path_tmp.c_str());
-                send_all_nothrow(client, "ERR\n");
                 std::cerr << "PUT_CHUNK incomplete for " << hash
-                << " remaining=" << remaining << "\n";
+                          << " remaining=" << remaining << "\n";
+                send_all_nothrow(client, "ERR\n");
             }
         }
         else if (cmd == "GET_CHUNK") {
             iss >> hash;
-            std::string path = storage_dir + "/" + hash;
-
-            std::ifstream in(path, std::ios::binary);
-            if (!in) {
-                send_all_nothrow(client, "ERR\n");
-            } else {
-                in.seekg(0, std::ios::end);
-                size_t size = in.tellg();
-                in.seekg(0);
+            try {
+                auto data = storage.loadChunk(hash);
+                const size_t size = data.size();
 
                 std::string header = "OK " + std::to_string(size) + "\n";
                 send_all_nothrow(client, header);
 
-                char buf[4096];
-                while (in.read(buf, sizeof(buf)))
-                    send_all_nothrow(client, std::string(buf, sizeof(buf)));
-                send_all_nothrow(client, std::string(buf, in.gcount()));
+                if (size > 0) {
+                    send_all_nothrow(client,
+                                     std::string(data.data(), static_cast<std::streamsize>(size)));
+                }
+            } catch (const std::exception&) {
+                send_all_nothrow(client, "ERR\n");
             }
         }
 
