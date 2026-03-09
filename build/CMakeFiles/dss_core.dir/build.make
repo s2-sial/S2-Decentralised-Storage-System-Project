@@ -125,10 +125,66 @@ CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/manifest/manifest.cpp" -o CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.s
 
+CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o: CMakeFiles/dss_core.dir/flags.make
+CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o: /home/saad/~projects/decent-store/src/core/storage/storage_manager.cpp
+CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o -MF CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o -c "/home/saad/~projects/decent-store/src/core/storage/storage_manager.cpp"
+
+CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/saad/~projects/decent-store/src/core/storage/storage_manager.cpp" > CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.i
+
+CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/storage/storage_manager.cpp" -o CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.s
+
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o: CMakeFiles/dss_core.dir/flags.make
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o: /home/saad/~projects/decent-store/src/core/dht/kademlia_id.cpp
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o -MF CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o -c "/home/saad/~projects/decent-store/src/core/dht/kademlia_id.cpp"
+
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/saad/~projects/decent-store/src/core/dht/kademlia_id.cpp" > CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.i
+
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/dht/kademlia_id.cpp" -o CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.s
+
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o: CMakeFiles/dss_core.dir/flags.make
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o: /home/saad/~projects/decent-store/src/core/dht/kademlia_routing_table.cpp
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o -MF CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o -c "/home/saad/~projects/decent-store/src/core/dht/kademlia_routing_table.cpp"
+
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/saad/~projects/decent-store/src/core/dht/kademlia_routing_table.cpp" > CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.i
+
+CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/dht/kademlia_routing_table.cpp" -o CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.s
+
+CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o: CMakeFiles/dss_core.dir/flags.make
+CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o: /home/saad/~projects/decent-store/src/core/dht/dht_node.cpp
+CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o -MF CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o -c "/home/saad/~projects/decent-store/src/core/dht/dht_node.cpp"
+
+CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/saad/~projects/decent-store/src/core/dht/dht_node.cpp" > CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.i
+
+CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/dht/dht_node.cpp" -o CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.s
+
 CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o: CMakeFiles/dss_core.dir/flags.make
 CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o: /home/saad/~projects/decent-store/src/core/tracker/tracker_client.cpp
 CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o -MF CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o -c "/home/saad/~projects/decent-store/src/core/tracker/tracker_client.cpp"
 
 CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.i: cmake_force
@@ -142,7 +198,7 @@ CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.s: cmake_force
 CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o: CMakeFiles/dss_core.dir/flags.make
 CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o: /home/saad/~projects/decent-store/src/core/peer/peer_client.cpp
 CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o -MF CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o -c "/home/saad/~projects/decent-store/src/core/peer/peer_client.cpp"
 
 CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.i: cmake_force
@@ -156,7 +212,7 @@ CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s: cmake_force
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: CMakeFiles/dss_core.dir/flags.make
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: /home/saad/~projects/decent-store/src/core/dss/dss_client.cpp
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o -MF CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o -c "/home/saad/~projects/decent-store/src/core/dss/dss_client.cpp"
 
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.i: cmake_force
@@ -173,6 +229,10 @@ dss_core_OBJECTS = \
 "CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o" \
+"CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o" \
+"CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o" \
+"CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o" \
+"CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o"
@@ -184,12 +244,16 @@ libdss_core.a: CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o
+libdss_core.a: CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o
+libdss_core.a: CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o
+libdss_core.a: CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o
+libdss_core.a: CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/build.make
 libdss_core.a: CMakeFiles/dss_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libdss_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX static library libdss_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/dss_core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/dss_core.dir/link.txt --verbose=$(VERBOSE)
 

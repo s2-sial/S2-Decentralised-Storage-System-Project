@@ -17,6 +17,10 @@ add_library(dss_core
 	src/core/crypto/shq256.cpp
 	src/core/chunk/chunker.cpp
 	src/core/manifest/manifest.cpp
+	src/core/storage/storage_manager.cpp
+	src/core/dht/kademlia_id.cpp
+	src/core/dht/kademlia_routing_table.cpp
+	src/core/dht/dht_node.cpp
 	src/core/tracker/tracker_client.cpp
 	src/core/peer/peer_client.cpp
 	src/core/dss/dss_client.cpp
@@ -42,7 +46,7 @@ target_link_libraries(client PRIVATE dss_core)
 
 # client GUI (Qt6) — optional
 set(CMAKE_AUTOMOC ON)
-find_package(Qt6 QUIET COMPONENTS Widgets)
+find_package(Qt6 QUIET COMPONENTS Widgets Network)
 if (Qt6_FOUND)
 	add_executable(client_gui
 		src/client/main_gui.cpp
@@ -50,7 +54,7 @@ if (Qt6_FOUND)
 		src/client/dss_worker.cpp
 	)
 	target_include_directories(client_gui PRIVATE ${CMAKE_SOURCE_DIR}/src/client)
-	target_link_libraries(client_gui PRIVATE dss_core Qt6::Widgets)
+	target_link_libraries(client_gui PRIVATE dss_core Qt6::Widgets Qt6::Network)
 	message(STATUS "Qt6 found — building client_gui")
 else()
 	message(STATUS "Qt6 not found — skipping client_gui (set CMAKE_PREFIX_PATH to Qt to enable)")

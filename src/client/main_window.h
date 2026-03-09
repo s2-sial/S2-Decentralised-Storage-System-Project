@@ -8,6 +8,8 @@ class QProgressBar;
 class QPlainTextEdit;
 class QLineEdit;
 class QSpinBox;
+class QTableWidget;
+class QLabel;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -25,12 +27,15 @@ private slots:
   void onRepairFinished();
   void onError(const QString& message);
   void log(const QString& text);
+  void onDownloadButtonClicked();
+  void refreshPeerMonitor();
 
 private:
   void setupUi();
   QWidget* makePutTab();
   QWidget* makeGetTab();
   QWidget* makeRepairTab();
+  QWidget* makeNetworkTab();
   QString trackerIp() const;
   int trackerPort() const;
   void setBusy(bool busy);
@@ -43,6 +48,9 @@ private:
   QLineEdit* trackerIpEdit_{};
   QSpinBox* trackerPortSpin_{};  // unused in DHT mode (kept for compatibility)
 
+  // Upload / files UI
+  QTableWidget* filesTable_{};
+
   QLineEdit* putFileEdit_{};
   QLineEdit* putChunkEdit_{};
   QSpinBox* putReplicasSpin_{};
@@ -52,4 +60,8 @@ private:
 
   QSpinBox* repairReplicasSpin_{};
   QSpinBox* repairBatchSpin_{};
+
+  // Peer monitor UI
+  QTableWidget* peersTable_{};
+  QLabel* networkMapLabel_{};
 };

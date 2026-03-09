@@ -5,16 +5,24 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QHeaderView>
+#include <QLabel>
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QTcpSocket>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QWidget>
+
+#include "core/manifest/manifest.h"
+#include "core/dht/kademlia_id.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   worker_ = new DssWorker;
@@ -55,6 +63,7 @@ void MainWindow::setupUi() {
   tabs->addTab(makePutTab(), tr("Put"));
   tabs->addTab(makeGetTab(), tr("Get"));
   tabs->addTab(makeRepairTab(), tr("Repair"));
+  tabs->addTab(makeNetworkTab(), tr("Network"));
   mainLayout->addWidget(tabs);
 
   progressBar_ = new QProgressBar(this);
@@ -73,7 +82,10 @@ void MainWindow::setupUi() {
 
 QWidget* MainWindow::makePutTab() {
   QWidget* w = new QWidget(this);
-  QFormLayout* form = new QFormLayout(w);
+  QVBoxLayout* vbox = new QVBoxLayout(w);
+
+  QGroupBox* uploadGroup = new QGroupBox(tr("Upload File"), w);
+  QFormLayout* form = new QFormLayout(uploadGroup);
   putFileEdit_ = new QLineEdit(this);
   putFileEdit_->setPlaceholderText(tr("Path to file to upload"));
   auto* putFileRow = new QWidget(this);
@@ -100,6 +112,24 @@ QWidget* MainWindow::makePutTab() {
   QPushButton* btn = new QPushButton(tr("Put file"), this);
   connect(btn, &QPushButton::clicked, this, &MainWindow::onPutClicked);
   form->addRow(btn);
+
+  vbox->addWidget(uploadGroup);
+
+  // Stored files table
+  QGroupBox* filesGroup = new QGroupBox(tr("Stored Files"), w);
+  QVBoxLayout* filesLayout = new QVBoxLayout(filesGroup);
+  filesTable_ = new QTableWidget(filesGroup);
+  filesTable_->setColumnCount(4);
+  QStringList headers;
+  headers << tr("CID") << tr("Name") << tr("Size (bytes)") << tr("Download");
+  filesTable_->setHorizontalHeaderLabels(headers);
+  filesTable_->horizontalHeader()->setStretchLastSection(true);
+  filesTable_->setSelectionMode(QAbstractItemView::NoSelection);
+  filesTable_->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  filesLayout->addWidget(filesTable_);
+  vbox->addWidget(filesGroup);
+
+  vbox->addStretch(1);
   return w;
 }
 
@@ -163,6 +193,35 @@ QWidget* MainWindow::makeRepairTab() {
   return w;
 }
 
+QWidget* MainWindow::makeNetworkTab() {
+  QWidget* w = new QWidget(this);
+  QVBoxLayout* layout = new QVBoxLayout(w);
+
+  QHBoxLayout* topRow = new QHBoxLayout;
+  QPushButton* refreshBtn = new QPushButton(tr("Refresh peers"), w);
+  connect(refreshBtn, &QPushButton::clicked, this, &MainWindow::refreshPeerMonitor);
+  topRow->addWidget(refreshBtn);
+  topRow->addStretch(1);
+  layout->addLayout(topRow);
+
+  peersTable_ = new QTableWidget(w);
+  peersTable_->setColumnCount(3);
+  QStringList headers;
+  headers << tr("Peer") << tr("Status") << tr("Node ID (prefix)");
+  peersTable_->setHorizontalHeaderLabels(headers);
+  peersTable_->horizontalHeader()->setStretchLastSection(true);
+  peersTable_->setSelectionMode(QAbstractItemView::NoSelection);
+  peersTable_->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  layout->addWidget(peersTable_);
+
+  networkMapLabel_ = new QLabel(w);
+  networkMapLabel_->setWordWrap(true);
+  layout->addWidget(networkMapLabel_);
+
+  layout->addStretch(1);
+  return w;
+}
+
 QString MainWindow::trackerIp() const {
   return trackerIpEdit_->text().trimmed();
 }
@@ -223,6 +282,31 @@ void MainWindow::onPutFinished(const QString& manifestPath) {
   setBusy(false);
   log(tr("[Put] Done. Manifest: %1").arg(manifestPath));
   QMessageBox::information(this, tr("Put"), tr("Manifest written to:\n%1").arg(manifestPath));
+
+  // Add to stored-files table
+  try {
+    dss::Manifest m = dss::readManifest(manifestPath.toStdString());
+    if (!filesTable_) return;
+    const int row = filesTable_->rowCount();
+    filesTable_->insertRow(row);
+
+    // CID: for now show manifest path as identifier
+    auto* cidItem = new QTableWidgetItem(manifestPath);
+    filesTable_->setItem(row, 0, cidItem);
+
+    auto* nameItem = new QTableWidgetItem(QString::fromStdString(m.originalName));
+    filesTable_->setItem(row, 1, nameItem);
+
+    auto* sizeItem = new QTableWidgetItem(QString::number(static_cast<qulonglong>(m.originalSize)));
+    filesTable_->setItem(row, 2, sizeItem);
+
+    auto* btn = new QPushButton(tr("Download"), filesTable_);
+    btn->setProperty("manifestPath", manifestPath);
+    filesTable_->setCellWidget(row, 3, btn);
+    connect(btn, &QPushButton::clicked, this, &MainWindow::onDownloadButtonClicked);
+  } catch (const std::exception& e) {
+    log(tr("Failed to read manifest for table: %1").arg(QString::fromUtf8(e.what())));
+  }
 }
 
 void MainWindow::onGetClicked() {
@@ -273,4 +357,83 @@ void MainWindow::onError(const QString& message) {
   setBusy(false);
   log(tr("Error: %1").arg(message));
   QMessageBox::critical(this, tr("Error"), message);
+}
+
+void MainWindow::onDownloadButtonClicked() {
+  auto* btn = qobject_cast<QPushButton*>(sender());
+  if (!btn) return;
+  const QString manifest = btn->property("manifestPath").toString();
+  if (manifest.isEmpty()) return;
+
+  if (trackerIp().isEmpty()) {
+    QMessageBox::warning(this, tr("Get"), tr("Enter peers (ip:port,ip:port)."));
+    return;
+  }
+
+  QString suggested = manifest;
+  if (suggested.endsWith(".manifest.txt")) {
+    suggested.chop(QString(".manifest.txt").size());
+  }
+  const QString output = QFileDialog::getSaveFileName(this,
+                                                      tr("Select output file"),
+                                                      suggested);
+  if (output.isEmpty()) return;
+
+  setBusy(true);
+  log(tr("[Get] Started: %1 → %2").arg(manifest, output));
+  QMetaObject::invokeMethod(worker_, "getFile", Qt::QueuedConnection,
+                            Q_ARG(QString, trackerIp()),
+                            Q_ARG(QString, manifest),
+                            Q_ARG(QString, output));
+}
+
+void MainWindow::refreshPeerMonitor() {
+  if (!peersTable_) return;
+
+  peersTable_->setRowCount(0);
+  QString peersText = trackerIp();
+  const auto parts = peersText.split(',', Qt::SkipEmptyParts);
+
+  QString mapText;
+
+  int row = 0;
+  for (const QString& part : parts) {
+    QString peerStr = part.trimmed();
+    if (peerStr.isEmpty()) continue;
+    const int colon = peerStr.indexOf(':');
+    if (colon <= 0 || colon == peerStr.size() - 1) continue;
+    const QString ip = peerStr.left(colon);
+    const int port = peerStr.mid(colon + 1).toInt();
+
+    // connectivity check
+    QTcpSocket sock;
+    sock.connectToHost(ip, static_cast<quint16>(port));
+    bool ok = sock.waitForConnected(300);
+    sock.abort();
+
+    QString status = ok ? tr("Online") : tr("Offline");
+
+    peersTable_->insertRow(row);
+    peersTable_->setItem(row, 0, new QTableWidgetItem(peerStr));
+    peersTable_->setItem(row, 1, new QTableWidgetItem(status));
+
+    // Node ID prefix via DHT id helper
+    dss::PeerEndpoint ep;
+    ep.ip = ip.toStdString();
+    ep.port = port;
+    auto id = dss::dht::makeNodeId(ep);
+    QString idHex = QString::fromStdString(dss::dht::toHex(id)).left(8);
+    peersTable_->setItem(row, 2, new QTableWidgetItem(idHex));
+
+    mapText += QString("• %1 — ID %2 (%3)\n").arg(peerStr, idHex, status);
+    ++row;
+  }
+
+  if (networkMapLabel_) {
+    if (mapText.isEmpty()) {
+      networkMapLabel_->setText(tr("No peers configured."));
+    } else {
+      networkMapLabel_->setText(mapText.trimmed());
+    }
+  }
 }

@@ -375,6 +375,78 @@ src/core/crypto/shq256.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.s
 .PHONY : src/core/crypto/shq256.cpp.s
 
+src/core/dht/dht_node.o: src/core/dht/dht_node.cpp.o
+.PHONY : src/core/dht/dht_node.o
+
+# target to build an object file
+src/core/dht/dht_node.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o
+.PHONY : src/core/dht/dht_node.cpp.o
+
+src/core/dht/dht_node.i: src/core/dht/dht_node.cpp.i
+.PHONY : src/core/dht/dht_node.i
+
+# target to preprocess a source file
+src/core/dht/dht_node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.i
+.PHONY : src/core/dht/dht_node.cpp.i
+
+src/core/dht/dht_node.s: src/core/dht/dht_node.cpp.s
+.PHONY : src/core/dht/dht_node.s
+
+# target to generate assembly for a file
+src/core/dht/dht_node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.s
+.PHONY : src/core/dht/dht_node.cpp.s
+
+src/core/dht/kademlia_id.o: src/core/dht/kademlia_id.cpp.o
+.PHONY : src/core/dht/kademlia_id.o
+
+# target to build an object file
+src/core/dht/kademlia_id.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o
+.PHONY : src/core/dht/kademlia_id.cpp.o
+
+src/core/dht/kademlia_id.i: src/core/dht/kademlia_id.cpp.i
+.PHONY : src/core/dht/kademlia_id.i
+
+# target to preprocess a source file
+src/core/dht/kademlia_id.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.i
+.PHONY : src/core/dht/kademlia_id.cpp.i
+
+src/core/dht/kademlia_id.s: src/core/dht/kademlia_id.cpp.s
+.PHONY : src/core/dht/kademlia_id.s
+
+# target to generate assembly for a file
+src/core/dht/kademlia_id.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.s
+.PHONY : src/core/dht/kademlia_id.cpp.s
+
+src/core/dht/kademlia_routing_table.o: src/core/dht/kademlia_routing_table.cpp.o
+.PHONY : src/core/dht/kademlia_routing_table.o
+
+# target to build an object file
+src/core/dht/kademlia_routing_table.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o
+.PHONY : src/core/dht/kademlia_routing_table.cpp.o
+
+src/core/dht/kademlia_routing_table.i: src/core/dht/kademlia_routing_table.cpp.i
+.PHONY : src/core/dht/kademlia_routing_table.i
+
+# target to preprocess a source file
+src/core/dht/kademlia_routing_table.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.i
+.PHONY : src/core/dht/kademlia_routing_table.cpp.i
+
+src/core/dht/kademlia_routing_table.s: src/core/dht/kademlia_routing_table.cpp.s
+.PHONY : src/core/dht/kademlia_routing_table.s
+
+# target to generate assembly for a file
+src/core/dht/kademlia_routing_table.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.s
+.PHONY : src/core/dht/kademlia_routing_table.cpp.s
+
 src/core/dss/dss_client.o: src/core/dss/dss_client.cpp.o
 .PHONY : src/core/dss/dss_client.o
 
@@ -470,6 +542,30 @@ src/core/peer/peer_client.s: src/core/peer/peer_client.cpp.s
 src/core/peer/peer_client.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s
 .PHONY : src/core/peer/peer_client.cpp.s
+
+src/core/storage/storage_manager.o: src/core/storage/storage_manager.cpp.o
+.PHONY : src/core/storage/storage_manager.o
+
+# target to build an object file
+src/core/storage/storage_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o
+.PHONY : src/core/storage/storage_manager.cpp.o
+
+src/core/storage/storage_manager.i: src/core/storage/storage_manager.cpp.i
+.PHONY : src/core/storage/storage_manager.i
+
+# target to preprocess a source file
+src/core/storage/storage_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.i
+.PHONY : src/core/storage/storage_manager.cpp.i
+
+src/core/storage/storage_manager.s: src/core/storage/storage_manager.cpp.s
+.PHONY : src/core/storage/storage_manager.s
+
+# target to generate assembly for a file
+src/core/storage/storage_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.s
+.PHONY : src/core/storage/storage_manager.cpp.s
 
 src/core/tracker/tracker_client.o: src/core/tracker/tracker_client.cpp.o
 .PHONY : src/core/tracker/tracker_client.o
@@ -579,6 +675,15 @@ help:
 	@echo "... src/core/crypto/shq256.o"
 	@echo "... src/core/crypto/shq256.i"
 	@echo "... src/core/crypto/shq256.s"
+	@echo "... src/core/dht/dht_node.o"
+	@echo "... src/core/dht/dht_node.i"
+	@echo "... src/core/dht/dht_node.s"
+	@echo "... src/core/dht/kademlia_id.o"
+	@echo "... src/core/dht/kademlia_id.i"
+	@echo "... src/core/dht/kademlia_id.s"
+	@echo "... src/core/dht/kademlia_routing_table.o"
+	@echo "... src/core/dht/kademlia_routing_table.i"
+	@echo "... src/core/dht/kademlia_routing_table.s"
 	@echo "... src/core/dss/dss_client.o"
 	@echo "... src/core/dss/dss_client.i"
 	@echo "... src/core/dss/dss_client.s"
@@ -591,6 +696,9 @@ help:
 	@echo "... src/core/peer/peer_client.o"
 	@echo "... src/core/peer/peer_client.i"
 	@echo "... src/core/peer/peer_client.s"
+	@echo "... src/core/storage/storage_manager.o"
+	@echo "... src/core/storage/storage_manager.i"
+	@echo "... src/core/storage/storage_manager.s"
 	@echo "... src/core/tracker/tracker_client.o"
 	@echo "... src/core/tracker/tracker_client.i"
 	@echo "... src/core/tracker/tracker_client.s"

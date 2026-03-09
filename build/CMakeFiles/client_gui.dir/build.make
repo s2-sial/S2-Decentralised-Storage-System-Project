@@ -142,11 +142,12 @@ client_gui: CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.o
 client_gui: CMakeFiles/client_gui.dir/build.make
 client_gui: libdss_core.a
 client_gui: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
+client_gui: /usr/lib/x86_64-linux-gnu/libQt6Network.so.6.4.2
 client_gui: /usr/lib/x86_64-linux-gnu/libcrypto.so
 client_gui: /usr/lib/x86_64-linux-gnu/libQt6Gui.so.6.4.2
-client_gui: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.4.2
 client_gui: /usr/lib/x86_64-linux-gnu/libGLX.so
 client_gui: /usr/lib/x86_64-linux-gnu/libOpenGL.so
+client_gui: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.4.2
 client_gui: CMakeFiles/client_gui.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable client_gui"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client_gui.dir/link.txt --verbose=$(VERBOSE)

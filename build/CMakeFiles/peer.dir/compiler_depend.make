@@ -3,6 +3,7 @@
 
 CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/peer/main.cpp \
   /home/saad/~projects/decent-store/src/core/net/tcp.h \
+  /home/saad/~projects/decent-store/src/core/storage/storage_manager.h \
   /usr/include/alloca.h \
   /usr/include/arpa/inet.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -40,6 +41,7 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
   /usr/include/c++/13/bits/cxxabi_forced.h \
   /usr/include/c++/13/bits/cxxabi_init_exception.h \
   /usr/include/c++/13/bits/enable_special_members.h \
+  /usr/include/c++/13/bits/erase_if.h \
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
@@ -51,6 +53,8 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
   /usr/include/c++/13/bits/functexcept.h \
   /usr/include/c++/13/bits/functional_hash.h \
   /usr/include/c++/13/bits/hash_bytes.h \
+  /usr/include/c++/13/bits/hashtable.h \
+  /usr/include/c++/13/bits/hashtable_policy.h \
   /usr/include/c++/13/bits/invoke.h \
   /usr/include/c++/13/bits/ios_base.h \
   /usr/include/c++/13/bits/istream.tcc \
@@ -69,6 +73,7 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
   /usr/include/c++/13/bits/move.h \
   /usr/include/c++/13/bits/nested_exception.h \
   /usr/include/c++/13/bits/new_allocator.h \
+  /usr/include/c++/13/bits/node_handle.h \
   /usr/include/c++/13/bits/ostream.tcc \
   /usr/include/c++/13/bits/ostream_insert.h \
   /usr/include/c++/13/bits/parse_numbers.h \
@@ -110,6 +115,7 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
   /usr/include/c++/13/bits/this_thread_sleep.h \
   /usr/include/c++/13/bits/uniform_int_dist.h \
   /usr/include/c++/13/bits/unique_ptr.h \
+  /usr/include/c++/13/bits/unordered_map.h \
   /usr/include/c++/13/bits/uses_allocator.h \
   /usr/include/c++/13/bits/uses_allocator_args.h \
   /usr/include/c++/13/bits/utility.h \
@@ -171,6 +177,7 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
   /usr/include/c++/13/tuple \
   /usr/include/c++/13/type_traits \
   /usr/include/c++/13/typeinfo \
+  /usr/include/c++/13/unordered_map \
   /usr/include/c++/13/variant \
   /usr/include/c++/13/vector \
   /usr/include/ctype.h \
@@ -346,8 +353,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
 
-/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
 /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h:
@@ -402,8 +407,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/error_t.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
@@ -424,17 +427,13 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
-/usr/include/c++/13/cstdio:
+/usr/include/x86_64-linux-gnu/bits/time64.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
+/usr/include/x86_64-linux-gnu/bits/syscall.h:
 
-/usr/include/c++/13/bits/charconv.h:
+/usr/include/x86_64-linux-gnu/bits/struct_stat.h:
 
-/usr/include/c++/13/bits/fs_path.h:
-
-/usr/include/c++/13/concepts:
-
-/usr/include/x86_64-linux-gnu/bits/floatn.h:
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
 /usr/include/c++/13/codecvt:
 
@@ -443,10 +442,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/x86_64-linux-gnu/sys/syscall.h:
 
 /usr/include/c++/13/clocale:
-
-/usr/include/c++/13/cstdint:
-
-/usr/include/c++/13/cstdlib:
 
 /usr/include/c++/13/cctype:
 
@@ -466,8 +461,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/postypes.h:
 
-/usr/include/c++/13/cstring:
-
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
 
 /usr/include/c++/13/bits/unique_ptr.h:
@@ -477,6 +470,10 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/c++/13/semaphore:
 
 /usr/include/c++/13/bits/streambuf.tcc:
+
+/usr/include/c++/13/bits/unordered_map.h:
+
+/usr/include/c++/13/bits/quoted_string.h:
 
 /usr/include/c++/13/bits/new_allocator.h:
 
@@ -498,8 +495,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/stl_bvector.h:
 
-/usr/include/c++/13/bits/allocator.h:
-
 /usr/include/c++/13/bits/stl_algobase.h:
 
 /usr/include/c++/13/chrono:
@@ -518,29 +513,13 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/semaphore_base.h:
 
-/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h:
+/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
 
-/usr/include/c++/13/bits/ranges_util.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
-
-/usr/include/asm-generic/bitsperlong.h:
-
-/usr/include/asm-generic/types.h:
-
-/usr/include/c++/13/bits/stl_iterator_base_funcs.h:
-
-/usr/include/asm-generic/errno-base.h:
-
-/usr/include/c++/13/bits/predefined_ops.h:
-
-/usr/include/c++/13/iosfwd:
+/usr/include/c++/13/bits/string_view.tcc:
 
 /usr/include/c++/13/bits/stl_function.h:
 
 /usr/include/c++/13/bits/ranges_algobase.h:
-
-/usr/include/c++/13/bits/quoted_string.h:
 
 /usr/include/c++/13/bits/stl_heap.h:
 
@@ -564,13 +543,9 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/cerrno:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
-
 /usr/include/c++/13/bits/locale_facets_nonio.tcc:
 
-/usr/include/c++/13/bits/refwrap.h:
-
-/usr/include/c++/13/bits/fstream.tcc:
+/usr/include/c++/13/bits/locale_facets.h:
 
 /usr/include/c++/13/variant:
 
@@ -578,27 +553,13 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/exception_defines.h:
 
-/usr/include/c++/13/bits/basic_string.tcc:
-
-/usr/include/c++/13/bits/allocated_ptr.h:
-
-/usr/include/c++/13/bit:
-
-/usr/include/alloca.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
-
-/usr/include/c++/13/bits/ranges_base.h:
-
-/usr/include/asm-generic/socket.h:
-
-/usr/include/c++/13/bits/atomic_timed_wait.h:
-
 /usr/include/c++/13/bits/atomic_lockfree_defines.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
-/usr/include/c++/13/bits/locale_facets.h:
+/usr/include/c++/13/bits/uniform_int_dist.h:
+
+/usr/include/c++/13/bits/locale_classes.tcc:
 
 /usr/include/c++/13/charconv:
 
@@ -614,10 +575,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/system_error:
 
-/usr/include/c++/13/bits/string_view.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
-
 /usr/include/c++/13/bits/basic_ios.tcc:
 
 /usr/include/linux/stddef.h:
@@ -625,6 +582,14 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
 
 /usr/include/c++/13/bits/algorithmfwd.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/c++/13/bits/node_handle.h:
+
+/usr/include/c++/13/bits/predefined_ops.h:
+
+/usr/include/c++/13/iosfwd:
 
 /usr/include/asm-generic/posix_types.h:
 
@@ -634,11 +599,23 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/iterator_concepts.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
+
+/usr/include/c++/13/bits/charconv.h:
+
+/usr/include/c++/13/bits/fs_path.h:
+
+/usr/include/c++/13/cstdio:
+
+/usr/include/c++/13/bits/allocated_ptr.h:
+
+/usr/include/c++/13/bit:
+
+/usr/include/c++/13/bits/basic_string.tcc:
+
 /home/saad/~projects/decent-store/src/peer/main.cpp:
 
 /usr/include/c++/13/bits/codecvt.h:
-
-/home/saad/~projects/decent-store/src/core/net/tcp.h:
 
 /usr/include/c++/13/atomic:
 
@@ -654,13 +631,17 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/x86_64-linux-gnu/bits/environments.h:
 
+/home/saad/~projects/decent-store/src/core/net/tcp.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
+
+/home/saad/~projects/decent-store/src/core/storage/storage_manager.h:
+
 /usr/include/wchar.h:
 
 /usr/include/c++/13/bits/shared_ptr_base.h:
 
 /usr/include/c++/13/bits/basic_ios.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
 
 /usr/include/c++/13/bits/alloc_traits.h:
 
@@ -672,6 +653,10 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/fs_ops.h:
 
+/usr/include/x86_64-linux-gnu/bits/timesize.h:
+
+/usr/include/c++/13/bits/locale_classes.h:
+
 /usr/include/c++/13/bits/ranges_cmp.h:
 
 /usr/include/asm-generic/int-ll64.h:
@@ -679,6 +664,34 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/c++/13/bits/max_size_type.h:
 
 /usr/include/c++/13/thread:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
+
+/usr/include/c++/13/bits/ranges_base.h:
+
+/usr/include/c++/13/bits/atomic_timed_wait.h:
+
+/usr/include/asm-generic/socket.h:
+
+/usr/include/alloca.h:
+
+/usr/include/c++/13/bits/refwrap.h:
+
+/usr/include/c++/13/bits/fstream.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
+
+/usr/include/asm-generic/bitsperlong.h:
+
+/usr/include/asm-generic/types.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h:
+
+/usr/include/c++/13/bits/ranges_util.h:
+
+/usr/include/c++/13/bits/stl_iterator_base_funcs.h:
+
+/usr/include/asm-generic/errno-base.h:
 
 /usr/include/c++/13/bits/locale_conv.h:
 
@@ -693,6 +706,8 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h:
 
 /usr/include/c++/13/bits/char_traits.h:
+
+/usr/include/c++/13/bits/hashtable_policy.h:
 
 /usr/include/netinet/in.h:
 
@@ -711,6 +726,8 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/c++/13/bits/cpp_type_traits.h:
 
 /usr/include/c++/13/bits/cxxabi_forced.h:
+
+/usr/include/c++/13/bits/erase_if.h:
 
 /usr/include/x86_64-linux-gnu/bits/socket_type.h:
 
@@ -750,6 +767,10 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/sstream:
 
+/usr/include/x86_64-linux-gnu/bits/types/error_t.h:
+
+/usr/include/c++/13/bits/hashtable.h:
+
 /usr/include/c++/13/bits/functional_hash.h:
 
 /usr/include/errno.h:
@@ -762,9 +783,15 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/c++/13/bits/ios_base.h:
 
-/usr/include/c++/13/bits/uniform_int_dist.h:
+/usr/include/c++/13/concepts:
 
-/usr/include/c++/13/bits/locale_classes.tcc:
+/usr/include/x86_64-linux-gnu/bits/floatn.h:
+
+/usr/include/c++/13/cstdint:
+
+/usr/include/c++/13/cstdlib:
+
+/usr/include/c++/13/cstring:
 
 /usr/include/c++/13/debug/assertions.h:
 
@@ -810,9 +837,9 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
-/usr/include/limits.h:
-
 /usr/include/c++/13/bits/std_thread.h:
+
+/usr/include/limits.h:
 
 /usr/include/c++/13/initializer_list:
 
@@ -847,6 +874,10 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/c++/13/tuple:
 
 /usr/include/c++/13/type_traits:
+
+/usr/include/c++/13/bits/allocator.h:
+
+/usr/include/c++/13/unordered_map:
 
 /usr/include/c++/13/vector:
 
@@ -910,8 +941,6 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/strings.h:
 
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
 /usr/include/c++/13/cwctype:
 
 /usr/include/x86_64-linux-gnu/asm/posix_types.h:
@@ -956,7 +985,9 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 
 /usr/include/x86_64-linux-gnu/bits/sched.h:
 
-/usr/include/x86_64-linux-gnu/bits/struct_stat.h:
+/usr/include/x86_64-linux-gnu/bits/time.h:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
 
 /usr/include/x86_64-linux-gnu/bits/semaphore.h:
 
@@ -973,13 +1004,3 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: /home/saad/~projects/decent-store/src/p
 /usr/include/x86_64-linux-gnu/bits/timex.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/syscall.h:
-
-/usr/include/x86_64-linux-gnu/bits/select.h:
-
-/usr/include/x86_64-linux-gnu/bits/time.h:
-
-/usr/include/c++/13/bits/locale_classes.h:
-
-/usr/include/x86_64-linux-gnu/bits/timesize.h:

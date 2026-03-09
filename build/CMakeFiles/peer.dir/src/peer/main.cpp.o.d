@@ -254,4 +254,11 @@ CMakeFiles/peer.dir/src/peer/main.cpp.o: \
  /usr/include/c++/13/bits/enable_special_members.h \
  /usr/include/c++/13/span /usr/include/c++/13/variant \
  /usr/include/c++/13/bits/ranges_algobase.h \
- /home/saad/~projects/decent-store/src/core/net/tcp.h
+ /home/saad/~projects/decent-store/src/core/net/tcp.h \
+ /home/saad/~projects/decent-store/src/core/storage/storage_manager.h \
+ /usr/include/c++/13/unordered_map \
+ /usr/include/c++/13/bits/unordered_map.h \
+ /usr/include/c++/13/bits/hashtable.h \
+ /usr/include/c++/13/bits/hashtable_policy.h \
+ /usr/include/c++/13/bits/node_handle.h \
+ /usr/include/c++/13/bits/erase_if.h

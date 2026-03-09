@@ -10,10 +10,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/saad/~projects/decent-store/src/core/chunk/chunker.cpp" "CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/crypto/shq256.cpp" "CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/crypto/shq256.cpp.o.d"
+  "/home/saad/~projects/decent-store/src/core/dht/dht_node.cpp" "CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o.d"
+  "/home/saad/~projects/decent-store/src/core/dht/kademlia_id.cpp" "CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/dht/kademlia_id.cpp.o.d"
+  "/home/saad/~projects/decent-store/src/core/dht/kademlia_routing_table.cpp" "CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/dss/dss_client.cpp" "CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/manifest/manifest.cpp" "CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/net/tcp.cpp" "CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/peer/peer_client.cpp" "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o.d"
+  "/home/saad/~projects/decent-store/src/core/storage/storage_manager.cpp" "CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/tracker/tracker_client.cpp" "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o.d"
   )
 
