@@ -162,6 +162,14 @@ int main(int argc, char** argv) {
                 send_all_nothrow(client, "ERR\n");
             }
         }
+        else if (cmd == "HAS_CHUNK") {
+            iss >> hash;
+            if (storage.hasChunk(hash)) {
+                send_all_nothrow(client, "OK\n");
+            } else {
+                send_all_nothrow(client, "ERR\n");
+            }
+        }
 
         close(client);
     }

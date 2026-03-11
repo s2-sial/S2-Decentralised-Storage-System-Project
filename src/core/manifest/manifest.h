@@ -10,6 +10,12 @@ namespace dss {
     size_t originalSize{};
     size_t chunkSize{};
     std::vector<ManifestEntry> chunks;
+
+    // Optional encryption metadata for hybrid encryption.
+    bool encrypted{false};
+    std::string encAlgo;        // e.g. "AES-256-GCM"
+    std::string keyEncAlgo;     // e.g. "RSA"
+    std::string encryptedKeyHex;  // hex(RSA(key||iv))
   };
 
   void writeManifest(const std::string& path, const Manifest& m);

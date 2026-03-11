@@ -19,6 +19,15 @@ void writeManifest(const std::string& path, const Manifest& m) {
   for (const auto& e : m.chunks) {
     out << e.chunkId << "\n";
   }
+
+  if (m.encrypted) {
+    out << "encrypted 1\n";
+    out << "enc_algo " << m.encAlgo << "\n";
+    out << "key_enc_algo " << m.keyEncAlgo << "\n";
+    out << "enc_key " << m.encryptedKeyHex << "\n";
+  } else {
+    out << "encrypted 0\n";
+  }
 }
 
 Manifest readManifest(const std::string& path) {
@@ -59,6 +68,23 @@ Manifest readManifest(const std::string& path) {
       throw std::runtime_error("Malformed manifest (chunk id): " + path);
     }
     m.chunks.push_back(std::move(e));
+  }
+
+  // Optional encryption metadata.
+  int encFlag = 0;
+  if (in >> label >> encFlag) {
+    if (label == "encrypted" && encFlag == 1) {
+      m.encrypted = true;
+      if (!(in >> label >> m.encAlgo) || label != "enc_algo") {
+        throw std::runtime_error("Malformed manifest (enc_algo): " + path);
+      }
+      if (!(in >> label >> m.keyEncAlgo) || label != "key_enc_algo") {
+        throw std::runtime_error("Malformed manifest (key_enc_algo): " + path);
+      }
+      if (!(in >> label >> m.encryptedKeyHex) || label != "enc_key") {
+        throw std::runtime_error("Malformed manifest (enc_key): " + path);
+      }
+    }
   }
 
   return m;

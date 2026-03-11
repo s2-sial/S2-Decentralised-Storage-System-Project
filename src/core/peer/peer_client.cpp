@@ -81,5 +81,27 @@ std::vector<char> PeerClient::getChunk(const PeerEndpoint& peer,
   }
 }
 
+bool PeerClient::hasChunk(const PeerEndpoint& peer,
+                          const std::string& chunkId) {
+  using namespace dss::net;
+
+  int sock = connect_tcp_fatal_or_throw(peer.ip, peer.port);
+  try {
+    std::string req = "HAS_CHUNK " + chunkId + "\n";
+    send_all_or_throw(sock, req);
+
+    std::string line;
+    if (!recv_line(sock, line)) {
+      ::close(sock);
+      return false;
+    }
+    ::close(sock);
+    return line.rfind("OK", 0) == 0;
+  } catch (...) {
+    ::close(sock);
+    return false;
+  }
+}
+
 } // namespace dss
 
