@@ -351,6 +351,30 @@ src/core/chunk/chunker.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/chunk/chunker.cpp.s
 .PHONY : src/core/chunk/chunker.cpp.s
 
+src/core/crypto/hybrid.o: src/core/crypto/hybrid.cpp.o
+.PHONY : src/core/crypto/hybrid.o
+
+# target to build an object file
+src/core/crypto/hybrid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/hybrid.cpp.o
+.PHONY : src/core/crypto/hybrid.cpp.o
+
+src/core/crypto/hybrid.i: src/core/crypto/hybrid.cpp.i
+.PHONY : src/core/crypto/hybrid.i
+
+# target to preprocess a source file
+src/core/crypto/hybrid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/hybrid.cpp.i
+.PHONY : src/core/crypto/hybrid.cpp.i
+
+src/core/crypto/hybrid.s: src/core/crypto/hybrid.cpp.s
+.PHONY : src/core/crypto/hybrid.s
+
+# target to generate assembly for a file
+src/core/crypto/hybrid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/crypto/hybrid.cpp.s
+.PHONY : src/core/crypto/hybrid.cpp.s
+
 src/core/crypto/shq256.o: src/core/crypto/shq256.cpp.o
 .PHONY : src/core/crypto/shq256.o
 
@@ -672,6 +696,9 @@ help:
 	@echo "... src/core/chunk/chunker.o"
 	@echo "... src/core/chunk/chunker.i"
 	@echo "... src/core/chunk/chunker.s"
+	@echo "... src/core/crypto/hybrid.o"
+	@echo "... src/core/crypto/hybrid.i"
+	@echo "... src/core/crypto/hybrid.s"
 	@echo "... src/core/crypto/shq256.o"
 	@echo "... src/core/crypto/shq256.i"
 	@echo "... src/core/crypto/shq256.s"

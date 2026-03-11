@@ -9,9 +9,9 @@ static void usage(const char* prog) {
   std::cerr
       << "Usage:\n"
       << "  " << prog
-      << " put <peers> <file_path> [chunk_size_bytes] [replicas]\n"
+      << " put <peers> <file_path> [chunk_size_bytes] [replicas] [rsa_public_key_pem]\n"
       << "  " << prog
-      << " get <peers> <manifest_path> <output_file>\n"
+      << " get <peers> <manifest_path> <output_file> [rsa_private_key_pem]\n"
       << "  " << prog
       << " repair (not supported without tracker)\n";
 }
@@ -70,6 +70,9 @@ int main(int argc, char** argv) {
                           ? static_cast<size_t>(std::stoul(argv[5]))
                           : 1024 * 1024;
       cfg.desiredReplicas = (argc >= 7) ? std::stoi(argv[6]) : 2;
+      if (argc >= 8) {
+        cfg.rsaPublicKeyPath = argv[7];
+      }
 
       dss::DssClient client(cfg);
       std::string manifestPath =
@@ -121,6 +124,9 @@ int main(int argc, char** argv) {
 
       cfg.chunkSize = 1024 * 1024;
       cfg.desiredReplicas = 2;
+      if (argc >= 6) {
+        cfg.rsaPrivateKeyPath = argv[5];
+      }
 
       dss::DssClient client(cfg);
       client.getFile(argv[3], argv[4], [](dss::Progress p) {

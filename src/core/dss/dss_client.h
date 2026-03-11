@@ -11,6 +11,13 @@ struct ClientConfig {
   std::vector<PeerEndpoint> peers;  // list of known peers (DHT nodes)
   size_t chunkSize{};
   int desiredReplicas{};
+
+  // Optional hybrid encryption settings.
+  // If rsaPublicKeyPath is non-empty, putFile() will encrypt data.
+  // If rsaPrivateKeyPath is non-empty and manifest is encrypted,
+  // getFile() will attempt decryption.
+  std::string rsaPublicKeyPath;
+  std::string rsaPrivateKeyPath;
 };
 
 struct Progress {

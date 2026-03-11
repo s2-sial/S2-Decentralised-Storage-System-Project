@@ -15,6 +15,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 add_library(dss_core
 	src/core/net/tcp.cpp
 	src/core/crypto/shq256.cpp
+	src/core/crypto/hybrid.cpp
 	src/core/chunk/chunker.cpp
 	src/core/manifest/manifest.cpp
 	src/core/storage/storage_manager.cpp

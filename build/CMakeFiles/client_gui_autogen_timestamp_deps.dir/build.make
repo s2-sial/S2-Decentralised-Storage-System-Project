@@ -67,9 +67,9 @@ include CMakeFiles/client_gui_autogen_timestamp_deps.dir/compiler_depend.make
 include CMakeFiles/client_gui_autogen_timestamp_deps.dir/progress.make
 
 CMakeFiles/client_gui_autogen_timestamp_deps: libdss_core.a
-CMakeFiles/client_gui_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
-CMakeFiles/client_gui_autogen_timestamp_deps: /usr/lib/qt6/libexec/moc
 CMakeFiles/client_gui_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libcrypto.so
+CMakeFiles/client_gui_autogen_timestamp_deps: /usr/lib/qt6/libexec/moc
+CMakeFiles/client_gui_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
 CMakeFiles/client_gui_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Network.so.6.4.2
 
 client_gui_autogen_timestamp_deps: CMakeFiles/client_gui_autogen_timestamp_deps

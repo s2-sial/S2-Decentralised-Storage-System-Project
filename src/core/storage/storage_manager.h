@@ -48,6 +48,9 @@ public:
   // Snapshot of all known chunks.
   std::vector<ChunkInfo> listChunks() const;
 
+  // Check whether a chunk exists (metadata only, no disk IO).
+  bool hasChunk(const std::string& hash) const;
+
 private:
   struct ChunkMeta {
     std::uint64_t size{};

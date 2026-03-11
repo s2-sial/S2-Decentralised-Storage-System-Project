@@ -233,5 +233,9 @@ std::vector<ChunkInfo> StorageManager::listChunks() const {
   return out;
 }
 
+bool StorageManager::hasChunk(const std::string& hash) const {
+  return meta_.find(hash) != meta_.end();
+}
+
 }  // namespace dss::storage
 
