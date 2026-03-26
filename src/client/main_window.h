@@ -39,6 +39,7 @@ private:
   QString trackerIp() const;
   int trackerPort() const;
   void setBusy(bool busy);
+  void discoverPeersFromBootstrap();
 
   QThread workerThread_;
   DssWorker* worker_{};
@@ -47,6 +48,9 @@ private:
 
   QLineEdit* trackerIpEdit_{};
   QSpinBox* trackerPortSpin_{};  // unused in DHT mode (kept for compatibility)
+  QLabel* bootstrapStatusLabel_{};
+  QString discoveredPeersCsv_;
+  QStringList bootstrapNodes_;
 
   // Upload / files UI
   QTableWidget* filesTable_{};

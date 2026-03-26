@@ -36,7 +36,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   connect(worker_, &DssWorker::error, this, &MainWindow::onError, Qt::QueuedConnection);
 
   workerThread_.start();
+  bootstrapNodes_ = {
+      QStringLiteral("127.0.0.1:9101"),
+      QStringLiteral("127.0.0.1:9102"),
+      QStringLiteral("127.0.0.1:9103")
+  };
   setupUi();
+  discoverPeersFromBootstrap();
   setWindowTitle(tr("Decent Store — Client"));
   resize(520, 420);
 }
@@ -50,12 +56,14 @@ void MainWindow::setupUi() {
   QWidget* central = new QWidget(this);
   QVBoxLayout* mainLayout = new QVBoxLayout(central);
 
-  QGroupBox* connGroup = new QGroupBox(tr("Peers"));
+  QGroupBox* connGroup = new QGroupBox(tr("Network Join (Bootstrap)"));
   QFormLayout* connLayout = new QFormLayout(connGroup);
   trackerIpEdit_ = new QLineEdit(this);
-  trackerIpEdit_->setPlaceholderText(tr("ip:port,ip:port (comma separated)"));
-  trackerIpEdit_->setText(QStringLiteral("127.0.0.1:9101"));
-  connLayout->addRow(tr("Peer list:"), trackerIpEdit_);
+  trackerIpEdit_->setReadOnly(true);
+  trackerIpEdit_->setPlaceholderText(tr("Discovered peers will appear here"));
+  connLayout->addRow(tr("Discovered peers:"), trackerIpEdit_);
+  bootstrapStatusLabel_ = new QLabel(tr("Joining network via bootstrap nodes..."), this);
+  connLayout->addRow(tr("Status:"), bootstrapStatusLabel_);
   trackerPortSpin_ = nullptr;
   mainLayout->addWidget(connGroup);
 
@@ -223,7 +231,7 @@ QWidget* MainWindow::makeNetworkTab() {
 }
 
 QString MainWindow::trackerIp() const {
-  return trackerIpEdit_->text().trimmed();
+  return discoveredPeersCsv_.trimmed();
 }
 
 int MainWindow::trackerPort() const {
@@ -254,7 +262,7 @@ void MainWindow::onProgress(int done, int total, const QString& message) {
 
 void MainWindow::onPutClicked() {
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Put"), tr("Enter peers (ip:port,ip:port)."));
+    QMessageBox::warning(this, tr("Put"), tr("No peers discovered. Start at least one bootstrap node."));
     return;
   }
   QString path = putFileEdit_->text().trimmed();
@@ -311,7 +319,7 @@ void MainWindow::onPutFinished(const QString& manifestPath) {
 
 void MainWindow::onGetClicked() {
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Get"), tr("Enter peers (ip:port,ip:port)."));
+    QMessageBox::warning(this, tr("Get"), tr("No peers discovered. Start at least one bootstrap node."));
     return;
   }
   QString manifest = getManifestEdit_->text().trimmed();
@@ -336,7 +344,7 @@ void MainWindow::onGetFinished(const QString& outputPath) {
 
 void MainWindow::onRepairClicked() {
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Repair"), tr("Enter peers (ip:port,ip:port)."));
+    QMessageBox::warning(this, tr("Repair"), tr("No peers discovered. Start at least one bootstrap node."));
     return;
   }
   setBusy(true);
@@ -366,7 +374,7 @@ void MainWindow::onDownloadButtonClicked() {
   if (manifest.isEmpty()) return;
 
   if (trackerIp().isEmpty()) {
-    QMessageBox::warning(this, tr("Get"), tr("Enter peers (ip:port,ip:port)."));
+    QMessageBox::warning(this, tr("Get"), tr("No peers discovered. Start at least one bootstrap node."));
     return;
   }
 
@@ -389,6 +397,8 @@ void MainWindow::onDownloadButtonClicked() {
 
 void MainWindow::refreshPeerMonitor() {
   if (!peersTable_) return;
+
+  discoverPeersFromBootstrap();
 
   peersTable_->setRowCount(0);
   QString peersText = trackerIp();
@@ -434,6 +444,42 @@ void MainWindow::refreshPeerMonitor() {
       networkMapLabel_->setText(tr("No peers configured."));
     } else {
       networkMapLabel_->setText(mapText.trimmed());
+    }
+  }
+}
+
+void MainWindow::discoverPeersFromBootstrap() {
+  QStringList discovered;
+
+  for (const QString& peerStrRaw : bootstrapNodes_) {
+    const QString peerStr = peerStrRaw.trimmed();
+    if (peerStr.isEmpty()) continue;
+    const int colon = peerStr.indexOf(':');
+    if (colon <= 0 || colon == peerStr.size() - 1) continue;
+    const QString ip = peerStr.left(colon);
+    const int port = peerStr.mid(colon + 1).toInt();
+    if (port <= 0) continue;
+
+    QTcpSocket sock;
+    sock.connectToHost(ip, static_cast<quint16>(port));
+    const bool ok = sock.waitForConnected(400);
+    sock.abort();
+    if (ok) {
+      discovered.push_back(peerStr);
+    }
+  }
+
+  discovered.removeDuplicates();
+  discoveredPeersCsv_ = discovered.join(',');
+  if (trackerIpEdit_) {
+    trackerIpEdit_->setText(discoveredPeersCsv_);
+  }
+  if (bootstrapStatusLabel_) {
+    if (discovered.isEmpty()) {
+      bootstrapStatusLabel_->setText(tr("Unable to reach bootstrap nodes."));
+    } else {
+      bootstrapStatusLabel_->setText(
+          tr("Joined network via bootstrap. Discovered %1 peer(s).").arg(discovered.size()));
     }
   }
 }
