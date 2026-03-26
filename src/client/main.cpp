@@ -11,7 +11,7 @@ static void usage(const char* prog) {
       << "  " << prog
       << " put <peers> <file_path> [chunk_size_bytes] [replicas] [rsa_public_key_pem]\n"
       << "  " << prog
-      << " get <peers> <manifest_path> <output_file> [rsa_private_key_pem]\n"
+      << " get <peers> <share_id_or_manifest_path> <output_file> [rsa_private_key_pem]\n"
       << "  " << prog
       << " repair (not supported without tracker)\n";
 }

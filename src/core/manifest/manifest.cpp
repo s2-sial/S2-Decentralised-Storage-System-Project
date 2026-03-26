@@ -6,12 +6,8 @@
 
 namespace dss {
 
-void writeManifest(const std::string& path, const Manifest& m) {
-  std::ofstream out(path);
-  if (!out) {
-    throw std::runtime_error("Failed to open manifest for write: " + path);
-  }
-
+std::string serializeManifest(const Manifest& m) {
+  std::ostringstream out;
   out << "filename " << m.originalName << "\n";
   out << "size " << m.originalSize << "\n";
   out << "chunk_size " << m.chunkSize << "\n";
@@ -19,7 +15,6 @@ void writeManifest(const std::string& path, const Manifest& m) {
   for (const auto& e : m.chunks) {
     out << e.chunkId << "\n";
   }
-
   if (m.encrypted) {
     out << "encrypted 1\n";
     out << "enc_algo " << m.encAlgo << "\n";
@@ -28,6 +23,59 @@ void writeManifest(const std::string& path, const Manifest& m) {
   } else {
     out << "encrypted 0\n";
   }
+  return out.str();
+}
+
+Manifest parseManifestText(const std::string& text) {
+  std::istringstream in(text);
+  Manifest m;
+  std::string label;
+  size_t chunkCount = 0;
+
+  in >> label >> m.originalName;
+  if (!in || label != "filename") throw std::runtime_error("Malformed manifest (filename)");
+
+  in >> label >> m.originalSize;
+  if (!in || label != "size") throw std::runtime_error("Malformed manifest (size)");
+
+  in >> label >> m.chunkSize;
+  if (!in || label != "chunk_size") throw std::runtime_error("Malformed manifest (chunk_size)");
+
+  in >> label >> chunkCount;
+  if (!in || label != "chunks") throw std::runtime_error("Malformed manifest (chunks)");
+
+  m.chunks.clear();
+  m.chunks.reserve(chunkCount);
+  for (size_t i = 0; i < chunkCount; ++i) {
+    ManifestEntry e;
+    if (!(in >> e.chunkId)) throw std::runtime_error("Malformed manifest (chunk id)");
+    m.chunks.push_back(std::move(e));
+  }
+
+  int encFlag = 0;
+  if (in >> label >> encFlag) {
+    if (label == "encrypted" && encFlag == 1) {
+      m.encrypted = true;
+      if (!(in >> label >> m.encAlgo) || label != "enc_algo") {
+        throw std::runtime_error("Malformed manifest (enc_algo)");
+      }
+      if (!(in >> label >> m.keyEncAlgo) || label != "key_enc_algo") {
+        throw std::runtime_error("Malformed manifest (key_enc_algo)");
+      }
+      if (!(in >> label >> m.encryptedKeyHex) || label != "enc_key") {
+        throw std::runtime_error("Malformed manifest (enc_key)");
+      }
+    }
+  }
+  return m;
+}
+
+void writeManifest(const std::string& path, const Manifest& m) {
+  std::ofstream out(path);
+  if (!out) {
+    throw std::runtime_error("Failed to open manifest for write: " + path);
+  }
+  out << serializeManifest(m);
 }
 
 Manifest readManifest(const std::string& path) {
@@ -35,59 +83,13 @@ Manifest readManifest(const std::string& path) {
   if (!in) {
     throw std::runtime_error("Failed to open manifest for read: " + path);
   }
-
-  Manifest m;
-  std::string label;
-  size_t chunkCount = 0;
-
-  in >> label >> m.originalName;
-  if (!in || label != "filename") {
-    throw std::runtime_error("Malformed manifest (filename): " + path);
+  std::ostringstream ss;
+  ss << in.rdbuf();
+  try {
+    return parseManifestText(ss.str());
+  } catch (const std::exception& e) {
+    throw std::runtime_error(std::string(e.what()) + ": " + path);
   }
-
-  in >> label >> m.originalSize;
-  if (!in || label != "size") {
-    throw std::runtime_error("Malformed manifest (size): " + path);
-  }
-
-  in >> label >> m.chunkSize;
-  if (!in || label != "chunk_size") {
-    throw std::runtime_error("Malformed manifest (chunk_size): " + path);
-  }
-
-  in >> label >> chunkCount;
-  if (!in || label != "chunks") {
-    throw std::runtime_error("Malformed manifest (chunks): " + path);
-  }
-
-  m.chunks.clear();
-  m.chunks.reserve(chunkCount);
-  for (size_t i = 0; i < chunkCount; ++i) {
-    ManifestEntry e;
-    if (!(in >> e.chunkId)) {
-      throw std::runtime_error("Malformed manifest (chunk id): " + path);
-    }
-    m.chunks.push_back(std::move(e));
-  }
-
-  // Optional encryption metadata.
-  int encFlag = 0;
-  if (in >> label >> encFlag) {
-    if (label == "encrypted" && encFlag == 1) {
-      m.encrypted = true;
-      if (!(in >> label >> m.encAlgo) || label != "enc_algo") {
-        throw std::runtime_error("Malformed manifest (enc_algo): " + path);
-      }
-      if (!(in >> label >> m.keyEncAlgo) || label != "key_enc_algo") {
-        throw std::runtime_error("Malformed manifest (key_enc_algo): " + path);
-      }
-      if (!(in >> label >> m.encryptedKeyHex) || label != "enc_key") {
-        throw std::runtime_error("Malformed manifest (enc_key): " + path);
-      }
-    }
-  }
-
-  return m;
 }
 
 } // namespace dss

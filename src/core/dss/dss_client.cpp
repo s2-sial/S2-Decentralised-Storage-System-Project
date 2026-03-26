@@ -12,6 +12,21 @@
 #include <stdexcept>
 
 namespace dss {
+namespace {
+
+std::string normalize_manifest_id(const std::string& manifestRef) {
+  const std::string prefix = "dss://file/";
+  if (manifestRef.rfind(prefix, 0) == 0) {
+    return manifestRef.substr(prefix.size());
+  }
+  return manifestRef;
+}
+
+bool looks_like_local_manifest_path(const std::string& manifestRef) {
+  return std::filesystem::exists(manifestRef);
+}
+
+}  // namespace
 
 DssClient::DssClient(ClientConfig cfg) : cfg_(std::move(cfg)) {}
 
@@ -106,18 +121,25 @@ std::string DssClient::putFile(const std::string& filePath,
     }
   }
 
-  std::string manifestPath = manifest.originalName + ".manifest.txt";
-  writeManifest(manifestPath, manifest);
-  return manifestPath;
+  // Store manifest as content-addressed object in the DHT.
+  std::string manifestText = serializeManifest(manifest);
+  std::vector<char> manifestBytes(manifestText.begin(), manifestText.end());
+  std::string manifestHash = dss::crypto::sha256_hex(manifestBytes);
+
+  auto mTargets = dht.store("manifest:" + manifestHash, replicas);
+  for (const auto& p : mTargets) {
+    PeerClient::putManifest(p, manifestHash, manifestText);
+  }
+
+  // Keep writing local manifest file for debugging/backward compatibility.
+  std::string localManifestPath = manifest.originalName + ".manifest.txt";
+  writeManifest(localManifestPath, manifest);
+
+  return "dss://file/" + manifestHash;
 }
 
 void DssClient::getFile(const std::string& manifestHash,
                         const std::string& outPath) {
-  // For now treat manifestHash as a manifest path. Later, when manifests
-  // are themselves addressed by hash in the DHT, this can:
-  //  1) resolve manifestHash to a manifest blob via DHT
-  //  2) parse that blob into a Manifest
-  //  3) reuse the chunk download logic below.
   getFile(manifestHash, outPath, {});
 }
 
@@ -130,7 +152,43 @@ void DssClient::getFile(const std::string& manifestPath,
 
   dss::dht::DhtNode dht(cfg_.peers);
 
-  Manifest manifest = readManifest(manifestPath);
+  Manifest manifest;
+  const std::string manifestId = normalize_manifest_id(manifestPath);
+  if (looks_like_local_manifest_path(manifestPath)) {
+    manifest = readManifest(manifestPath);
+  } else {
+    // Resolve manifest by hash/share-id from network.
+    int replicas = cfg_.desiredReplicas <= 0 ? 1 : cfg_.desiredReplicas;
+    auto mCandidates = dht.findValue("manifest:" + manifestId, replicas);
+    for (const auto& p : cfg_.peers) {
+      bool already = false;
+      for (const auto& c : mCandidates) {
+        if (c.ip == p.ip && c.port == p.port) {
+          already = true;
+          break;
+        }
+      }
+      if (!already) mCandidates.push_back(p);
+    }
+
+    bool foundManifest = false;
+    for (const auto& peer : mCandidates) {
+      try {
+        std::string text = PeerClient::getManifest(peer, manifestId);
+        std::vector<char> bytes(text.begin(), text.end());
+        if (dss::crypto::sha256_hex(bytes) != manifestId) {
+          continue;
+        }
+        manifest = parseManifestText(text);
+        foundManifest = true;
+        break;
+      } catch (...) {
+      }
+    }
+    if (!foundManifest) {
+      throw std::runtime_error("Failed to retrieve manifest " + manifestId);
+    }
+  }
 
   dss::crypto::FileEncryptionParams encParams{};
   const bool encryptedManifest = manifest.encrypted && !manifest.encryptedKeyHex.empty();
