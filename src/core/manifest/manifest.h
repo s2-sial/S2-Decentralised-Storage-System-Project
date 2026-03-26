@@ -18,6 +18,9 @@ namespace dss {
     std::string encryptedKeyHex;  // hex(RSA(key||iv))
   };
 
+  std::string serializeManifest(const Manifest& m);
+  Manifest parseManifestText(const std::string& text);
+
   void writeManifest(const std::string& path, const Manifest& m);
   Manifest readManifest(const std::string& path);
 }

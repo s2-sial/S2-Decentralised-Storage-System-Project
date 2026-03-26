@@ -15,6 +15,7 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <vector>
 #include "core/net/tcp.h"
 #include "core/storage/storage_manager.h"
 
@@ -169,6 +170,61 @@ int main(int argc, char** argv) {
             } else {
                 send_all_nothrow(client, "ERR\n");
             }
+        }
+        else if (cmd == "PUT_MANIFEST") {
+            std::string manifestId;
+            iss >> manifestId >> size;
+            std::vector<char> data;
+            data.resize(size);
+            size_t remaining = size;
+            size_t offset = 0;
+            while (remaining > 0) {
+                const size_t chunk = std::min<std::size_t>(remaining, 4096);
+                ssize_t n = ::recv(client, data.data() + offset, chunk, 0);
+                if (n <= 0) break;
+                offset += static_cast<std::size_t>(n);
+                remaining -= static_cast<std::size_t>(n);
+            }
+            if (remaining == 0) {
+                std::string path = storage_dir + "/manifests/" + manifestId;
+                std::ofstream out(path, std::ios::binary | std::ios::trunc);
+                if (!out) {
+                    send_all_nothrow(client, "ERR\n");
+                } else {
+                    out.write(data.data(), static_cast<std::streamsize>(data.size()));
+                    send_all_nothrow(client, "OK\n");
+                }
+            } else {
+                send_all_nothrow(client, "ERR\n");
+            }
+        }
+        else if (cmd == "GET_MANIFEST") {
+            std::string manifestId;
+            iss >> manifestId;
+            std::string path = storage_dir + "/manifests/" + manifestId;
+            std::ifstream in(path, std::ios::binary);
+            if (!in) {
+                send_all_nothrow(client, "ERR\n");
+            } else {
+                in.seekg(0, std::ios::end);
+                size_t msize = static_cast<size_t>(in.tellg());
+                in.seekg(0, std::ios::beg);
+                std::string text;
+                text.resize(msize);
+                if (msize > 0) {
+                    in.read(text.data(), static_cast<std::streamsize>(msize));
+                }
+                send_all_nothrow(client, "OK " + std::to_string(msize) + "\n");
+                if (msize > 0) send_all_nothrow(client, text);
+            }
+        }
+        else if (cmd == "HAS_MANIFEST") {
+            std::string manifestId;
+            iss >> manifestId;
+            std::string path = storage_dir + "/manifests/" + manifestId;
+            std::ifstream in(path, std::ios::binary);
+            if (in) send_all_nothrow(client, "OK\n");
+            else send_all_nothrow(client, "ERR\n");
         }
 
         close(client);
