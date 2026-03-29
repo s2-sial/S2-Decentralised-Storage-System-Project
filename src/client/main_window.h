@@ -32,6 +32,7 @@ private slots:
   void log(const QString& text);
   void onDownloadButtonClicked();
   void refreshPeerMonitor();
+  void onApplyNetworkSettingsClicked();
 
 private:
   void setupUi();
@@ -80,4 +81,8 @@ private:
   // Peer monitor UI
   QTableWidget* peersTable_{};
   QLabel* networkMapLabel_{};
+  QLineEdit* bootstrapSeedsEdit_{};
+  QLineEdit* advertiseIpEdit_{};
+
+  QString peerAdvertiseIp_{QStringLiteral("127.0.0.1")};
 };

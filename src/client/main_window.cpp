@@ -44,6 +44,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   workerThread_.start();
   loadOrPromptPeerSettings();
   setupUi();
+  if (bootstrapSeedsEdit_) {
+    bootstrapSeedsEdit_->setText(bootstrapNodes_.join(','));
+  }
+  if (advertiseIpEdit_) {
+    advertiseIpEdit_->setText(peerAdvertiseIp_);
+  }
   startEmbeddedPeerIfEnabled();
   discoverPeersFromBootstrap();
   setWindowTitle(tr("Decent Store — Client"));
@@ -208,6 +214,25 @@ QWidget* MainWindow::makeRepairTab() {
 QWidget* MainWindow::makeNetworkTab() {
   QWidget* w = new QWidget(this);
   QVBoxLayout* layout = new QVBoxLayout(w);
+
+  QGroupBox* routingGroup = new QGroupBox(tr("Routing configuration"), w);
+  QFormLayout* routingForm = new QFormLayout(routingGroup);
+  bootstrapSeedsEdit_ = new QLineEdit(w);
+  bootstrapSeedsEdit_->setPlaceholderText(
+      tr("Comma-separated host:port seeds, e.g. 127.0.0.1:9101,192.168.1.10:9101"));
+  routingForm->addRow(tr("Bootstrap seeds:"), bootstrapSeedsEdit_);
+  advertiseIpEdit_ = new QLineEdit(w);
+  advertiseIpEdit_->setPlaceholderText(tr("Address other peers use to reach this node (e.g. LAN IP)"));
+  routingForm->addRow(tr("Advertise address:"), advertiseIpEdit_);
+  auto* applyRow = new QWidget(w);
+  auto* applyLayout = new QHBoxLayout(applyRow);
+  applyLayout->setContentsMargins(0, 0, 0, 0);
+  QPushButton* applyBtn = new QPushButton(tr("Apply network settings"), w);
+  connect(applyBtn, &QPushButton::clicked, this, &MainWindow::onApplyNetworkSettingsClicked);
+  applyLayout->addWidget(applyBtn);
+  applyLayout->addStretch(1);
+  routingForm->addRow(applyRow);
+  layout->addWidget(routingGroup);
 
   QHBoxLayout* topRow = new QHBoxLayout;
   QPushButton* refreshBtn = new QPushButton(tr("Refresh peers"), w);
@@ -472,7 +497,7 @@ void MainWindow::discoverPeersFromBootstrap() {
   }
 
   if (peerEnabled_ && embeddedPeerService_ && embeddedPeerService_->isRunning()) {
-    const QString local = QStringLiteral("127.0.0.1:%1").arg(peerPort_);
+    const QString local = QStringLiteral("%1:%2").arg(peerAdvertiseIp_, QString::number(peerPort_));
     if (!merged.contains(local)) merged.push_back(local);
   }
 
@@ -520,7 +545,7 @@ void MainWindow::startEmbeddedPeerIfEnabled() {
 
   try {
     embeddedPeerService_ = std::make_unique<dss::peer::PeerService>(
-        std::string("127.0.0.1"),
+        peerAdvertiseIp_.toStdString(),
         peerPort_,
         peerStorageDir_.toStdString(),
         peerMaxBytes_);
@@ -579,6 +604,9 @@ void MainWindow::loadOrPromptPeerSettings() {
           QStringLiteral("network/bootstrap_seeds"),
           QStringLiteral("127.0.0.1:9101,127.0.0.1:9102,127.0.0.1:9103"));
     }
+    if (!settings.contains(QStringLiteral("network/advertise_ip"))) {
+      settings.setValue(QStringLiteral("network/advertise_ip"), QStringLiteral("127.0.0.1"));
+    }
   } else {
     peerEnabled_ = settings.value(QStringLiteral("peer/enabled"), true).toBool();
     peerMaxBytes_ =
@@ -595,6 +623,45 @@ void MainWindow::loadOrPromptPeerSettings() {
   }
 
   loadBootstrapSeedsFromSettings();
+
+  {
+    QSettings s(QStringLiteral("decent_store"), QStringLiteral("decent_store"));
+    peerAdvertiseIp_ =
+        s.value(QStringLiteral("network/advertise_ip"), QStringLiteral("127.0.0.1")).toString().trimmed();
+    if (peerAdvertiseIp_.isEmpty()) peerAdvertiseIp_ = QStringLiteral("127.0.0.1");
+  }
+}
+
+void MainWindow::onApplyNetworkSettingsClicked() {
+  if (!bootstrapSeedsEdit_ || !advertiseIpEdit_) return;
+
+  QString adv = advertiseIpEdit_->text().trimmed();
+  if (adv.isEmpty()) {
+    QMessageBox::warning(this, tr("Advertise address"),
+                         tr("Advertise address cannot be empty."));
+    return;
+  }
+
+  const QString defaultSeeds =
+      QStringLiteral("127.0.0.1:9101,127.0.0.1:9102,127.0.0.1:9103");
+  QString seeds = bootstrapSeedsEdit_->text().trimmed();
+  if (seeds.isEmpty()) {
+    seeds = defaultSeeds;
+    bootstrapSeedsEdit_->setText(seeds);
+  }
+
+  QSettings settings(QStringLiteral("decent_store"), QStringLiteral("decent_store"));
+  settings.setValue(QStringLiteral("network/bootstrap_seeds"), seeds);
+  settings.setValue(QStringLiteral("network/advertise_ip"), adv);
+
+  peerAdvertiseIp_ = adv;
+  loadBootstrapSeedsFromSettings();
+
+  const bool hadRunning = embeddedPeerService_ && embeddedPeerService_->isRunning();
+  if (hadRunning) stopEmbeddedPeer();
+  startEmbeddedPeerIfEnabled();
+  discoverPeersFromBootstrap();
+  log(tr("Network settings saved; bootstrap list and advertise address updated."));
 }
 
 void MainWindow::loadBootstrapSeedsFromSettings() {

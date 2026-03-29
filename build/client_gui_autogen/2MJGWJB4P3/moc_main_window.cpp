@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_MainWindow_t {
-    uint offsetsAndSizes[38];
+    uint offsetsAndSizes[40];
     char stringdata0[11];
     char stringdata1[13];
     char stringdata2[1];
@@ -46,6 +46,7 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata16[5];
     char stringdata17[24];
     char stringdata18[19];
+    char stringdata19[30];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_MainWindow_t::offsetsAndSizes) + ofs), len 
@@ -69,7 +70,8 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
         QT_MOC_LITERAL(161, 3),  // "log"
         QT_MOC_LITERAL(165, 4),  // "text"
         QT_MOC_LITERAL(170, 23),  // "onDownloadButtonClicked"
-        QT_MOC_LITERAL(194, 18)   // "refreshPeerMonitor"
+        QT_MOC_LITERAL(194, 18),  // "refreshPeerMonitor"
+        QT_MOC_LITERAL(213, 29)   // "onApplyNetworkSettingsClicked"
     },
     "MainWindow",
     "onPutClicked",
@@ -89,7 +91,8 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "log",
     "text",
     "onDownloadButtonClicked",
-    "refreshPeerMonitor"
+    "refreshPeerMonitor",
+    "onApplyNetworkSettingsClicked"
 };
 #undef QT_MOC_LITERAL
 } // unnamed namespace
@@ -100,7 +103,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-      11,   14, // methods
+      12,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -108,17 +111,18 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   80,    2, 0x08,    1 /* Private */,
-       3,    0,   81,    2, 0x08,    2 /* Private */,
-       4,    0,   82,    2, 0x08,    3 /* Private */,
-       5,    3,   83,    2, 0x08,    4 /* Private */,
-       9,    1,   90,    2, 0x08,    8 /* Private */,
-      11,    1,   93,    2, 0x08,   10 /* Private */,
-      13,    0,   96,    2, 0x08,   12 /* Private */,
-      14,    1,   97,    2, 0x08,   13 /* Private */,
-      15,    1,  100,    2, 0x08,   15 /* Private */,
-      17,    0,  103,    2, 0x08,   17 /* Private */,
-      18,    0,  104,    2, 0x08,   18 /* Private */,
+       1,    0,   86,    2, 0x08,    1 /* Private */,
+       3,    0,   87,    2, 0x08,    2 /* Private */,
+       4,    0,   88,    2, 0x08,    3 /* Private */,
+       5,    3,   89,    2, 0x08,    4 /* Private */,
+       9,    1,   96,    2, 0x08,    8 /* Private */,
+      11,    1,   99,    2, 0x08,   10 /* Private */,
+      13,    0,  102,    2, 0x08,   12 /* Private */,
+      14,    1,  103,    2, 0x08,   13 /* Private */,
+      15,    1,  106,    2, 0x08,   15 /* Private */,
+      17,    0,  109,    2, 0x08,   17 /* Private */,
+      18,    0,  110,    2, 0x08,   18 /* Private */,
+      19,    0,  111,    2, 0x08,   19 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -130,6 +134,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    8,
     QMetaType::Void, QMetaType::QString,   16,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -173,6 +178,8 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         // method 'onDownloadButtonClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'refreshPeerMonitor'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onApplyNetworkSettingsClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -195,6 +202,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 8: _t->log((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 9: _t->onDownloadButtonClicked(); break;
         case 10: _t->refreshPeerMonitor(); break;
+        case 11: _t->onApplyNetworkSettingsClicked(); break;
         default: ;
         }
     }
@@ -219,13 +227,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 12;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 12)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 11;
+        _id -= 12;
     }
     return _id;
 }
