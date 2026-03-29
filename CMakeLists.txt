@@ -24,6 +24,7 @@ add_library(dss_core
 	src/core/dht/dht_node.cpp
 	src/core/tracker/tracker_client.cpp
 	src/core/peer/peer_client.cpp
+	src/core/peer/peer_service.cpp
 	src/core/dss/dss_client.cpp
 )
 

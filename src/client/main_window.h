@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
 #include <QMainWindow>
 #include <QThread>
 
@@ -10,6 +12,7 @@ class QLineEdit;
 class QSpinBox;
 class QTableWidget;
 class QLabel;
+namespace dss::peer { class PeerService; }
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -39,6 +42,10 @@ private:
   QString trackerIp() const;
   int trackerPort() const;
   void setBusy(bool busy);
+  void loadOrPromptPeerSettings();
+  void loadBootstrapSeedsFromSettings();
+  void startEmbeddedPeerIfEnabled();
+  void stopEmbeddedPeer();
   void discoverPeersFromBootstrap();
 
   QThread workerThread_;
@@ -51,6 +58,11 @@ private:
   QLabel* bootstrapStatusLabel_{};
   QString discoveredPeersCsv_;
   QStringList bootstrapNodes_;
+  bool peerEnabled_{true};
+  std::uint64_t peerMaxBytes_{0};
+  int peerPort_{9101};
+  QString peerStorageDir_;
+  std::unique_ptr<dss::peer::PeerService> embeddedPeerService_;
 
   // Upload / files UI
   QTableWidget* filesTable_{};
