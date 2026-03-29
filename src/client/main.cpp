@@ -75,12 +75,13 @@ int main(int argc, char** argv) {
       }
 
       dss::DssClient client(cfg);
-      std::string manifestPath =
+      dss::PutFileResult result =
           client.putFile(argv[4], [](dss::Progress p) {
             std::cout << "[PUT] " << p.done << "/" << p.total << " "
                       << p.message << "\n";
           });
-      std::cout << "DONE. Manifest written to " << manifestPath << "\n";
+      std::cout << "DONE. Share ID: " << result.shareUri << "\n";
+      std::cout << "Local manifest: " << result.localManifestPath << "\n";
       return 0;
     }
 

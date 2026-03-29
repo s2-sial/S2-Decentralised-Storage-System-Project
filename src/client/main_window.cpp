@@ -23,6 +23,7 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QWidget>
+#include <QFile>
 
 #include "core/manifest/manifest.h"
 #include "core/dht/kademlia_id.h"
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   }
   startEmbeddedPeerIfEnabled();
   discoverPeersFromBootstrap();
-  setWindowTitle(tr("Decent Store — Client"));
+  setWindowTitle(tr("Decent Store"));
   resize(520, 420);
 }
 
@@ -139,7 +140,7 @@ QWidget* MainWindow::makePutTab() {
   filesTable_ = new QTableWidget(filesGroup);
   filesTable_->setColumnCount(4);
   QStringList headers;
-  headers << tr("CID") << tr("Name") << tr("Size (bytes)") << tr("Download");
+  headers << tr("Share ID") << tr("Name") << tr("Size (bytes)") << tr("Download");
   filesTable_->setHorizontalHeaderLabels(headers);
   filesTable_->horizontalHeader()->setStretchLastSection(true);
   filesTable_->setSelectionMode(QAbstractItemView::NoSelection);
@@ -155,7 +156,8 @@ QWidget* MainWindow::makeGetTab() {
   QWidget* w = new QWidget(this);
   QFormLayout* form = new QFormLayout(w);
   getManifestEdit_ = new QLineEdit(this);
-  getManifestEdit_->setPlaceholderText(tr("Path to .manifest.txt"));
+  getManifestEdit_->setPlaceholderText(
+      tr("dss://file/<sha256> or path to .manifest.txt"));
   auto* manifestRow = new QWidget(this);
   auto* manifestLayout = new QHBoxLayout(manifestRow);
   manifestLayout->setContentsMargins(0, 0, 0, 0);
@@ -196,18 +198,33 @@ QWidget* MainWindow::makeGetTab() {
 
 QWidget* MainWindow::makeRepairTab() {
   QWidget* w = new QWidget(this);
-  QFormLayout* form = new QFormLayout(w);
+  QVBoxLayout* outer = new QVBoxLayout(w);
+  QLabel* info = new QLabel(
+      tr("Tracker-based automatic repair is not available in DHT-only mode. "
+         "This single-app build uses peer bootstrap and embedded storage only. "
+         "Upload with enough replicas to tolerate peer loss."),
+      w);
+  info->setWordWrap(true);
+  outer->addWidget(info);
+
+  QFormLayout* form = new QFormLayout;
   repairReplicasSpin_ = new QSpinBox(this);
   repairReplicasSpin_->setRange(1, 32);
   repairReplicasSpin_->setValue(2);
+  repairReplicasSpin_->setEnabled(false);
   form->addRow(tr("Desired replicas:"), repairReplicasSpin_);
   repairBatchSpin_ = new QSpinBox(this);
   repairBatchSpin_->setRange(1, 1000);
   repairBatchSpin_->setValue(50);
+  repairBatchSpin_->setEnabled(false);
   form->addRow(tr("Batch size:"), repairBatchSpin_);
   QPushButton* btn = new QPushButton(tr("Repair"), this);
+  btn->setEnabled(false);
+  btn->setToolTip(tr("Not available without a tracker"));
   connect(btn, &QPushButton::clicked, this, &MainWindow::onRepairClicked);
   form->addRow(btn);
+  outer->addLayout(form);
+  outer->addStretch(1);
   return w;
 }
 
@@ -315,35 +332,46 @@ void MainWindow::onPutClicked() {
                             Q_ARG(int, putReplicasSpin_->value()));
 }
 
-void MainWindow::onPutFinished(const QString& manifestPath) {
+void MainWindow::onPutFinished(const QString& shareId, const QString& localManifestPath) {
   setBusy(false);
-  log(tr("[Put] Done. Manifest: %1").arg(manifestPath));
-  QMessageBox::information(this, tr("Put"), tr("Manifest written to:\n%1").arg(manifestPath));
-
-  // Add to stored-files table
-  try {
-    dss::Manifest m = dss::readManifest(manifestPath.toStdString());
-    if (!filesTable_) return;
-    const int row = filesTable_->rowCount();
-    filesTable_->insertRow(row);
-
-    // CID: for now show manifest path as identifier
-    auto* cidItem = new QTableWidgetItem(manifestPath);
-    filesTable_->setItem(row, 0, cidItem);
-
-    auto* nameItem = new QTableWidgetItem(QString::fromStdString(m.originalName));
-    filesTable_->setItem(row, 1, nameItem);
-
-    auto* sizeItem = new QTableWidgetItem(QString::number(static_cast<qulonglong>(m.originalSize)));
-    filesTable_->setItem(row, 2, sizeItem);
-
-    auto* btn = new QPushButton(tr("Download"), filesTable_);
-    btn->setProperty("manifestPath", manifestPath);
-    filesTable_->setCellWidget(row, 3, btn);
-    connect(btn, &QPushButton::clicked, this, &MainWindow::onDownloadButtonClicked);
-  } catch (const std::exception& e) {
-    log(tr("Failed to read manifest for table: %1").arg(QString::fromUtf8(e.what())));
+  log(tr("[Put] Done. Share ID: %1").arg(shareId));
+  if (!localManifestPath.isEmpty()) {
+    log(tr("[Put] Local manifest: %1").arg(localManifestPath));
   }
+  QMessageBox::information(
+      this, tr("Put"),
+      tr("Share ID (use for Get):\n%1\n\nLocal manifest copy:\n%2").arg(shareId, localManifestPath));
+
+  if (!filesTable_) return;
+  const int row = filesTable_->rowCount();
+  filesTable_->insertRow(row);
+
+  auto* shareItem = new QTableWidgetItem(shareId);
+  filesTable_->setItem(row, 0, shareItem);
+
+  QString nameText;
+  QString sizeText;
+  if (QFile::exists(localManifestPath)) {
+    try {
+      dss::Manifest m = dss::readManifest(localManifestPath.toStdString());
+      nameText = QString::fromStdString(m.originalName);
+      sizeText = QString::number(static_cast<qulonglong>(m.originalSize));
+    } catch (const std::exception& e) {
+      log(tr("Failed to read local manifest for table: %1").arg(QString::fromUtf8(e.what())));
+      nameText = tr("(unknown)");
+      sizeText = QStringLiteral("-");
+    }
+  } else {
+    nameText = tr("(unknown)");
+    sizeText = QStringLiteral("-");
+  }
+  filesTable_->setItem(row, 1, new QTableWidgetItem(nameText));
+  filesTable_->setItem(row, 2, new QTableWidgetItem(sizeText));
+
+  auto* btn = new QPushButton(tr("Download"), filesTable_);
+  btn->setProperty("shareId", shareId);
+  filesTable_->setCellWidget(row, 3, btn);
+  connect(btn, &QPushButton::clicked, this, &MainWindow::onDownloadButtonClicked);
 }
 
 void MainWindow::onGetClicked() {
@@ -354,7 +382,7 @@ void MainWindow::onGetClicked() {
   QString manifest = getManifestEdit_->text().trimmed();
   QString output = getOutputEdit_->text().trimmed();
   if (manifest.isEmpty() || output.isEmpty()) {
-    QMessageBox::warning(this, tr("Get"), tr("Enter manifest and output paths."));
+    QMessageBox::warning(this, tr("Get"), tr("Enter share ID (or manifest path) and output path."));
     return;
   }
   setBusy(true);
@@ -399,15 +427,18 @@ void MainWindow::onError(const QString& message) {
 void MainWindow::onDownloadButtonClicked() {
   auto* btn = qobject_cast<QPushButton*>(sender());
   if (!btn) return;
-  const QString manifest = btn->property("manifestPath").toString();
-  if (manifest.isEmpty()) return;
+  const QString shareId = btn->property("shareId").toString();
+  if (shareId.isEmpty()) return;
 
   if (trackerIp().isEmpty()) {
     QMessageBox::warning(this, tr("Get"), tr("No peers discovered. Start at least one bootstrap node."));
     return;
   }
 
-  QString suggested = manifest;
+  QString suggested = shareId;
+  if (suggested.startsWith(QStringLiteral("dss://file/"))) {
+    suggested = suggested.mid(QStringLiteral("dss://file/").size());
+  }
   if (suggested.endsWith(".manifest.txt")) {
     suggested.chop(QString(".manifest.txt").size());
   }
@@ -417,10 +448,10 @@ void MainWindow::onDownloadButtonClicked() {
   if (output.isEmpty()) return;
 
   setBusy(true);
-  log(tr("[Get] Started: %1 → %2").arg(manifest, output));
+  log(tr("[Get] Started: %1 → %2").arg(shareId, output));
   QMetaObject::invokeMethod(worker_, "getFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
-                            Q_ARG(QString, manifest),
+                            Q_ARG(QString, shareId),
                             Q_ARG(QString, output));
 }
 
