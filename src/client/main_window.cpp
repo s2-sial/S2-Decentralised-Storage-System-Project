@@ -7,11 +7,14 @@
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QProgressBar>
 #include <QPushButton>
+#include <QSettings>
 #include <QSpinBox>
+#include <QStandardPaths>
 #include <QTabWidget>
 #include <QTableWidget>
 #include <QTableWidgetItem>
@@ -23,6 +26,9 @@
 
 #include "core/manifest/manifest.h"
 #include "core/dht/kademlia_id.h"
+#include "core/peer/peer_service.h"
+
+#include <filesystem>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   worker_ = new DssWorker;
@@ -36,18 +42,16 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   connect(worker_, &DssWorker::error, this, &MainWindow::onError, Qt::QueuedConnection);
 
   workerThread_.start();
-  bootstrapNodes_ = {
-      QStringLiteral("127.0.0.1:9101"),
-      QStringLiteral("127.0.0.1:9102"),
-      QStringLiteral("127.0.0.1:9103")
-  };
+  loadOrPromptPeerSettings();
   setupUi();
+  startEmbeddedPeerIfEnabled();
   discoverPeersFromBootstrap();
   setWindowTitle(tr("Decent Store — Client"));
   resize(520, 420);
 }
 
 MainWindow::~MainWindow() {
+  stopEmbeddedPeer();
   workerThread_.quit();
   workerThread_.wait();
 }
@@ -449,7 +453,7 @@ void MainWindow::refreshPeerMonitor() {
 }
 
 void MainWindow::discoverPeersFromBootstrap() {
-  QStringList discovered;
+  QStringList merged;
 
   for (const QString& peerStrRaw : bootstrapNodes_) {
     const QString peerStr = peerStrRaw.trimmed();
@@ -464,22 +468,148 @@ void MainWindow::discoverPeersFromBootstrap() {
     sock.connectToHost(ip, static_cast<quint16>(port));
     const bool ok = sock.waitForConnected(400);
     sock.abort();
-    if (ok) {
-      discovered.push_back(peerStr);
-    }
+    if (ok) merged.push_back(peerStr);
   }
 
-  discovered.removeDuplicates();
-  discoveredPeersCsv_ = discovered.join(',');
+  if (peerEnabled_ && embeddedPeerService_ && embeddedPeerService_->isRunning()) {
+    const QString local = QStringLiteral("127.0.0.1:%1").arg(peerPort_);
+    if (!merged.contains(local)) merged.push_back(local);
+  }
+
+  merged.removeDuplicates();
+  discoveredPeersCsv_ = merged.join(',');
   if (trackerIpEdit_) {
     trackerIpEdit_->setText(discoveredPeersCsv_);
   }
   if (bootstrapStatusLabel_) {
-    if (discovered.isEmpty()) {
-      bootstrapStatusLabel_->setText(tr("Unable to reach bootstrap nodes."));
-    } else {
+    if (!peerEnabled_) {
+      if (merged.isEmpty()) {
+        bootstrapStatusLabel_->setText(
+            tr("Client-only: no bootstrap peers reachable. Edit network/bootstrap_seeds in settings "
+               "or start remote peers."));
+      } else {
+        bootstrapStatusLabel_->setText(
+            tr("Client-only: routing via %1 bootstrap peer(s).").arg(merged.size()));
+      }
+    } else if (merged.isEmpty()) {
       bootstrapStatusLabel_->setText(
-          tr("Joined network via bootstrap. Discovered %1 peer(s).").arg(discovered.size()));
+          tr("No reachable peers. Embedded peer on port %1 (max storage %2 MiB) — add bootstrap "
+             "seeds if you need remote routing.")
+              .arg(peerPort_)
+              .arg(peerMaxBytes_ / (1024 * 1024)));
+    } else {
+      const bool hasLocal =
+          embeddedPeerService_ && embeddedPeerService_->isRunning();
+      bootstrapStatusLabel_->setText(
+          tr("Routing: %1 peer(s) from bootstrap%2. Local contribution: port %3, max %4 MiB.")
+              .arg(merged.size())
+              .arg(hasLocal ? tr(" + local") : QString())
+              .arg(peerPort_)
+              .arg(peerMaxBytes_ / (1024 * 1024)));
     }
+  }
+}
+
+void MainWindow::startEmbeddedPeerIfEnabled() {
+  if (!peerEnabled_) return;
+  if (embeddedPeerService_ && embeddedPeerService_->isRunning()) return;
+  if (peerStorageDir_.isEmpty()) return;
+
+  std::error_code ec;
+  std::filesystem::create_directories(peerStorageDir_.toStdString(), ec);
+
+  try {
+    embeddedPeerService_ = std::make_unique<dss::peer::PeerService>(
+        std::string("127.0.0.1"),
+        peerPort_,
+        peerStorageDir_.toStdString(),
+        peerMaxBytes_);
+    embeddedPeerService_->start();
+  } catch (const std::exception& e) {
+    log(tr("Failed to start embedded peer: %1").arg(QString::fromUtf8(e.what())));
+    embeddedPeerService_.reset();
+  }
+}
+
+void MainWindow::stopEmbeddedPeer() {
+  if (!embeddedPeerService_) return;
+  embeddedPeerService_->stop();
+  embeddedPeerService_.reset();
+}
+
+void MainWindow::loadOrPromptPeerSettings() {
+  QSettings settings(QStringLiteral("decent_store"), QStringLiteral("decent_store"));
+
+  const bool initialized = settings.value(QStringLiteral("peer/settings_initialized"), false).toBool();
+  if (!initialized) {
+    const auto answer = QMessageBox::question(
+        this,
+        tr("Peer Contribution"),
+        tr("Enable peer contribution mode?\n"
+           "When enabled, this app can contribute storage and participate in the network."),
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::Yes);
+    peerEnabled_ = (answer == QMessageBox::Yes);
+
+    int gib = QInputDialog::getInt(
+        this,
+        tr("Storage Contribution"),
+        tr("Max local storage contribution (GiB):"),
+        5, 1, 1024, 1);
+    peerMaxBytes_ = static_cast<std::uint64_t>(gib) * 1024ull * 1024ull * 1024ull;
+
+    int port = QInputDialog::getInt(
+        this,
+        tr("Peer Port"),
+        tr("Local peer port:"),
+        9101, 1024, 65535, 1);
+    peerPort_ = port;
+
+    QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    if (appData.isEmpty()) appData = QStringLiteral(".");
+    peerStorageDir_ = appData + QStringLiteral("/peer-storage");
+
+    settings.setValue(QStringLiteral("peer/settings_initialized"), true);
+    settings.setValue(QStringLiteral("peer/enabled"), peerEnabled_);
+    settings.setValue(QStringLiteral("peer/max_bytes"), static_cast<qulonglong>(peerMaxBytes_));
+    settings.setValue(QStringLiteral("peer/port"), peerPort_);
+    settings.setValue(QStringLiteral("peer/storage_dir"), peerStorageDir_);
+    if (!settings.contains(QStringLiteral("network/bootstrap_seeds"))) {
+      settings.setValue(
+          QStringLiteral("network/bootstrap_seeds"),
+          QStringLiteral("127.0.0.1:9101,127.0.0.1:9102,127.0.0.1:9103"));
+    }
+  } else {
+    peerEnabled_ = settings.value(QStringLiteral("peer/enabled"), true).toBool();
+    peerMaxBytes_ =
+        settings.value(QStringLiteral("peer/max_bytes"),
+                       static_cast<qulonglong>(5ull * 1024ull * 1024ull * 1024ull))
+            .toULongLong();
+    peerPort_ = settings.value(QStringLiteral("peer/port"), 9101).toInt();
+    peerStorageDir_ = settings.value(QStringLiteral("peer/storage_dir")).toString();
+    if (peerStorageDir_.isEmpty()) {
+      QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+      if (appData.isEmpty()) appData = QStringLiteral(".");
+      peerStorageDir_ = appData + QStringLiteral("/peer-storage");
+    }
+  }
+
+  loadBootstrapSeedsFromSettings();
+}
+
+void MainWindow::loadBootstrapSeedsFromSettings() {
+  QSettings settings(QStringLiteral("decent_store"), QStringLiteral("decent_store"));
+  const QString defaultSeeds =
+      QStringLiteral("127.0.0.1:9101,127.0.0.1:9102,127.0.0.1:9103");
+  const QString seeds =
+      settings.value(QStringLiteral("network/bootstrap_seeds"), defaultSeeds).toString();
+  bootstrapNodes_.clear();
+  for (const QString& part : seeds.split(',', Qt::SkipEmptyParts)) {
+    const QString t = part.trimmed();
+    if (!t.isEmpty()) bootstrapNodes_.push_back(t);
+  }
+  if (bootstrapNodes_.isEmpty()) {
+    for (const QString& part : defaultSeeds.split(',', Qt::SkipEmptyParts))
+      bootstrapNodes_.push_back(part.trimmed());
   }
 }

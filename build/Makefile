@@ -567,6 +567,30 @@ src/core/peer/peer_client.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s
 .PHONY : src/core/peer/peer_client.cpp.s
 
+src/core/peer/peer_service.o: src/core/peer/peer_service.cpp.o
+.PHONY : src/core/peer/peer_service.o
+
+# target to build an object file
+src/core/peer/peer_service.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o
+.PHONY : src/core/peer/peer_service.cpp.o
+
+src/core/peer/peer_service.i: src/core/peer/peer_service.cpp.i
+.PHONY : src/core/peer/peer_service.i
+
+# target to preprocess a source file
+src/core/peer/peer_service.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.i
+.PHONY : src/core/peer/peer_service.cpp.i
+
+src/core/peer/peer_service.s: src/core/peer/peer_service.cpp.s
+.PHONY : src/core/peer/peer_service.s
+
+# target to generate assembly for a file
+src/core/peer/peer_service.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dss_core.dir/build.make CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.s
+.PHONY : src/core/peer/peer_service.cpp.s
+
 src/core/storage/storage_manager.o: src/core/storage/storage_manager.cpp.o
 .PHONY : src/core/storage/storage_manager.o
 
@@ -723,6 +747,9 @@ help:
 	@echo "... src/core/peer/peer_client.o"
 	@echo "... src/core/peer/peer_client.i"
 	@echo "... src/core/peer/peer_client.s"
+	@echo "... src/core/peer/peer_service.o"
+	@echo "... src/core/peer/peer_service.i"
+	@echo "... src/core/peer/peer_service.s"
 	@echo "... src/core/storage/storage_manager.o"
 	@echo "... src/core/storage/storage_manager.i"
 	@echo "... src/core/storage/storage_manager.s"

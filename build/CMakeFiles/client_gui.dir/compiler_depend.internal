@@ -1371,6 +1371,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /home/saad/~projects/decent-store/src/core/dht/kademlia_id.h
  /home/saad/~projects/decent-store/src/core/dss/dss_client.h
  /home/saad/~projects/decent-store/src/core/manifest/manifest.h
+ /home/saad/~projects/decent-store/src/core/peer/peer_service.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
@@ -1564,6 +1565,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/c++/13/string
  /usr/include/c++/13/string_view
  /usr/include/c++/13/system_error
+ /usr/include/c++/13/thread
  /usr/include/c++/13/tr1/bessel_function.tcc
  /usr/include/c++/13/tr1/beta_function.tcc
  /usr/include/c++/13/tr1/ell_integral.tcc
@@ -1714,8 +1716,10 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QList
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QRect
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QSettings
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QSize
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QSizeF
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QStandardPaths
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QThread
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h
@@ -1793,11 +1797,13 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopedpointer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopeguard.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qset.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qsettings.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata_impl.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsize.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstandardpaths.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringalgorithms.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringconverter_base.h
@@ -1882,6 +1888,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGroupBox
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHeaderView
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QInputDialog
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLayout
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLineEdit
@@ -1911,6 +1918,7 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgroupbox.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qheaderview.h
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qinputdialog.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h

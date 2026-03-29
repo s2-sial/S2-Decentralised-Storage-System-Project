@@ -19,6 +19,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o.d"
   "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o"
   "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o.d"
+  "CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o"
+  "CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o.d"
   "CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o"
   "CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o.d"
   "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o"

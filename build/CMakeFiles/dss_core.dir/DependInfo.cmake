@@ -18,6 +18,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/saad/~projects/decent-store/src/core/manifest/manifest.cpp" "CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/manifest/manifest.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/net/tcp.cpp" "CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/net/tcp.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/peer/peer_client.cpp" "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o.d"
+  "/home/saad/~projects/decent-store/src/core/peer/peer_service.cpp" "CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/storage/storage_manager.cpp" "CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/storage/storage_manager.cpp.o.d"
   "/home/saad/~projects/decent-store/src/core/tracker/tracker_client.cpp" "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o" "gcc" "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o.d"
   )

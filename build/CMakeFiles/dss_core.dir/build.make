@@ -223,10 +223,24 @@ CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/peer/peer_client.cpp" -o CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.s
 
+CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o: CMakeFiles/dss_core.dir/flags.make
+CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o: /home/saad/~projects/decent-store/src/core/peer/peer_service.cpp
+CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o -MF CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o -c "/home/saad/~projects/decent-store/src/core/peer/peer_service.cpp"
+
+CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/saad/~projects/decent-store/src/core/peer/peer_service.cpp" > CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.i
+
+CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/saad/~projects/decent-store/src/core/peer/peer_service.cpp" -o CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.s
+
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: CMakeFiles/dss_core.dir/flags.make
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: /home/saad/~projects/decent-store/src/core/dss/dss_client.cpp
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o: CMakeFiles/dss_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o -MF CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o.d -o CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o -c "/home/saad/~projects/decent-store/src/core/dss/dss_client.cpp"
 
 CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.i: cmake_force
@@ -250,6 +264,7 @@ dss_core_OBJECTS = \
 "CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o" \
+"CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o" \
 "CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o"
 
 # External object files for target dss_core
@@ -266,10 +281,11 @@ libdss_core.a: CMakeFiles/dss_core.dir/src/core/dht/kademlia_routing_table.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/dht/dht_node.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/tracker/tracker_client.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/peer/peer_client.cpp.o
+libdss_core.a: CMakeFiles/dss_core.dir/src/core/peer/peer_service.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/src/core/dss/dss_client.cpp.o
 libdss_core.a: CMakeFiles/dss_core.dir/build.make
 libdss_core.a: CMakeFiles/dss_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX static library libdss_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/saad/~projects/decent-store/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX static library libdss_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/dss_core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/dss_core.dir/link.txt --verbose=$(VERBOSE)
 
