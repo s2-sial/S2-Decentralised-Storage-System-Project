@@ -19,15 +19,6 @@
 
 namespace dss::peer {
 
-namespace {
-
-static void die(const std::string& msg) {
-  std::cerr << msg << ": " << std::strerror(errno) << "\n";
-  std::exit(1);
-}
-
-}  // namespace
-
 PeerService::PeerService(std::string advertiseIp,
                          int peerPort,
                          std::string storageDir,
