@@ -19,7 +19,7 @@ public slots:
 
 signals:
   void progress(int done, int total, const QString& message);
-  void putFinished(const QString& manifestPath);
+  void putFinished(const QString& shareId, const QString& localManifestPath);
   void getFinished(const QString& outputPath);
   void repairFinished();
   void error(const QString& message);

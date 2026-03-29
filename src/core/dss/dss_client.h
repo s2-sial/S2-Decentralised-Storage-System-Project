@@ -26,17 +26,19 @@ struct Progress {
   std::string message;
 };
 
+struct PutFileResult {
+  std::string shareUri;         // e.g. dss://file/<sha256(manifest_text)>
+  std::string localManifestPath; // written next to cwd for debugging / GUI table
+};
+
 class DssClient {
 public:
   explicit DssClient(ClientConfig cfg);
 
-  // returns path to created manifest
-  std::string putFile(const std::string& filePath,
-                      std::function<void(Progress)> onProgress = {});
+  PutFileResult putFile(const std::string& filePath,
+                        std::function<void(Progress)> onProgress = {});
 
-  // Convenience: resolve and download by manifest identifier.
-  // For now this expects manifestHash to be a local manifest path;
-  // once manifests are stored in the DHT, this can fetch them by hash.
+  // Resolves by local .manifest.txt path, bare SHA-256 hex, or dss://file/<hex>.
   void getFile(const std::string& manifestHash,
                const std::string& outPath);
 

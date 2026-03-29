@@ -30,8 +30,8 @@ bool looks_like_local_manifest_path(const std::string& manifestRef) {
 
 DssClient::DssClient(ClientConfig cfg) : cfg_(std::move(cfg)) {}
 
-std::string DssClient::putFile(const std::string& filePath,
-                               std::function<void(Progress)> onProgress) {
+PutFileResult DssClient::putFile(const std::string& filePath,
+                                 std::function<void(Progress)> onProgress) {
   if (cfg_.peers.empty()) {
     throw std::runtime_error("No peers configured for DHT");
   }
@@ -135,7 +135,7 @@ std::string DssClient::putFile(const std::string& filePath,
   std::string localManifestPath = manifest.originalName + ".manifest.txt";
   writeManifest(localManifestPath, manifest);
 
-  return "dss://file/" + manifestHash;
+  return PutFileResult{"dss://file/" + manifestHash, std::move(localManifestPath)};
 }
 
 void DssClient::getFile(const std::string& manifestHash,

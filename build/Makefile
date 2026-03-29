@@ -85,6 +85,51 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start "/home/saad/~projects/decent-store/build/CMakeFiles" "/home/saad/~projects/decent-store/build//CMakeFiles/progress.marks"
@@ -169,74 +214,74 @@ client/fast:
 .PHONY : client/fast
 
 #=============================================================================
-# Target rules for targets named client_gui
+# Target rules for targets named decent_store
 
 # Build rule for target.
-client_gui: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_gui
-.PHONY : client_gui
+decent_store: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 decent_store
+.PHONY : decent_store
 
 # fast build rule for target.
-client_gui/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/build
-.PHONY : client_gui/fast
+decent_store/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/build
+.PHONY : decent_store/fast
 
 #=============================================================================
-# Target rules for targets named client_gui_autogen_timestamp_deps
+# Target rules for targets named decent_store_autogen_timestamp_deps
 
 # Build rule for target.
-client_gui_autogen_timestamp_deps: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_gui_autogen_timestamp_deps
-.PHONY : client_gui_autogen_timestamp_deps
+decent_store_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 decent_store_autogen_timestamp_deps
+.PHONY : decent_store_autogen_timestamp_deps
 
 # fast build rule for target.
-client_gui_autogen_timestamp_deps/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen_timestamp_deps.dir/build.make CMakeFiles/client_gui_autogen_timestamp_deps.dir/build
-.PHONY : client_gui_autogen_timestamp_deps/fast
+decent_store_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store_autogen_timestamp_deps.dir/build.make CMakeFiles/decent_store_autogen_timestamp_deps.dir/build
+.PHONY : decent_store_autogen_timestamp_deps/fast
 
 #=============================================================================
-# Target rules for targets named client_gui_autogen
+# Target rules for targets named decent_store_autogen
 
 # Build rule for target.
-client_gui_autogen: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_gui_autogen
-.PHONY : client_gui_autogen
+decent_store_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 decent_store_autogen
+.PHONY : decent_store_autogen
 
 # fast build rule for target.
-client_gui_autogen/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui_autogen.dir/build.make CMakeFiles/client_gui_autogen.dir/build
-.PHONY : client_gui_autogen/fast
+decent_store_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store_autogen.dir/build.make CMakeFiles/decent_store_autogen.dir/build
+.PHONY : decent_store_autogen/fast
 
-client_gui_autogen/mocs_compilation.o: client_gui_autogen/mocs_compilation.cpp.o
-.PHONY : client_gui_autogen/mocs_compilation.o
+decent_store_autogen/mocs_compilation.o: decent_store_autogen/mocs_compilation.cpp.o
+.PHONY : decent_store_autogen/mocs_compilation.o
 
 # target to build an object file
-client_gui_autogen/mocs_compilation.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.o
-.PHONY : client_gui_autogen/mocs_compilation.cpp.o
+decent_store_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/decent_store_autogen/mocs_compilation.cpp.o
+.PHONY : decent_store_autogen/mocs_compilation.cpp.o
 
-client_gui_autogen/mocs_compilation.i: client_gui_autogen/mocs_compilation.cpp.i
-.PHONY : client_gui_autogen/mocs_compilation.i
+decent_store_autogen/mocs_compilation.i: decent_store_autogen/mocs_compilation.cpp.i
+.PHONY : decent_store_autogen/mocs_compilation.i
 
 # target to preprocess a source file
-client_gui_autogen/mocs_compilation.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.i
-.PHONY : client_gui_autogen/mocs_compilation.cpp.i
+decent_store_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/decent_store_autogen/mocs_compilation.cpp.i
+.PHONY : decent_store_autogen/mocs_compilation.cpp.i
 
-client_gui_autogen/mocs_compilation.s: client_gui_autogen/mocs_compilation.cpp.s
-.PHONY : client_gui_autogen/mocs_compilation.s
+decent_store_autogen/mocs_compilation.s: decent_store_autogen/mocs_compilation.cpp.s
+.PHONY : decent_store_autogen/mocs_compilation.s
 
 # target to generate assembly for a file
-client_gui_autogen/mocs_compilation.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/client_gui_autogen/mocs_compilation.cpp.s
-.PHONY : client_gui_autogen/mocs_compilation.cpp.s
+decent_store_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/decent_store_autogen/mocs_compilation.cpp.s
+.PHONY : decent_store_autogen/mocs_compilation.cpp.s
 
 src/client/dss_worker.o: src/client/dss_worker.cpp.o
 .PHONY : src/client/dss_worker.o
 
 # target to build an object file
 src/client/dss_worker.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/dss_worker.cpp.o
 .PHONY : src/client/dss_worker.cpp.o
 
 src/client/dss_worker.i: src/client/dss_worker.cpp.i
@@ -244,7 +289,7 @@ src/client/dss_worker.i: src/client/dss_worker.cpp.i
 
 # target to preprocess a source file
 src/client/dss_worker.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/dss_worker.cpp.i
 .PHONY : src/client/dss_worker.cpp.i
 
 src/client/dss_worker.s: src/client/dss_worker.cpp.s
@@ -252,7 +297,7 @@ src/client/dss_worker.s: src/client/dss_worker.cpp.s
 
 # target to generate assembly for a file
 src/client/dss_worker.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/dss_worker.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/dss_worker.cpp.s
 .PHONY : src/client/dss_worker.cpp.s
 
 src/client/main.o: src/client/main.cpp.o
@@ -284,7 +329,7 @@ src/client/main_gui.o: src/client/main_gui.cpp.o
 
 # target to build an object file
 src/client/main_gui.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_gui.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/main_gui.cpp.o
 .PHONY : src/client/main_gui.cpp.o
 
 src/client/main_gui.i: src/client/main_gui.cpp.i
@@ -292,7 +337,7 @@ src/client/main_gui.i: src/client/main_gui.cpp.i
 
 # target to preprocess a source file
 src/client/main_gui.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_gui.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/main_gui.cpp.i
 .PHONY : src/client/main_gui.cpp.i
 
 src/client/main_gui.s: src/client/main_gui.cpp.s
@@ -300,7 +345,7 @@ src/client/main_gui.s: src/client/main_gui.cpp.s
 
 # target to generate assembly for a file
 src/client/main_gui.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_gui.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/main_gui.cpp.s
 .PHONY : src/client/main_gui.cpp.s
 
 src/client/main_window.o: src/client/main_window.cpp.o
@@ -308,7 +353,7 @@ src/client/main_window.o: src/client/main_window.cpp.o
 
 # target to build an object file
 src/client/main_window.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_window.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/main_window.cpp.o
 .PHONY : src/client/main_window.cpp.o
 
 src/client/main_window.i: src/client/main_window.cpp.i
@@ -316,7 +361,7 @@ src/client/main_window.i: src/client/main_window.cpp.i
 
 # target to preprocess a source file
 src/client/main_window.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_window.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/main_window.cpp.i
 .PHONY : src/client/main_window.cpp.i
 
 src/client/main_window.s: src/client/main_window.cpp.s
@@ -324,7 +369,7 @@ src/client/main_window.s: src/client/main_window.cpp.s
 
 # target to generate assembly for a file
 src/client/main_window.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_gui.dir/build.make CMakeFiles/client_gui.dir/src/client/main_window.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/decent_store.dir/build.make CMakeFiles/decent_store.dir/src/client/main_window.cpp.s
 .PHONY : src/client/main_window.cpp.s
 
 src/core/chunk/chunker.o: src/core/chunk/chunker.cpp.o
@@ -694,17 +739,21 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... client_gui_autogen"
-	@echo "... client_gui_autogen_timestamp_deps"
+	@echo "... decent_store_autogen"
+	@echo "... decent_store_autogen_timestamp_deps"
 	@echo "... client"
-	@echo "... client_gui"
+	@echo "... decent_store"
 	@echo "... dss_core"
 	@echo "... peer"
 	@echo "... tracker"
-	@echo "... client_gui_autogen/mocs_compilation.o"
-	@echo "... client_gui_autogen/mocs_compilation.i"
-	@echo "... client_gui_autogen/mocs_compilation.s"
+	@echo "... decent_store_autogen/mocs_compilation.o"
+	@echo "... decent_store_autogen/mocs_compilation.i"
+	@echo "... decent_store_autogen/mocs_compilation.s"
 	@echo "... src/client/dss_worker.o"
 	@echo "... src/client/dss_worker.i"
 	@echo "... src/client/dss_worker.s"

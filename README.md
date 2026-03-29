@@ -1,7 +1,7 @@
 Decent Store
 ============
 
-Decentralised chunk-based storage with a simple CLI and Qt GUI client. Peers store encrypted chunks; a Kademlia-style DHT maps chunk hashes to peers.
+Decentralised chunk-based storage with a simple CLI and Qt GUI client. Peers store encrypted chunks; a Kademlia-style DHT maps chunk hashes to peers. Uploads return a **share ID** (`dss://file/<sha256(manifest_text)>`); manifests are stored on peers and a local `.manifest.txt` copy is written for debugging.
 
 Build
 -----
@@ -44,7 +44,7 @@ Usage:
 
 ```text
 ./build/client put <peers> <file_path> [chunk_size_bytes] [replicas] [rsa_public_key_pem]
-./build/client get <peers> <manifest_path> <output_file> [rsa_private_key_pem]
+./build/client get <peers> <share_id_or_manifest_path> <output_file> [rsa_private_key_pem]
 ./build/client repair
 ```
 
@@ -67,9 +67,10 @@ openssl rsa -in rsa_private.pem -pubout -out rsa_public.pem
 
 # Upload (encrypted)
 ./build/client put 127.0.0.1:9101,127.0.0.1:9102 ./file.bin 1048576 2 rsa_public.pem
-# Output: path to manifest, e.g. file.bin.manifest.txt
+# Prints share ID (dss://file/...) and local manifest path
 
-# Download (decrypt)
+# Download (decrypt) by share ID or local manifest path
+./build/client get 127.0.0.1:9101,127.0.0.1:9102 dss://file/<hex> restored.bin rsa_private.pem
 ./build/client get 127.0.0.1:9101,127.0.0.1:9102 file.bin.manifest.txt restored.bin rsa_private.pem
 ```
 
@@ -80,41 +81,48 @@ Repair
 
 Tracker-based automatic repair is disabled in DHT mode; `client repair` currently prints a message and exits.
 
-Qt GUI client
--------------
+Single application (recommended)
+----------------------------------
 
-If Qt6 (Widgets + Network) is installed, `client_gui` is built:
+The primary user-facing binary is **`decent_store`**: one Qt process that runs the client UI, optional **embedded peer** (storage + listener), **bootstrap discovery**, and **DHT routing** without a separate peer process for normal use. Standalone `peer` and CLI `client` remain useful for scripting, tests, and headless nodes.
+
+If Qt6 (Widgets + Network) is installed, `decent_store` is built:
 
 ```bash
-./build/client_gui
+./build/decent_store
 ```
+
+Install (optional; installs `decent_store`, `client`, `peer`, and `tracker` under `CMAKE_INSTALL_PREFIX/bin`):
+
+```bash
+cmake --install build
+```
+
+Qt GUI (`decent_store`)
+-----------------------
+
+Settings align with `QApplication` organisation/name (`decent_store` / `decent_store`), e.g. `~/.config/decent_store/decent_store.conf` on Linux. First run can prompt for peer contribution (embedded peer), storage limit, and port. Keys include `peer/enabled`, `peer/port`, `peer/max_bytes`, `peer/storage_dir`, `network/bootstrap_seeds`, and `network/advertise_ip`.
 
 Main elements:
 
-- **Peers**: top section where you enter the peer list used by the client:
-  - Format: `ip:port,ip:port` (e.g. `127.0.0.1:9101,127.0.0.1:9102`).
+- **Network Join (Bootstrap)** (top): read-only **Discovered peers** field (`ip:port,...`) populated after TCP probes and optional local embedded peer merge. Status line explains client-only vs routing mode.
 
 - **Put tab (Upload File)**:
   - Choose file to upload.
   - Configure chunk size and replicas.
   - Upload button.
   - Global progress bar and log at the bottom.
-  - `Stored Files` table showing:
-    - CID (currently the manifest path)
-    - Filename
-    - Size
-    - Download button (prompts for output path and downloads via the same peers).
+  - **Stored Files** table: **Share ID**, name, size, **Download** (uses the share ID with the same peer list).
 
 - **Get tab**:
-  - Select an existing manifest and an output path, then download.
+  - Enter `dss://file/<sha256>` or a path to `.manifest.txt`, plus output path, then download.
 
 - **Repair tab**:
-  - Present but repair is disabled in DHT mode (no tracker).
+  - Explains that tracker-based repair is unavailable in DHT-only mode; controls are disabled.
 
 - **Network tab**:
-  - `Refresh peers` button.
-  - Peer table: `Peer | Status | Node ID (prefix)`.
-  - Simple text “network map” showing peers with their Kademlia ID prefix and online/offline status.
+  - **Routing configuration**: edit bootstrap seeds and advertise address; **Apply network settings** saves to `QSettings` and restarts the embedded peer if needed.
+  - **Refresh peers**, peer table (`Peer | Status | Node ID (prefix)`), and a short network map.
 
 DHT and integrity
 -----------------

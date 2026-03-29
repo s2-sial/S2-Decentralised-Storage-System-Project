@@ -154,7 +154,7 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
-  "CMakeFiles/client_gui_autogen.dir/AutogenInfo.json"
+  "CMakeFiles/decent_store_autogen.dir/AutogenInfo.json"
   ".qt/QtDeploySupport.cmake"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
@@ -165,7 +165,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/tracker.dir/DependInfo.cmake"
   "CMakeFiles/peer.dir/DependInfo.cmake"
   "CMakeFiles/client.dir/DependInfo.cmake"
-  "CMakeFiles/client_gui.dir/DependInfo.cmake"
-  "CMakeFiles/client_gui_autogen_timestamp_deps.dir/DependInfo.cmake"
-  "CMakeFiles/client_gui_autogen.dir/DependInfo.cmake"
+  "CMakeFiles/decent_store.dir/DependInfo.cmake"
+  "CMakeFiles/decent_store_autogen_timestamp_deps.dir/DependInfo.cmake"
+  "CMakeFiles/decent_store_autogen.dir/DependInfo.cmake"
   )

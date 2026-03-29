@@ -25,7 +25,7 @@ private slots:
   void onGetClicked();
   void onRepairClicked();
   void onProgress(int done, int total, const QString& message);
-  void onPutFinished(const QString& manifestPath);
+  void onPutFinished(const QString& shareId, const QString& localManifestPath);
   void onGetFinished(const QString& outputPath);
   void onRepairFinished();
   void onError(const QString& message);

@@ -43,10 +43,11 @@ void DssWorker::putFile(const QString& peers,
     cfg.desiredReplicas = replicas > 0 ? replicas : 2;
 
     dss::DssClient client(cfg);
-    std::string manifestPath = client.putFile(filePath.toStdString(), [this](dss::Progress p) {
+    dss::PutFileResult result = client.putFile(filePath.toStdString(), [this](dss::Progress p) {
       runProgress(p);
     });
-    emit putFinished(QString::fromStdString(manifestPath));
+    emit putFinished(QString::fromStdString(result.shareUri),
+                     QString::fromStdString(result.localManifestPath));
   } catch (const std::exception& e) {
     emit error(QString::fromUtf8(e.what()));
   }
@@ -61,7 +62,7 @@ void DssWorker::getFile(const QString& peers,
     std::string item;
     while (std::getline(ss, item, ',')) {
       auto trim = [](std::string s) {
-        const char* ws = " \ \t\r\n";
+        const char* ws = " \t\r\n";
         auto b = s.find_first_not_of(ws);
         if (b == std::string::npos) return std::string();
         auto e = s.find_last_not_of(ws);

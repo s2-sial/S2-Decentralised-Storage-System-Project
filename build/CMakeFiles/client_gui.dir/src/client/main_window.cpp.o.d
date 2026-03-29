@@ -525,6 +525,8 @@ CMakeFiles/client_gui.dir/src/client/main_window.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlineedit.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QFile \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h \
  /home/saad/~projects/decent-store/src/core/manifest/manifest.h \
  /home/saad/~projects/decent-store/src/core/dht/kademlia_id.h \
  /home/saad/~projects/decent-store/src/core/peer/peer_service.h \
