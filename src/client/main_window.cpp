@@ -2,6 +2,7 @@
 #include "dss_worker.h"
 
 #include <QApplication>
+#include <QCheckBox>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QFileDialog>
@@ -86,8 +87,11 @@ void MainWindow::setupUi() {
   tabs->addTab(makePutTab(), tr("Put"));
   tabs->addTab(makeGetTab(), tr("Get"));
   tabs->addTab(makeRepairTab(), tr("Repair"));
+  tabs->addTab(makeSettingsTab(), tr("Settings"));
   tabs->addTab(makeNetworkTab(), tr("Network"));
   mainLayout->addWidget(tabs);
+
+  syncPeerSettingsToUi();
 
   progressBar_ = new QProgressBar(this);
   progressBar_->setRange(0, 0);
@@ -268,6 +272,111 @@ QWidget* MainWindow::makeRepairTab() {
   outer->addLayout(form);
   outer->addStretch(1);
   return w;
+}
+
+QWidget* MainWindow::makeSettingsTab() {
+  QWidget* w = new QWidget(this);
+  QVBoxLayout* outer = new QVBoxLayout(w);
+
+  QGroupBox* peerGroup = new QGroupBox(tr("Local peer (embedded)"), w);
+  QFormLayout* form = new QFormLayout(peerGroup);
+
+  settingsPeerEnabledCheck_ = new QCheckBox(tr("Enable peer contribution (storage and network listener)"), w);
+  form->addRow(settingsPeerEnabledCheck_);
+
+  settingsPeerPortSpin_ = new QSpinBox(w);
+  settingsPeerPortSpin_->setRange(1024, 65535);
+  form->addRow(tr("Peer port:"), settingsPeerPortSpin_);
+
+  settingsMaxGiBSpin_ = new QSpinBox(w);
+  settingsMaxGiBSpin_->setRange(1, 1024);
+  form->addRow(tr("Max storage contribution (GiB):"), settingsMaxGiBSpin_);
+
+  settingsStorageDirEdit_ = new QLineEdit(w);
+  settingsStorageDirEdit_->setPlaceholderText(tr("Directory for chunk and manifest storage"));
+  auto* storageRow = new QWidget(w);
+  auto* storageLayout = new QHBoxLayout(storageRow);
+  storageLayout->setContentsMargins(0, 0, 0, 0);
+  storageLayout->addWidget(settingsStorageDirEdit_);
+  auto* storageBrowse = new QPushButton(tr("Browse…"), w);
+  storageLayout->addWidget(storageBrowse);
+  form->addRow(tr("Storage directory:"), storageRow);
+  connect(storageBrowse, &QPushButton::clicked, this, [this]() {
+    const QString dir = QFileDialog::getExistingDirectory(
+        this, tr("Select peer storage directory"), settingsStorageDirEdit_->text());
+    if (!dir.isEmpty()) {
+      settingsStorageDirEdit_->setText(dir);
+    }
+  });
+
+  QLabel* hint = new QLabel(
+      tr("Click Apply to save. Changing port, storage cap, or directory restarts the embedded peer."),
+      w);
+  hint->setWordWrap(true);
+  form->addRow(hint);
+
+  auto* applyBtn = new QPushButton(tr("Apply peer settings"), w);
+  connect(applyBtn, &QPushButton::clicked, this, &MainWindow::onApplySettingsClicked);
+  form->addRow(applyBtn);
+
+  outer->addWidget(peerGroup);
+  outer->addStretch(1);
+  return w;
+}
+
+void MainWindow::syncPeerSettingsToUi() {
+  if (!settingsPeerEnabledCheck_ || !settingsPeerPortSpin_ || !settingsMaxGiBSpin_ ||
+      !settingsStorageDirEdit_) {
+    return;
+  }
+  settingsPeerEnabledCheck_->setChecked(peerEnabled_);
+  settingsPeerPortSpin_->setValue(peerPort_);
+  std::uint64_t gib = peerMaxBytes_ / (1024ull * 1024 * 1024);
+  if (gib < 1) {
+    gib = 1;
+  }
+  if (gib > 1024) {
+    gib = 1024;
+  }
+  settingsMaxGiBSpin_->setValue(static_cast<int>(gib));
+  settingsStorageDirEdit_->setText(peerStorageDir_);
+}
+
+void MainWindow::onApplySettingsClicked() {
+  if (!settingsPeerEnabledCheck_) {
+    return;
+  }
+
+  const QString dir = settingsStorageDirEdit_->text().trimmed();
+  if (dir.isEmpty()) {
+    QMessageBox::warning(this, tr("Settings"), tr("Storage directory cannot be empty."));
+    return;
+  }
+
+  peerEnabled_ = settingsPeerEnabledCheck_->isChecked();
+  peerPort_ = settingsPeerPortSpin_->value();
+  const int gib = settingsMaxGiBSpin_->value();
+  peerMaxBytes_ = static_cast<std::uint64_t>(gib) * 1024ull * 1024ull * 1024ull;
+  peerStorageDir_ = dir;
+
+  QSettings settings(QStringLiteral("decent_store"), QStringLiteral("decent_store"));
+  settings.setValue(QStringLiteral("peer/enabled"), peerEnabled_);
+  settings.setValue(QStringLiteral("peer/port"), peerPort_);
+  settings.setValue(QStringLiteral("peer/max_bytes"), static_cast<qulonglong>(peerMaxBytes_));
+  settings.setValue(QStringLiteral("peer/storage_dir"), peerStorageDir_);
+
+  const bool hadRunning = embeddedPeerService_ && embeddedPeerService_->isRunning();
+  if (hadRunning) {
+    stopEmbeddedPeer();
+  }
+  startEmbeddedPeerIfEnabled();
+  discoverPeersFromBootstrap();
+  log(tr("Peer settings saved (port %1, max %2 GiB).")
+          .arg(peerPort_)
+          .arg(gib));
+  QMessageBox::information(this, tr("Settings"),
+                           tr("Peer settings saved. The embedded peer was restarted if it was "
+                              "running or is enabled."));
 }
 
 QWidget* MainWindow::makeNetworkTab() {

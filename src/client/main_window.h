@@ -12,6 +12,7 @@ class QLineEdit;
 class QSpinBox;
 class QTableWidget;
 class QLabel;
+class QCheckBox;
 namespace dss::peer { class PeerService; }
 
 class MainWindow : public QMainWindow {
@@ -33,12 +34,15 @@ private slots:
   void onDownloadButtonClicked();
   void refreshPeerMonitor();
   void onApplyNetworkSettingsClicked();
+  void onApplySettingsClicked();
 
 private:
   void setupUi();
+  void syncPeerSettingsToUi();
   QWidget* makePutTab();
   QWidget* makeGetTab();
   QWidget* makeRepairTab();
+  QWidget* makeSettingsTab();
   QWidget* makeNetworkTab();
   QString trackerIp() const;
   int trackerPort() const;
@@ -85,6 +89,11 @@ private:
   QLabel* networkMapLabel_{};
   QLineEdit* bootstrapSeedsEdit_{};
   QLineEdit* advertiseIpEdit_{};
+
+  QCheckBox* settingsPeerEnabledCheck_{};
+  QSpinBox* settingsPeerPortSpin_{};
+  QSpinBox* settingsMaxGiBSpin_{};
+  QLineEdit* settingsStorageDirEdit_{};
 
   QString peerAdvertiseIp_{QStringLiteral("127.0.0.1")};
 };
