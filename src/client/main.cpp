@@ -66,17 +66,19 @@ int main(int argc, char** argv) {
         throw std::runtime_error("No valid peers provided");
       }
 
-      cfg.chunkSize = (argc >= 6)
-                          ? static_cast<size_t>(std::stoul(argv[5]))
+      // put <peers> <file_path> [chunk_size] [replicas] [rsa_public.pem]
+      // argv[3] = file_path, argv[4] = chunk_size, argv[5] = replicas, argv[6] = rsa
+      cfg.chunkSize = (argc >= 5)
+                          ? static_cast<size_t>(std::stoul(argv[4]))
                           : 1024 * 1024;
-      cfg.desiredReplicas = (argc >= 7) ? std::stoi(argv[6]) : 2;
-      if (argc >= 8) {
-        cfg.rsaPublicKeyPath = argv[7];
+      cfg.desiredReplicas = (argc >= 6) ? std::stoi(argv[5]) : 2;
+      if (argc >= 7) {
+        cfg.rsaPublicKeyPath = argv[6];
       }
 
       dss::DssClient client(cfg);
       dss::PutFileResult result =
-          client.putFile(argv[4], [](dss::Progress p) {
+          client.putFile(argv[3], [](dss::Progress p) {
             std::cout << "[PUT] " << p.done << "/" << p.total << " "
                       << p.message << "\n";
           });

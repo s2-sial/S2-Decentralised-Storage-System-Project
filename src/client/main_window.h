@@ -71,9 +71,11 @@ private:
   QLineEdit* putFileEdit_{};
   QLineEdit* putChunkEdit_{};
   QSpinBox* putReplicasSpin_{};
+  QLineEdit* putRsaPublicEdit_{};
 
   QLineEdit* getManifestEdit_{};
   QLineEdit* getOutputEdit_{};
+  QLineEdit* getRsaPrivateEdit_{};
 
   QSpinBox* repairReplicasSpin_{};
   QSpinBox* repairBatchSpin_{};
