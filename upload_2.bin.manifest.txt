@@ -1,0 +1,6 @@
+filename upload_2.bin
+size 1024
+chunk_size 1048576
+chunks 1
+bc5ad63d88e8ea6264f708d52f2f3deb49b968a3484c06aa4b2244bb4ec1fd48
+encrypted 0

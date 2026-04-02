@@ -32,10 +32,14 @@
 #include <filesystem>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
+  //Move worker to its own OS thread - all its slots execute there
   worker_ = new DssWorker;
   worker_->moveToThread(&workerThread_);
   connect(&workerThread_, &QThread::finished, worker_, &QObject::deleteLater);
 
+  //Qt::QueuedConnection: signal emission on worker thread is queued as
+  //an event; the slot fires on the receiver's thread (main/GUI thread).
+  //This is the only safe way to update widgets from a background thread.
   connect(worker_, &DssWorker::progress, this, &MainWindow::onProgress, Qt::QueuedConnection);
   connect(worker_, &DssWorker::putFinished, this, &MainWindow::onPutFinished, Qt::QueuedConnection);
   connect(worker_, &DssWorker::getFinished, this, &MainWindow::onGetFinished, Qt::QueuedConnection);
@@ -128,6 +132,25 @@ QWidget* MainWindow::makePutTab() {
   putReplicasSpin_->setRange(1, 32);
   putReplicasSpin_->setValue(2);
   form->addRow(tr("Replicas:"), putReplicasSpin_);
+  putRsaPublicEdit_ = new QLineEdit(this);
+  putRsaPublicEdit_->setPlaceholderText(tr("Optional — RSA public key (.pem) for AES-256-GCM + hybrid wrap"));
+  auto* rsaPubRow = new QWidget(this);
+  auto* rsaPubLayout = new QHBoxLayout(rsaPubRow);
+  rsaPubLayout->setContentsMargins(0, 0, 0, 0);
+  rsaPubLayout->addWidget(putRsaPublicEdit_);
+  auto* rsaPubBrowse = new QPushButton(tr("Browse…"), this);
+  rsaPubLayout->addWidget(rsaPubBrowse);
+  form->addRow(tr("RSA public key:"), rsaPubRow);
+  connect(rsaPubBrowse, &QPushButton::clicked, this, [this]() {
+    const QString path = QFileDialog::getOpenFileName(
+        this,
+        tr("Select RSA public key"),
+        QString(),
+        tr("PEM files (*.pem);;All files (*.*)"));
+    if (!path.isEmpty()) {
+      putRsaPublicEdit_->setText(path);
+    }
+  });
   QPushButton* btn = new QPushButton(tr("Put file"), this);
   connect(btn, &QPushButton::clicked, this, &MainWindow::onPutClicked);
   form->addRow(btn);
@@ -188,6 +211,25 @@ QWidget* MainWindow::makeGetTab() {
                                                       tr("Select output file"));
     if (!path.isEmpty()) {
       getOutputEdit_->setText(path);
+    }
+  });
+  getRsaPrivateEdit_ = new QLineEdit(this);
+  getRsaPrivateEdit_->setPlaceholderText(tr("Optional — RSA private key (.pem) if upload was encrypted"));
+  auto* rsaPrvRow = new QWidget(this);
+  auto* rsaPrvLayout = new QHBoxLayout(rsaPrvRow);
+  rsaPrvLayout->setContentsMargins(0, 0, 0, 0);
+  rsaPrvLayout->addWidget(getRsaPrivateEdit_);
+  auto* rsaPrvBrowse = new QPushButton(tr("Browse…"), this);
+  rsaPrvLayout->addWidget(rsaPrvBrowse);
+  form->addRow(tr("RSA private key:"), rsaPrvRow);
+  connect(rsaPrvBrowse, &QPushButton::clicked, this, [this]() {
+    const QString path = QFileDialog::getOpenFileName(
+        this,
+        tr("Select RSA private key"),
+        QString(),
+        tr("PEM files (*.pem);;All files (*.*)"));
+    if (!path.isEmpty()) {
+      getRsaPrivateEdit_->setText(path);
     }
   });
   QPushButton* btn = new QPushButton(tr("Get file"), this);
@@ -325,11 +367,18 @@ void MainWindow::onPutClicked() {
   }
   setBusy(true);
   log(tr("[Put] Started: %1").arg(path));
+  const QString rsaPub = putRsaPublicEdit_ ? putRsaPublicEdit_->text().trimmed() : QString();
+  if (!rsaPub.isEmpty()) {
+    log(tr("[Put] Hybrid encryption enabled (RSA public key)."));
+  }
+  //QMetaObject::invokeMethod with Qt::QueuedConnection posts a
+  //cross-thread call safely without blocking the GUI thread.
   QMetaObject::invokeMethod(worker_, "putFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
                             Q_ARG(QString, path),
                             Q_ARG(quint64, chunkSize),
-                            Q_ARG(int, putReplicasSpin_->value()));
+                            Q_ARG(int, putReplicasSpin_->value()),
+                            Q_ARG(QString, rsaPub));
 }
 
 void MainWindow::onPutFinished(const QString& shareId, const QString& localManifestPath) {
@@ -387,10 +436,12 @@ void MainWindow::onGetClicked() {
   }
   setBusy(true);
   log(tr("[Get] Started: %1 → %2").arg(manifest, output));
+  const QString rsaPrv = getRsaPrivateEdit_ ? getRsaPrivateEdit_->text().trimmed() : QString();
   QMetaObject::invokeMethod(worker_, "getFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
                             Q_ARG(QString, manifest),
-                            Q_ARG(QString, output));
+                            Q_ARG(QString, output),
+                            Q_ARG(QString, rsaPrv));
 }
 
 void MainWindow::onGetFinished(const QString& outputPath) {
@@ -449,10 +500,12 @@ void MainWindow::onDownloadButtonClicked() {
 
   setBusy(true);
   log(tr("[Get] Started: %1 → %2").arg(shareId, output));
+  const QString rsaPrv = getRsaPrivateEdit_ ? getRsaPrivateEdit_->text().trimmed() : QString();
   QMetaObject::invokeMethod(worker_, "getFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
                             Q_ARG(QString, shareId),
-                            Q_ARG(QString, output));
+                            Q_ARG(QString, output),
+                            Q_ARG(QString, rsaPrv));
 }
 
 void MainWindow::refreshPeerMonitor() {

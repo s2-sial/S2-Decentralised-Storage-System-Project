@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_DssWorker_t {
-    uint offsetsAndSizes[46];
+    uint offsetsAndSizes[50];
     char stringdata0[10];
     char stringdata1[9];
     char stringdata2[1];
@@ -45,11 +45,13 @@ struct qt_meta_stringdata_DssWorker_t {
     char stringdata15[9];
     char stringdata16[10];
     char stringdata17[9];
-    char stringdata18[8];
-    char stringdata19[13];
-    char stringdata20[7];
-    char stringdata21[16];
-    char stringdata22[6];
+    char stringdata18[16];
+    char stringdata19[8];
+    char stringdata20[13];
+    char stringdata21[17];
+    char stringdata22[7];
+    char stringdata23[16];
+    char stringdata24[6];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_DssWorker_t::offsetsAndSizes) + ofs), len 
@@ -73,11 +75,13 @@ Q_CONSTINIT static const qt_meta_stringdata_DssWorker_t qt_meta_stringdata_DssWo
         QT_MOC_LITERAL(135, 8),  // "filePath"
         QT_MOC_LITERAL(144, 9),  // "chunkSize"
         QT_MOC_LITERAL(154, 8),  // "replicas"
-        QT_MOC_LITERAL(163, 7),  // "getFile"
-        QT_MOC_LITERAL(171, 12),  // "manifestPath"
-        QT_MOC_LITERAL(184, 6),  // "repair"
-        QT_MOC_LITERAL(191, 15),  // "desiredReplicas"
-        QT_MOC_LITERAL(207, 5)   // "batch"
+        QT_MOC_LITERAL(163, 15),  // "rsaPublicKeyPem"
+        QT_MOC_LITERAL(179, 7),  // "getFile"
+        QT_MOC_LITERAL(187, 12),  // "manifestPath"
+        QT_MOC_LITERAL(200, 16),  // "rsaPrivateKeyPem"
+        QT_MOC_LITERAL(217, 6),  // "repair"
+        QT_MOC_LITERAL(224, 15),  // "desiredReplicas"
+        QT_MOC_LITERAL(240, 5)   // "batch"
     },
     "DssWorker",
     "progress",
@@ -97,8 +101,10 @@ Q_CONSTINIT static const qt_meta_stringdata_DssWorker_t qt_meta_stringdata_DssWo
     "filePath",
     "chunkSize",
     "replicas",
+    "rsaPublicKeyPem",
     "getFile",
     "manifestPath",
+    "rsaPrivateKeyPem",
     "repair",
     "desiredReplicas",
     "batch"
@@ -127,9 +133,9 @@ Q_CONSTINIT static const uint qt_meta_data_DssWorker[] = {
       12,    1,   78,    2, 0x06,   11 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      13,    4,   81,    2, 0x0a,   13 /* Public */,
-      18,    3,   90,    2, 0x0a,   18 /* Public */,
-      20,    3,   97,    2, 0x0a,   22 /* Public */,
+      13,    5,   81,    2, 0x0a,   13 /* Public */,
+      19,    4,   92,    2, 0x0a,   19 /* Public */,
+      22,    3,  101,    2, 0x0a,   24 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    3,    4,    5,
@@ -139,9 +145,9 @@ Q_CONSTINIT static const uint qt_meta_data_DssWorker[] = {
     QMetaType::Void, QMetaType::QString,    5,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::ULongLong, QMetaType::Int,   14,   15,   16,   17,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::QString,   14,   19,   10,
-    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int,   14,   21,   22,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::ULongLong, QMetaType::Int, QMetaType::QString,   14,   15,   16,   17,   18,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::QString, QMetaType::QString,   14,   20,   10,   21,
+    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int,   14,   23,   24,
 
        0        // eod
 };
@@ -178,8 +184,10 @@ Q_CONSTINIT const QMetaObject DssWorker::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<quint64, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'getFile'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
@@ -203,8 +211,8 @@ void DssWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 2: _t->getFinished((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->repairFinished(); break;
         case 4: _t->error((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 5: _t->putFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<quint64>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4]))); break;
-        case 6: _t->getFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
+        case 5: _t->putFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<quint64>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[5]))); break;
+        case 6: _t->getFile((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[4]))); break;
         case 7: _t->repair((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3]))); break;
         default: ;
         }

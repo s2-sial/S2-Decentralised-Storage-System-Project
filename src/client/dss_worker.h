@@ -12,9 +12,14 @@ public:
 
 public slots:
   void putFile(const QString& peers,
-               const QString& filePath, quint64 chunkSize, int replicas);
+               const QString& filePath,
+               quint64 chunkSize,
+               int replicas,
+               const QString& rsaPublicKeyPem);
   void getFile(const QString& peers,
-               const QString& manifestPath, const QString& outputPath);
+               const QString& manifestPath,
+               const QString& outputPath,
+               const QString& rsaPrivateKeyPem);
   void repair(const QString& peers, int desiredReplicas, int batch);
 
 signals:

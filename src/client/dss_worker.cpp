@@ -5,12 +5,18 @@
 
 DssWorker::DssWorker(QObject* parent) : QObject(parent) {}
 
+// Called from within blocking putFile/getFile on the worker thread.
+// emit here is safe: Qt marshals the arguments across the thread
+// boundary and delivers to onProgress() on the main thread.
 void DssWorker::runProgress(dss::Progress p) {
   emit progress(p.done, p.total, QString::fromStdString(p.message));
 }
 
 void DssWorker::putFile(const QString& peers,
-                        const QString& filePath, quint64 chunkSize, int replicas) {
+                        const QString& filePath,
+                        quint64 chunkSize,
+                        int replicas,
+                        const QString& rsaPublicKeyPem) {
   try {
     dss::ClientConfig cfg;
     const std::string peersStr = peers.toStdString();
@@ -41,6 +47,10 @@ void DssWorker::putFile(const QString& peers,
     }
     cfg.chunkSize = chunkSize > 0 ? static_cast<size_t>(chunkSize) : 1024 * 1024;
     cfg.desiredReplicas = replicas > 0 ? replicas : 2;
+    const QString pub = rsaPublicKeyPem.trimmed();
+    if (!pub.isEmpty()) {
+      cfg.rsaPublicKeyPath = pub.toStdString();
+    }
 
     dss::DssClient client(cfg);
     dss::PutFileResult result = client.putFile(filePath.toStdString(), [this](dss::Progress p) {
@@ -54,7 +64,9 @@ void DssWorker::putFile(const QString& peers,
 }
 
 void DssWorker::getFile(const QString& peers,
-                        const QString& manifestPath, const QString& outputPath) {
+                        const QString& manifestPath,
+                        const QString& outputPath,
+                        const QString& rsaPrivateKeyPem) {
   try {
     dss::ClientConfig cfg;
     const std::string peersStr = peers.toStdString();
@@ -85,6 +97,10 @@ void DssWorker::getFile(const QString& peers,
     }
     cfg.chunkSize = 1024 * 1024;
     cfg.desiredReplicas = 2;
+    const QString prv = rsaPrivateKeyPem.trimmed();
+    if (!prv.isEmpty()) {
+      cfg.rsaPrivateKeyPath = prv.toStdString();
+    }
 
     dss::DssClient client(cfg);
     client.getFile(manifestPath.toStdString(), outputPath.toStdString(), [this](dss::Progress p) {

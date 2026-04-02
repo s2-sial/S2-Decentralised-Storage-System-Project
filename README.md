@@ -110,12 +110,14 @@ Main elements:
 - **Put tab (Upload File)**:
   - Choose file to upload.
   - Configure chunk size and replicas.
+  - Optional **RSA public key** (`.pem`) for hybrid encryption (AES-256-GCM + RSA-OAEP key wrap); leave empty for plaintext chunks.
   - Upload button.
   - Global progress bar and log at the bottom.
-  - **Stored Files** table: **Share ID**, name, size, **Download** (uses the share ID with the same peer list).
+  - **Stored Files** table: **Share ID**, name, size, **Download** (uses the share ID with the same peer list and the **Get** tab’s private key if set).
 
 - **Get tab**:
   - Enter `dss://file/<sha256>` or a path to `.manifest.txt`, plus output path, then download.
+  - Optional **RSA private key** (`.pem`) when the upload was encrypted; required to decrypt.
 
 - **Repair tab**:
   - Explains that tracker-based repair is unavailable in DHT-only mode; controls are disabled.
@@ -136,3 +138,5 @@ DHT and integrity
   - verifies the SHA-256 hash of the plaintext against the manifest’s `chunkId`.
 
 Chunks that fail integrity verification are rejected and the client tries another peer; if none succeed, the download fails for that chunk.
+
+
