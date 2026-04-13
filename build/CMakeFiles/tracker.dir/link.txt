@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/tracker.dir/src/tracker/main.cpp.o -o tracker  libdss_core.a /usr/lib/x86_64-linux-gnu/libcrypto.so 

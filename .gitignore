@@ -1,3 +1,14 @@
-/build/
 priv.pem
 pub.pem
+/store1/
+/store2/
+output.txt
+output2.txt
+secret.bin
+secret.bin.manifest.txt
+upload_1.bin.manifest.txt
+upload_2.bin.manifest.txt
+upload_3.bin.manifest.txt
+upload_4.bin.manifest.txt
+upload_5.bin.manifest.txt
+out.bin

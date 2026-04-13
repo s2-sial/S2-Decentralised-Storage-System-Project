@@ -1,0 +1,13 @@
+/home/saad/~projects/decent-store/build/CMakeFiles/dss_core.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/tracker.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/peer.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/client.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/decent_store.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/edit_cache.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/rebuild_cache.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/list_install_components.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/install.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/install/local.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/install/strip.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/decent_store_autogen_timestamp_deps.dir
+/home/saad/~projects/decent-store/build/CMakeFiles/decent_store_autogen.dir
