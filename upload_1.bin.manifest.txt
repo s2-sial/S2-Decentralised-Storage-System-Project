@@ -1,6 +1,0 @@
-filename upload_1.bin
-size 1024
-chunk_size 1048576
-chunks 1
-ad4bb16ca71e1e0315a66fe2abb38b36a1120eb82e6ca99b51323848133adae9
-encrypted 0
