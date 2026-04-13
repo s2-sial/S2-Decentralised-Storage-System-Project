@@ -1,7 +1,10 @@
 #include "dss_worker.h"
 
+#include "core/net/peer_endpoint_parse.h"
+
 #include <QMetaObject>
 #include <stdexcept>
+#include <sstream>
 
 DssWorker::DssWorker(QObject* parent) : QObject(parent) {}
 
@@ -14,33 +17,23 @@ void DssWorker::runProgress(dss::Progress p) {
 
 void DssWorker::putFile(const QString& peers,
                         const QString& filePath,
+                        const QString& localManifestDir,
                         quint64 chunkSize,
                         int replicas,
                         const QString& rsaPublicKeyPem) {
   try {
     dss::ClientConfig cfg;
+    cfg.localManifestDir = localManifestDir.toStdString();
     const std::string peersStr = peers.toStdString();
     std::stringstream ss(peersStr);
     std::string item;
     while (std::getline(ss, item, ',')) {
-      auto trim = [](std::string s) {
-        const char* ws = " \t\r\n";
-        auto b = s.find_first_not_of(ws);
-        if (b == std::string::npos) return std::string();
-        auto e = s.find_last_not_of(ws);
-        return s.substr(b, e - b + 1);
-      };
-      item = trim(item);
       if (item.empty()) continue;
-      auto pos = item.find(':');
-      if (pos == std::string::npos) continue;
-      dss::PeerEndpoint ep;
-      std::string ipPart = trim(item.substr(0, pos));
-      std::string portPart = trim(item.substr(pos + 1));
-      if (ipPart.empty() || portPart.empty()) continue;
-      ep.ip = ipPart;
-      ep.port = std::stoi(portPart);
-      cfg.peers.push_back(ep);
+      try {
+        cfg.peers.push_back(dss::net::parse_peer_entry(std::move(item)));
+      } catch (const std::exception&) {
+        continue;
+      }
     }
     if (cfg.peers.empty()) {
       throw std::runtime_error("No valid peers provided");
@@ -73,24 +66,12 @@ void DssWorker::getFile(const QString& peers,
     std::stringstream ss(peersStr);
     std::string item;
     while (std::getline(ss, item, ',')) {
-      auto trim = [](std::string s) {
-        const char* ws = " \t\r\n";
-        auto b = s.find_first_not_of(ws);
-        if (b == std::string::npos) return std::string();
-        auto e = s.find_last_not_of(ws);
-        return s.substr(b, e - b + 1);
-      };
-      item = trim(item);
       if (item.empty()) continue;
-      auto pos = item.find(':');
-      if (pos == std::string::npos) continue;
-      dss::PeerEndpoint ep;
-      std::string ipPart = trim(item.substr(0, pos));
-      std::string portPart = trim(item.substr(pos + 1));
-      if (ipPart.empty() || portPart.empty()) continue;
-      ep.ip = ipPart;
-      ep.port = std::stoi(portPart);
-      cfg.peers.push_back(ep);
+      try {
+        cfg.peers.push_back(dss::net::parse_peer_entry(std::move(item)));
+      } catch (const std::exception&) {
+        continue;
+      }
     }
     if (cfg.peers.empty()) {
       throw std::runtime_error("No valid peers provided");

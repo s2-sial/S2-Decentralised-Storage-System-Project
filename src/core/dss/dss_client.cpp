@@ -131,11 +131,23 @@ PutFileResult DssClient::putFile(const std::string& filePath,
     PeerClient::putManifest(p, manifestHash, manifestText);
   }
 
-  // Keep writing local manifest file for debugging/backward compatibility.
-  std::string localManifestPath = manifest.originalName + ".manifest.txt";
-  writeManifest(localManifestPath, manifest);
+  namespace fs = std::filesystem;
+  fs::path manifestDir;
+  if (cfg_.localManifestDir.empty()) {
+    manifestDir = fs::absolute(fs::path("manifests"));
+  } else {
+    manifestDir = fs::absolute(fs::path(cfg_.localManifestDir));
+  }
+  std::error_code mkEc;
+  fs::create_directories(manifestDir, mkEc);
+  if (mkEc) {
+    throw std::runtime_error("Cannot create manifest directory: " + manifestDir.string() +
+                             " (" + mkEc.message() + ")");
+  }
+  const fs::path localManifestPath = manifestDir / (manifest.originalName + ".manifest.txt");
+  writeManifest(localManifestPath.string(), manifest);
 
-  return PutFileResult{"dss://file/" + manifestHash, std::move(localManifestPath)};
+  return PutFileResult{"dss://file/" + manifestHash, localManifestPath.string()};
 }
 
 void DssClient::getFile(const std::string& manifestHash,

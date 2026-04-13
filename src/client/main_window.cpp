@@ -25,9 +25,11 @@
 #include <QLineEdit>
 #include <QWidget>
 #include <QFile>
+#include <QFileInfo>
 
 #include "core/manifest/manifest.h"
 #include "core/dht/kademlia_id.h"
+#include "core/net/peer_endpoint_parse.h"
 #include "core/peer/peer_service.h"
 
 #include <filesystem>
@@ -193,9 +195,13 @@ QWidget* MainWindow::makeGetTab() {
   manifestLayout->addWidget(manifestBrowseBtn);
   form->addRow(tr("Manifest:"), manifestRow);
   connect(manifestBrowseBtn, &QPushButton::clicked, this, [this]() {
+    QString startDir = localManifestDir_;
+    if (startDir.isEmpty() || !QFileInfo::exists(startDir)) {
+      startDir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    }
     const QString path = QFileDialog::getOpenFileName(this,
                                                       tr("Select manifest"),
-                                                      QString(),
+                                                      startDir,
                                                       tr("Manifest files (*.manifest.txt);;All files (*.*)"));
     if (!path.isEmpty()) {
       getManifestEdit_->setText(path);
@@ -278,6 +284,30 @@ QWidget* MainWindow::makeSettingsTab() {
   QWidget* w = new QWidget(this);
   QVBoxLayout* outer = new QVBoxLayout(w);
 
+  QGroupBox* clientGroup = new QGroupBox(tr("Client"), w);
+  QFormLayout* clientForm = new QFormLayout(clientGroup);
+  settingsManifestDirEdit_ = new QLineEdit(w);
+  settingsManifestDirEdit_->setPlaceholderText(tr("Directory for local .manifest.txt files after upload"));
+  auto* manifestRow = new QWidget(w);
+  auto* manifestLayout = new QHBoxLayout(manifestRow);
+  manifestLayout->setContentsMargins(0, 0, 0, 0);
+  manifestLayout->addWidget(settingsManifestDirEdit_);
+  auto* manifestBrowse = new QPushButton(tr("Browse…"), w);
+  manifestLayout->addWidget(manifestBrowse);
+  clientForm->addRow(tr("Manifest directory:"), manifestRow);
+  connect(manifestBrowse, &QPushButton::clicked, this, [this]() {
+    const QString dir = QFileDialog::getExistingDirectory(
+        this, tr("Select manifest directory"), settingsManifestDirEdit_->text());
+    if (!dir.isEmpty()) {
+      settingsManifestDirEdit_->setText(dir);
+    }
+  });
+  QLabel* clientHint = new QLabel(
+      tr("Uploaded files get a local manifest copy here (share ID and recovery)."), w);
+  clientHint->setWordWrap(true);
+  clientForm->addRow(clientHint);
+  outer->addWidget(clientGroup);
+
   QGroupBox* peerGroup = new QGroupBox(tr("Local peer (embedded)"), w);
   QFormLayout* form = new QFormLayout(peerGroup);
 
@@ -293,7 +323,7 @@ QWidget* MainWindow::makeSettingsTab() {
   form->addRow(tr("Max storage contribution (GiB):"), settingsMaxGiBSpin_);
 
   settingsStorageDirEdit_ = new QLineEdit(w);
-  settingsStorageDirEdit_->setPlaceholderText(tr("Directory for chunk and manifest storage"));
+  settingsStorageDirEdit_->setPlaceholderText(tr("Directory for peer chunk storage"));
   auto* storageRow = new QWidget(w);
   auto* storageLayout = new QHBoxLayout(storageRow);
   storageLayout->setContentsMargins(0, 0, 0, 0);
@@ -310,12 +340,13 @@ QWidget* MainWindow::makeSettingsTab() {
   });
 
   QLabel* hint = new QLabel(
-      tr("Click Apply to save. Changing port, storage cap, or directory restarts the embedded peer."),
+      tr("Click Apply to save manifest folder and peer options. Changing port, storage cap, or peer "
+         "directory restarts the embedded peer."),
       w);
   hint->setWordWrap(true);
   form->addRow(hint);
 
-  auto* applyBtn = new QPushButton(tr("Apply peer settings"), w);
+  auto* applyBtn = new QPushButton(tr("Apply settings"), w);
   connect(applyBtn, &QPushButton::clicked, this, &MainWindow::onApplySettingsClicked);
   form->addRow(applyBtn);
 
@@ -328,6 +359,9 @@ void MainWindow::syncPeerSettingsToUi() {
   if (!settingsPeerEnabledCheck_ || !settingsPeerPortSpin_ || !settingsMaxGiBSpin_ ||
       !settingsStorageDirEdit_) {
     return;
+  }
+  if (settingsManifestDirEdit_) {
+    settingsManifestDirEdit_->setText(localManifestDir_);
   }
   settingsPeerEnabledCheck_->setChecked(peerEnabled_);
   settingsPeerPortSpin_->setValue(peerPort_);
@@ -347,11 +381,28 @@ void MainWindow::onApplySettingsClicked() {
     return;
   }
 
+  const QString manifestDir = settingsManifestDirEdit_ ? settingsManifestDirEdit_->text().trimmed()
+                                                       : QString();
+  if (manifestDir.isEmpty()) {
+    QMessageBox::warning(this, tr("Settings"), tr("Manifest directory cannot be empty."));
+    return;
+  }
+  std::error_code mEc;
+  std::filesystem::create_directories(manifestDir.toStdString(), mEc);
+  if (mEc) {
+    QMessageBox::warning(this, tr("Settings"),
+                         tr("Cannot create manifest directory: %1").arg(QString::fromUtf8(
+                             mEc.message().c_str())));
+    return;
+  }
+
   const QString dir = settingsStorageDirEdit_->text().trimmed();
   if (dir.isEmpty()) {
     QMessageBox::warning(this, tr("Settings"), tr("Storage directory cannot be empty."));
     return;
   }
+
+  localManifestDir_ = manifestDir;
 
   peerEnabled_ = settingsPeerEnabledCheck_->isChecked();
   peerPort_ = settingsPeerPortSpin_->value();
@@ -360,6 +411,7 @@ void MainWindow::onApplySettingsClicked() {
   peerStorageDir_ = dir;
 
   QSettings settings(QStringLiteral("decent_store"), QStringLiteral("decent_store"));
+  settings.setValue(QStringLiteral("paths/local_manifest_dir"), localManifestDir_);
   settings.setValue(QStringLiteral("peer/enabled"), peerEnabled_);
   settings.setValue(QStringLiteral("peer/port"), peerPort_);
   settings.setValue(QStringLiteral("peer/max_bytes"), static_cast<qulonglong>(peerMaxBytes_));
@@ -371,12 +423,13 @@ void MainWindow::onApplySettingsClicked() {
   }
   startEmbeddedPeerIfEnabled();
   discoverPeersFromBootstrap();
-  log(tr("Peer settings saved (port %1, max %2 GiB).")
+  log(tr("Settings saved (manifest dir %1; peer port %2, max %3 GiB).")
+          .arg(localManifestDir_)
           .arg(peerPort_)
           .arg(gib));
   QMessageBox::information(this, tr("Settings"),
-                           tr("Peer settings saved. The embedded peer was restarted if it was "
-                              "running or is enabled."));
+                           tr("Settings saved. The embedded peer was restarted if it was running or "
+                              "is enabled."));
 }
 
 QWidget* MainWindow::makeNetworkTab() {
@@ -485,6 +538,7 @@ void MainWindow::onPutClicked() {
   QMetaObject::invokeMethod(worker_, "putFile", Qt::QueuedConnection,
                             Q_ARG(QString, trackerIp()),
                             Q_ARG(QString, path),
+                            Q_ARG(QString, localManifestDir_),
                             Q_ARG(quint64, chunkSize),
                             Q_ARG(int, putReplicasSpin_->value()),
                             Q_ARG(QString, rsaPub));
@@ -632,10 +686,15 @@ void MainWindow::refreshPeerMonitor() {
   for (const QString& part : parts) {
     QString peerStr = part.trimmed();
     if (peerStr.isEmpty()) continue;
-    const int colon = peerStr.indexOf(':');
-    if (colon <= 0 || colon == peerStr.size() - 1) continue;
-    const QString ip = peerStr.left(colon);
-    const int port = peerStr.mid(colon + 1).toInt();
+    dss::PeerEndpoint ep;
+    try {
+      ep = dss::net::parse_peer_entry(peerStr.toStdString());
+    } catch (const std::exception&) {
+      continue;
+    }
+    const QString ip = QString::fromStdString(ep.ip);
+    const int port = ep.port;
+    const QString displayPeer = QStringLiteral("%1:%2").arg(ip).arg(port);
 
     // connectivity check
     QTcpSocket sock;
@@ -646,18 +705,15 @@ void MainWindow::refreshPeerMonitor() {
     QString status = ok ? tr("Online") : tr("Offline");
 
     peersTable_->insertRow(row);
-    peersTable_->setItem(row, 0, new QTableWidgetItem(peerStr));
+    peersTable_->setItem(row, 0, new QTableWidgetItem(displayPeer));
     peersTable_->setItem(row, 1, new QTableWidgetItem(status));
 
     // Node ID prefix via DHT id helper
-    dss::PeerEndpoint ep;
-    ep.ip = ip.toStdString();
-    ep.port = port;
     auto id = dss::dht::makeNodeId(ep);
     QString idHex = QString::fromStdString(dss::dht::toHex(id)).left(8);
     peersTable_->setItem(row, 2, new QTableWidgetItem(idHex));
 
-    mapText += QString("• %1 — ID %2 (%3)\n").arg(peerStr, idHex, status);
+    mapText += QString("• %1 — ID %2 (%3)\n").arg(displayPeer, idHex, status);
     ++row;
   }
 
@@ -676,17 +732,23 @@ void MainWindow::discoverPeersFromBootstrap() {
   for (const QString& peerStrRaw : bootstrapNodes_) {
     const QString peerStr = peerStrRaw.trimmed();
     if (peerStr.isEmpty()) continue;
-    const int colon = peerStr.indexOf(':');
-    if (colon <= 0 || colon == peerStr.size() - 1) continue;
-    const QString ip = peerStr.left(colon);
-    const int port = peerStr.mid(colon + 1).toInt();
-    if (port <= 0) continue;
+    dss::PeerEndpoint ep;
+    try {
+      ep = dss::net::parse_peer_entry(peerStr.toStdString());
+    } catch (const std::exception&) {
+      continue;
+    }
+    if (ep.port <= 0) continue;
 
+    const QString ip = QString::fromStdString(ep.ip);
     QTcpSocket sock;
-    sock.connectToHost(ip, static_cast<quint16>(port));
+    sock.connectToHost(ip, static_cast<quint16>(ep.port));
     const bool ok = sock.waitForConnected(400);
     sock.abort();
-    if (ok) merged.push_back(peerStr);
+    if (ok) {
+      merged.push_back(
+          QStringLiteral("%1:%2").arg(QString::fromStdString(ep.ip)).arg(ep.port));
+    }
   }
 
   if (peerEnabled_ && embeddedPeerService_ && embeddedPeerService_->isRunning()) {
@@ -786,6 +848,8 @@ void MainWindow::loadOrPromptPeerSettings() {
     QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     if (appData.isEmpty()) appData = QStringLiteral(".");
     peerStorageDir_ = appData + QStringLiteral("/peer-storage");
+    localManifestDir_ = appData + QStringLiteral("/manifests");
+    settings.setValue(QStringLiteral("paths/local_manifest_dir"), localManifestDir_);
 
     settings.setValue(QStringLiteral("peer/settings_initialized"), true);
     settings.setValue(QStringLiteral("peer/enabled"), peerEnabled_);
@@ -813,6 +877,16 @@ void MainWindow::loadOrPromptPeerSettings() {
       if (appData.isEmpty()) appData = QStringLiteral(".");
       peerStorageDir_ = appData + QStringLiteral("/peer-storage");
     }
+    {
+      QString appDataM = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+      if (appDataM.isEmpty()) appDataM = QStringLiteral(".");
+      const QString defaultManifest = appDataM + QStringLiteral("/manifests");
+      localManifestDir_ =
+          settings.value(QStringLiteral("paths/local_manifest_dir"), defaultManifest).toString().trimmed();
+      if (localManifestDir_.isEmpty()) {
+        localManifestDir_ = defaultManifest;
+      }
+    }
   }
 
   loadBootstrapSeedsFromSettings();
@@ -822,6 +896,11 @@ void MainWindow::loadOrPromptPeerSettings() {
     peerAdvertiseIp_ =
         s.value(QStringLiteral("network/advertise_ip"), QStringLiteral("127.0.0.1")).toString().trimmed();
     if (peerAdvertiseIp_.isEmpty()) peerAdvertiseIp_ = QStringLiteral("127.0.0.1");
+  }
+
+  {
+    std::error_code ec;
+    std::filesystem::create_directories(localManifestDir_.toStdString(), ec);
   }
 }
 

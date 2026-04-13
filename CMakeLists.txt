@@ -14,6 +14,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 # core library for client/GUI use
 add_library(dss_core
 	src/core/net/tcp.cpp
+	src/core/net/peer_endpoint_parse.cpp
 	src/core/crypto/shq256.cpp
 	src/core/crypto/hybrid.cpp
 	src/core/chunk/chunker.cpp

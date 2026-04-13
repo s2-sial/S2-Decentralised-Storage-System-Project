@@ -94,6 +94,8 @@ private:
   QSpinBox* settingsPeerPortSpin_{};
   QSpinBox* settingsMaxGiBSpin_{};
   QLineEdit* settingsStorageDirEdit_{};
+  QLineEdit* settingsManifestDirEdit_{};
 
   QString peerAdvertiseIp_{QStringLiteral("127.0.0.1")};
+  QString localManifestDir_;
 };

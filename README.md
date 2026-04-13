@@ -3,6 +3,28 @@ Decent Store
 
 Decentralised chunk-based storage with a simple CLI and Qt GUI client. Peers store encrypted chunks; a Kademlia-style DHT maps chunk hashes to peers. Uploads return a **share ID** (`dss://file/<sha256(manifest_text)>`); manifests are stored on peers and a local `.manifest.txt` copy is written for debugging.
 
+Prerequisites (build from source)
+---------------------------------
+
+Install these **before** configuring with CMake:
+
+| Requirement | Purpose |
+|-------------|---------|
+| **CMake** 3.20 or newer | Build system |
+| **C++20 compiler** (GCC 10+, Clang 11+, or MSVC with C++20) | Compiles the project |
+| **OpenSSL** development package | SHA-256, RSA/AES (chunk hashing and optional hybrid encryption) |
+| **Qt 6** — *Widgets* and *Network* | Optional; required only to build the **`decent_store`** GUI. If Qt6 is not found, CMake still builds `client`, `peer`, and `tracker`. |
+
+**Ubuntu / Debian (example packages):**
+
+```bash
+sudo apt install build-essential cmake libssl-dev qt6-base-dev
+```
+
+On other distributions, use the matching package names (e.g. `openssl-devel` and `qt6-qtbase-devel` on Fedora).
+
+**Runtime (running built binaries without rebuilding):** the CLI tools and peers need the OpenSSL **runtime** libraries (`libcrypto`). The GUI additionally needs Qt 6 **runtime** libraries (and on Linux, typical X11/Wayland and platform plugins provided by the distro or an AppImage; see `packaging/linux/README.md`).
+
 Build
 -----
 

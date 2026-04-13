@@ -1,9 +1,11 @@
+#include <cstdlib>
 #include <iostream>
-#include <string>
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
+#include <string>
 
 #include "core/dss/dss_client.h"
+#include "core/net/peer_endpoint_parse.h"
 
 static void usage(const char* prog) {
   std::cerr
@@ -13,7 +15,10 @@ static void usage(const char* prog) {
       << "  " << prog
       << " get <peers> <share_id_or_manifest_path> <output_file> [rsa_private_key_pem]\n"
       << "  " << prog
-      << " repair (not supported without tracker)\n";
+      << " repair (not supported without tracker)\n"
+      << "\n"
+      << "Environment:\n"
+      << "  DECENT_STORE_MANIFEST_DIR  Directory for local *.manifest.txt after put (default: ./manifests).\n";
 }
 
 int main(int argc, char** argv) {
@@ -32,34 +37,13 @@ int main(int argc, char** argv) {
       }
 
       dss::ClientConfig cfg;
-      // peers passed as comma-separated list: ip:port,ip:port,...
+      // peers passed as comma-separated list: host:port or tcp://host:port,...
       std::string peersArg = argv[2];
       std::stringstream ss(peersArg);
       std::string item;
       while (std::getline(ss, item, ',')) {
-        // trim whitespace around each entry
-        auto trim = [](std::string s) {
-          const char* ws = " \t\r\n";
-          auto b = s.find_first_not_of(ws);
-          if (b == std::string::npos) return std::string();
-          auto e = s.find_last_not_of(ws);
-          return s.substr(b, e - b + 1);
-        };
-        item = trim(item);
         if (item.empty()) continue;
-        auto pos = item.find(':');
-        if (pos == std::string::npos) {
-          throw std::runtime_error("Invalid peer entry (expected ip:port): " + item);
-        }
-        dss::PeerEndpoint ep;
-        std::string ipPart = trim(item.substr(0, pos));
-        std::string portPart = trim(item.substr(pos + 1));
-        if (ipPart.empty() || portPart.empty()) {
-          throw std::runtime_error("Invalid peer entry (empty ip or port): " + item);
-        }
-        ep.ip = ipPart;
-        ep.port = std::stoi(portPart);
-        cfg.peers.push_back(ep);
+        cfg.peers.push_back(dss::net::parse_peer_entry(std::move(item)));
       }
 
       if (cfg.peers.empty()) {
@@ -74,6 +58,11 @@ int main(int argc, char** argv) {
       cfg.desiredReplicas = (argc >= 6) ? std::stoi(argv[5]) : 2;
       if (argc >= 7) {
         cfg.rsaPublicKeyPath = argv[6];
+      }
+      if (const char* md = std::getenv("DECENT_STORE_MANIFEST_DIR")) {
+        if (md[0] != '\0') {
+          cfg.localManifestDir = md;
+        }
       }
 
       dss::DssClient client(cfg);
@@ -98,28 +87,8 @@ int main(int argc, char** argv) {
       std::stringstream ss(peersArg);
       std::string item;
       while (std::getline(ss, item, ',')) {
-        auto trim = [](std::string s) {
-          const char* ws = " \t\r\n";
-          auto b = s.find_first_not_of(ws);
-          if (b == std::string::npos) return std::string();
-          auto e = s.find_last_not_of(ws);
-          return s.substr(b, e - b + 1);
-        };
-        item = trim(item);
         if (item.empty()) continue;
-        auto pos = item.find(':');
-        if (pos == std::string::npos) {
-          throw std::runtime_error("Invalid peer entry (expected ip:port): " + item);
-        }
-        dss::PeerEndpoint ep;
-        std::string ipPart = trim(item.substr(0, pos));
-        std::string portPart = trim(item.substr(pos + 1));
-        if (ipPart.empty() || portPart.empty()) {
-          throw std::runtime_error("Invalid peer entry (empty ip or port): " + item);
-        }
-        ep.ip = ipPart;
-        ep.port = std::stoi(portPart);
-        cfg.peers.push_back(ep);
+        cfg.peers.push_back(dss::net::parse_peer_entry(std::move(item)));
       }
       if (cfg.peers.empty()) {
         throw std::runtime_error("No valid peers provided");

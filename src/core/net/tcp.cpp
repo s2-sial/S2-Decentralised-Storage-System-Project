@@ -1,6 +1,7 @@
 #include "core/net/tcp.h"
 
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -11,6 +12,31 @@
 #include <sys/time.h>
 
 namespace dss::net {
+
+namespace {
+
+// IPv4 literal (inet_pton) or hostname (getaddrinfo), e.g. ngrok TCP endpoints.
+bool fill_sockaddr_in_v4(sockaddr_in* addr, const std::string& host, int port) {
+  addr->sin_family = AF_INET;
+  addr->sin_port = htons(static_cast<uint16_t>(port));
+  if (::inet_pton(AF_INET, host.c_str(), &addr->sin_addr) == 1) {
+    return true;
+  }
+  addrinfo hints{};
+  hints.ai_family = AF_INET;
+  hints.ai_socktype = SOCK_STREAM;
+  addrinfo* res = nullptr;
+  int gai = ::getaddrinfo(host.c_str(), nullptr, &hints, &res);
+  if (gai != 0 || res == nullptr) {
+    return false;
+  }
+  const auto* sa = reinterpret_cast<const sockaddr_in*>(res->ai_addr);
+  addr->sin_addr = sa->sin_addr;
+  ::freeaddrinfo(res);
+  return true;
+}
+
+} // namespace
 
 static std::runtime_error sys_err(const char* what) {
     return std::runtime_error(std::string(what) + ": " + std::strerror(errno));
@@ -101,11 +127,9 @@ int connect_tcp_fatal_or_throw(const std::string& ip, int port) {
     if (sock < 0) throw sys_err("socket");
 
     sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(static_cast<uint16_t>(port));
-    if (::inet_pton(AF_INET, ip.c_str(), &addr.sin_addr) != 1) {
+    if (!fill_sockaddr_in_v4(&addr, ip, port)) {
         ::close(sock);
-        throw std::runtime_error("inet_pton failed for ip=" + ip);
+        throw std::runtime_error("Could not resolve host: " + ip);
     }
 
     if (::connect(sock, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0) {
@@ -126,9 +150,7 @@ int connect_tcp_try(const std::string& ip, int port, int timeout_ms) {
     set_timeouts(sock, timeout_ms, timeout_ms);
 
     sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(static_cast<uint16_t>(port));
-    if (::inet_pton(AF_INET, ip.c_str(), &addr.sin_addr) != 1) {
+    if (!fill_sockaddr_in_v4(&addr, ip, port)) {
         ::close(sock);
         return -1;
     }

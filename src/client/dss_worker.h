@@ -13,6 +13,7 @@ public:
 public slots:
   void putFile(const QString& peers,
                const QString& filePath,
+               const QString& localManifestDir,
                quint64 chunkSize,
                int replicas,
                const QString& rsaPublicKeyPem);

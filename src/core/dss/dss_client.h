@@ -18,6 +18,10 @@ struct ClientConfig {
   // getFile() will attempt decryption.
   std::string rsaPublicKeyPath;
   std::string rsaPrivateKeyPath;
+
+  // Directory for local <filename>.manifest.txt copies after put (created if missing).
+  // If empty, defaults to "manifests" under the current working directory.
+  std::string localManifestDir;
 };
 
 struct Progress {
@@ -28,7 +32,7 @@ struct Progress {
 
 struct PutFileResult {
   std::string shareUri;         // e.g. dss://file/<sha256(manifest_text)>
-  std::string localManifestPath; // written next to cwd for debugging / GUI table
+  std::string localManifestPath; // absolute path under localManifestDir
 };
 
 class DssClient {
